@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Homepage</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/style.css">
+  <script defer src="js/main.js"></script>
+</head>
+<body>
+<div class="container">
+  <div class="image-box"> <img id="randImg" src="" alt="Random Image">
+  </div>
+  <div id="clockbox"></div>
+  <ul class="dropdown-menu"> 
+    <li><a href="#">Email and Shopping</a>
+      <ul>
+        <li><a href="https://mail.google.com" target="_blank" rel="noopener noreferrer">Gmail</a></li>
+        <li><a href="https://app.tuta.com/login" target="_blank" rel="noopener noreferrer">Tuta</a></li>
+        <li><a href="https://online.asb.co.nz/auth/" target="_blank" rel="noopener noreferrer">ASB</a></li>
+        <li><a href="https://www.vodafone.co.nz/knox/login_handler.jsp?template=myvodafone" target="_blank" rel="noopener noreferrer">Vodafone</a></li>
+        <li><a href="https://www.trademe.co.nz" target="_blank" rel="noopener noreferrer">Trade Me</a></li>
+        <li><a href="http://www.mightyape.co.nz/" target="_blank" rel="noopener noreferrer">Mighty Ape</a></li>
+        <li><a href="http://www.amazon.com/International-Shipping-Direct/b?node=230659011" target="_blank" rel="noopener noreferrer">Amazon</a></li>
+        <li><a href="http://www.vocaroo.com" target="_blank" rel="noopener noreferrer">Vocaroo</a></li>
+      </ul>
+    </li>
+    <li><a href="#">Video and News</a>
+      <ul>
+        <li><a href="https://www.youtube.com/feed/subscriptions" target="_blank" rel="noopener noreferrer">Youtube</a></li>
+        <li><a href="http://www.vg247.com" target="_blank" rel="noopener noreferrer">VG247</a></li>
+        <li><a href="https://www.torrentfreak.com" target="_blank" rel="noopener noreferrer">TorrentFreak</a></li>
+        <li><a href="https://poa.st/timeline/local" target="_blank" rel="noopener noreferrer">Poast</a></li>
+        <li><a href="https://amerikaner.org" target="_blank" rel="noopener noreferrer">Amerikaner</a></li>
+        <li><a href="https://therightstuff.biz/" Target="_blank" rel="noopener noreferrer"> The Right Stuff</a></li>
+        <li><a href="http://www.stuff.co.nz" target="_blank" rel="noopener noreferrer">Stuff</a></li>
+        <li><a href="https://fmhy.pages.dev/videopiracyguide" target="_blank" rel="noopener noreferrer">Streaming Sites</a></li>
+      </ul>
+    </li>
+    <li><a href="#">4chan</a>
+      <ul>
+        <li><a href="http://4chan.org/" target="_blank" rel="noopener noreferrer">4chan home</a></li>
+        <li><a href="http://boards.4chan.org/a/" target="_blank" rel="noopener noreferrer">/a/ - Anime and Manga</a></li>
+        <li><a href="http://boards.4chan.org/v/" target="_blank" rel="noopener noreferrer">/v/ - Video Games</a></li>
+        <li><a href="http://boards.4chan.org/g/" target="_blank" rel="noopener noreferrer">/g/ - Technology</a></li>
+        <li><a href="http://boards.4chan.org/tv/" target="_blank" rel="noopener noreferrer">/tv/ - Television & Film</a></li>
+        <li><a href="http://boards.4chan.org/fit/" target="_blank" rel="noopener noreferrer">/fit/ - Fitness</a></li>
+        <li><a href="http://boards.4chan.org/o/" target="_blank" rel="noopener noreferrer">/o/ - Auto</a></li>
+      </ul>
+    </li>
+  </ul>
+  <div class="header-row">
+    <div class="search-container">
+      <form id="searchform" method="GET" action="https://www.google.com/search">
+        <div class="custom-dropdown" id="searchEngineDropdown">
+            <div class="selected-engine" id="selectedEngine">Google</div>
+            <ul class="dropdown-options">
+                <li data-value="https://www.google.com/search" data-name="q">Google</li>
+                <li data-value="https://www.bing.com/search" data-name="q">Bing</li>
+                <li data-value="https://yandex.com/search/" data-name="text">Yandex</li>
+                <li data-value="https://nyaa.si/?term=" data-name="term">Nyaa</li>
+            </ul>
+        </div>
+        <input id="searchbox" autofocus="" autocomplete="off" type="text" name="q" placeholder="Search...">
+      </form>
+    </div>
+  </div>
+</div>
+<textarea id="todolist" placeholder="To do List"></textarea>
+</body>
+</html>
