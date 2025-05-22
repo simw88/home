@@ -45,7 +45,8 @@ body {
   transition: background 0.3s ease, color 0.3s ease; /* Smooth transition */
 }
 
-/* Dark Mode Toggle Button Styling */
+/* Dark Mode Toggle Button Styling (Removed as button is not in HTML) */
+/*
 .dark-mode-toggle {
   position: absolute;
   top: 15px;
@@ -60,16 +61,18 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 20; /* Ensure it's above other elements */
+  z-index: 20;
   color: var(--dropdown-link-color);
   box-shadow: 0 2px 5px var(--shadow-color);
   transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
-
-/* Specific hover color for the dark mode toggle button */
+*/
+/* Specific hover color for the dark mode toggle button (Removed) */
+/*
 .dark-mode-toggle:hover {
-  background-color: pink; /* Force pink regardless of theme */
+  background-color: pink;
 }
+*/
 
 /* Clock Display (Mobile-first defaults) */
 #clockbox {
