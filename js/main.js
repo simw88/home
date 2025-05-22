@@ -64,6 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 selectedEngineDisplay.textContent = newText;
                 updateSearchFormAction(newValue, newName);
+                searchBox.focus(); // Added this line to focus the search box
             });
         });
     }
