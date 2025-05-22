@@ -41,10 +41,29 @@ body {
   background: var(--bg-color);
   text-align: center;
   position: relative;
-  padding-top: 200px;
+  /* Default padding-top for larger screens */
+  padding-top: 80px;
   color: var(--text-color); /* Apply text color */
   transition: background 0.3s ease, color 0.3s ease; /* Smooth transition */
 }
+
+/* Media Query for Mobile Devices */
+@media (max-width: 768px) {
+  body {
+    padding-top: 0; /* No top padding on screens 768px wide or less */
+  }
+
+  /* Optional: Adjust clockbox margin if it's too close to the top on mobile */
+  #clockbox {
+    margin-top: 15px; /* Reduce top margin for clockbox on mobile */
+  }
+
+  /* Optional: Adjust container padding if it's too much for smaller screens */
+  .container {
+    padding: 15px; /* Reduce overall padding for the container on mobile */
+  }
+}
+
 
 /* Dark Mode Toggle Button Styling */
 .dark-mode-toggle {
@@ -109,240 +128,4 @@ body {
   z-index: 1; /* z-index is back as it's often needed for absolute elements */
 }
 
-.image-box img {
-  width: 100%;
-  height: 100%;
-  border-radius: 10px;
-  display: block;
-}
-
-/* Hide image-box on screens smaller than 768px (common breakpoint for tablets/phones) */
-@media (max-width: 768px) {
-  .image-box {
-    display: none;
-  }
-}
-
-/* Image and Menu Row - Renamed to better reflect its purpose and now within container */
-.header-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  gap: 15px;
-  position: relative;
-}
-
-.dropdown-menu {
-  display: flex;
-  flex-wrap: wrap;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  gap: 10px;
-  justify-content: center;
-}
-
-.dropdown-menu > li {
-  position: relative;
-  /* Adjust this width until "Email and Shopping" fits on one line */
-  width: 170px; /* Increased from 160px - you might need to fine-tune this */
-}
-
-.dropdown-menu > li > a {
-  background: var(--dropdown-item-bg);
-  color: var(--dropdown-link-color);
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-  border: 1px solid var(--border-color);
-  text-decoration: none;
-  text-align: center;
-  display: block;
-  /* Key Change: Force text to stay on one line */
-  white-space: nowrap;
-  /* Optional: Add overflow properties if text might still be too long and you want truncation */
-  /* overflow: hidden; */
-  /* text-overflow: ellipsis; */
-  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-/* Force pink hover for main dropdown items */
-.dropdown-menu > li:hover > a {
-  background-color: pink; /* Always pink on hover */
-}
-
-/* Specific text color for main dropdown items when hovered in dark mode */
-body.dark-mode .dropdown-menu > li:hover > a {
-    color: rgba(0, 0, 0, 0.8); /* Dark text on pink in dark mode */
-}
-
-.dropdown-menu li ul {
-  position: absolute;
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  display: block;
-  top: 100%;
-  left: 0;
-  /* Submenu width is 100% of its parent LI (which now has a fixed width) */
-  width: 100%;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  background: var(--dropdown-submenu-bg);
-  box-shadow: 0 4px 8px var(--shadow-color);
-  border-radius: 6px;
-  z-index: 10;
-  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, background 0.3s ease, box-shadow 0.3s ease;
-}
-
-.dropdown-menu li:hover ul {
-  max-height: 500px;
-  opacity: 1;
-}
-
-.dropdown-menu li ul li {
-  width: 100%;
-}
-
-.dropdown-menu li ul li a {
-  display: block;
-  padding: 10px;
-  text-decoration: none;
-  color: var(--dropdown-submenu-link-color);
-  white-space: normal; /* Allow wrapping for sub-menu items */
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
-.dropdown-menu li ul li a:hover {
-  background: var(--dropdown-submenu-link-hover-bg);
-}
-
-/* Search Section */
-.search-container {
-  margin-top: 5px;
-  position: relative;
-  z-index: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  width: 100%;
-}
-
-.search-container form {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-}
-
-.search-container input {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: 1px solid var(--border-color);
-  width: 100%;
-  max-width: 550px;
-  background-color: var(--input-bg);
-  color: var(--input-text-color);
-  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-.search-container input::placeholder {
-  color: var(--placeholder-color);
-  transition: color 0.3s ease;
-}
-
-textarea {
-  text-align: center;
-  margin-top: 30px;
-  width: 90%;
-  max-width: 500px;
-  height: 150px;
-  padding: 10px;
-  font-size: 20px;
-  resize: vertical;
-  border-radius: 6px;
-  border: 1px solid var(--border-color);
-  background-color: var(--input-bg);
-  color: var(--input-text-color);
-  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-textarea::placeholder {
-  color: var(--placeholder-color);
-  transition: color 0.3s ease;
-}
-
-/* Custom Dropdown for Search Engines */
-.custom-dropdown {
-  position: relative;
-  display: inline-block;
-  width: 140px; /* This is a fixed width */
-  text-align: center;
-}
-
-.selected-engine {
-  background: var(--dropdown-item-bg);
-  color: var(--dropdown-link-color);
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-  border: 1px solid var(--border-color);
-  white-space: nowrap; /* Keeping this for the selected engine display as it's usually short */
-  text-align: center;
-  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-/* Force pink hover for the selected search engine dropdown */
-.custom-dropdown:hover .selected-engine {
-  background-color: pink; /* Always pink on hover */
-}
-
-/* Specific text color for search engine dropdown when hovered in dark mode */
-body.dark-mode .custom-dropdown:hover .selected-engine {
-    color: rgba(0, 0, 0, 0.8); /* Dark text on pink in dark mode */
-}
-
-.dropdown-options {
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  display: block;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%; /* Takes 100% of the parent .custom-dropdown's width (140px) */
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  background: var(--dropdown-submenu-bg);
-  box-shadow: 0 4px 8px var(--shadow-color);
-  border-radius: 6px;
-  z-index: 10;
-  transition: max-height 0.2s ease-in-out, opacity 0.2s ease-in-out, background 0.3s ease, box-shadow 0.3s ease;
-}
-
-.custom-dropdown:hover .dropdown-options {
-  max-height: 500px;
-  opacity: 1;
-}
-
-.dropdown-options li {
-  padding: 10px;
-  color: var(--dropdown-submenu-link-color);
-  cursor: pointer;
-  white-space: normal; /* Added explicitly to allow wrapping */
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
-.dropdown-options li:hover {
-  background: var(--dropdown-submenu-link-hover-bg);
-}
+.
