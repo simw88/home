@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 🖼️ Random .png image picker (keep as is)
+    // 🖼️ Random .png image picker
     const imageList = [
         "imgs/img1.png",
         "imgs/img2.png",
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
         randImg.src = imageList[Math.floor(Math.random() * imageList.length)];
     }
 
-    // --- Remembering Textbox Logic --- (keep as is)
+    // --- Remembering Textbox Logic ---
     const rememberingTextbox = document.getElementById('todolist');
     const storageKey = 'myTextboxContent';
 
@@ -69,103 +69,52 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ⭐ Dark Mode Logic (Modified for Time-Based) ⭐
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
-    const themeKey = 'themePreference'; // Stores 'light', 'dark', or 'auto'
+    // ⭐ Dark Mode Logic (Automatic Time-Based ONLY - NO USER INTERVENTION) ⭐
+    // Define sunset and sunrise hours in 24-hour format
+    const SUNSET_HOUR = 19; // Dark mode starts at 7:00 PM (19:00)
+    const SUNRISE_HOUR = 4;  // Dark mode ends at 4:30 AM (04:30)
 
-    // Define sunrise/sunset hours (adjust these as needed for your location/preference)
-    const SUNSET_HOUR = 19; // 7 PM (19:00)
-    const SUNRISE_HOUR = 7;  // 7 AM (07:00)
+    // Function to get the current desired theme based on the hour and minute
+    function getCurrentTimeBasedTheme() {
+        const currentHour = new Date().getHours(); // Gets the hour in 0-23 format
+        const currentMinutes = new Date().getMinutes(); // Gets the minutes in 0-59 format
 
-    // Function to get the automatic theme based on the current hour
-    function getAutomaticTheme() {
-        const currentHour = new Date().getHours();
-        if (currentHour >= SUNSET_HOUR || currentHour < SUNRISE_HOUR) {
-            return 'dark'; // It's night time
+        // Dark mode condition:
+        // Either it's after the sunset hour (e.g., 20:00, 21:00, etc.)
+        // OR it's the sunset hour (19:00) or later
+        // OR it's before the sunrise hour (e.g., 00:00, 01:00, 02:00, 03:00)
+        // OR it's the sunrise hour (04:00) but before 04:30
+        if (currentHour > SUNSET_HOUR || // After 7 PM
+            (currentHour === SUNSET_HOUR && currentMinutes >= 0) || // Exactly 7 PM or later minutes in 7 PM hour
+            currentHour < SUNRISE_HOUR || // Before 4 AM
+            (currentHour === SUNRISE_HOUR && currentMinutes < 30)) { // Exactly 4 AM but before 4:30 AM
+            return 'dark'; // It's "night time" for your desired dark mode period
         } else {
-            return 'light'; // It's day time
+            return 'light'; // It's "day time"
         }
     }
 
-    // Function to apply the theme to the body and update the toggle button icon
-    function applyTheme(theme) {
+    // Function to apply the theme to the body
+    function applyThemeToBody(theme) {
         if (theme === 'dark') {
             document.body.classList.add('dark-mode');
-            darkModeToggle.textContent = '☀️'; // Sun icon for light mode
-            darkModeToggle.setAttribute('aria-label', 'Switch to Light Mode');
         } else {
             document.body.classList.remove('dark-mode');
-            darkModeToggle.textContent = '🌙'; // Moon icon for dark mode
-            darkModeToggle.setAttribute('aria-label', 'Switch to Dark Mode');
         }
     }
 
-    // Function to handle theme changes (manual or automatic) and save preference
-    function setTheme(themeMode) {
-        if (themeMode === 'auto') {
-            applyTheme(getAutomaticTheme());
-        } else {
-            applyTheme(themeMode);
-        }
-        localStorage.setItem(themeKey, themeMode); // Save the user's choice ('light', 'dark', or 'auto')
-    }
+    // Immediately apply the correct theme on page load
+    applyThemeToBody(getCurrentTimeBasedTheme());
 
-    // Initial theme setting on page load
-    const savedThemePreference = localStorage.getItem(themeKey);
-
-    if (savedThemePreference) {
-        // If a preference is saved (manual override or 'auto'), use it
-        setTheme(savedThemePreference);
-    } else if (prefersDarkScheme.matches) {
-        // If no preference saved, but system prefers dark, initialize with dark and set preference to 'auto'
-        setTheme('dark'); // Apply dark
-        localStorage.setItem(themeKey, 'auto'); // But save preference as auto
-    } else {
-        // Default to 'auto' (time-based) if no preference or system preference is light
-        setTheme('auto');
-    }
-
-    // Listener for system preference changes (only relevant if current preference is 'auto')
-    prefersDarkScheme.addEventListener('change', (event) => {
-        const currentSavedPreference = localStorage.getItem(themeKey);
-        if (!currentSavedPreference || currentSavedPreference === 'auto') {
-            // If theme is 'auto' or not explicitly set, re-evaluate based on time (which includes system check indirectly)
-            setTheme('auto');
-        }
-    });
-
-    // Toggle button click listener
-    if (darkModeToggle) {
-        darkModeToggle.addEventListener('click', () => {
-            const currentSavedPreference = localStorage.getItem(themeKey);
-            let newPreference;
-
-            if (currentSavedPreference === 'dark') {
-                newPreference = 'light';
-            } else if (currentSavedPreference === 'light') {
-                // If currently light (manual), switch to auto (which will apply dark if night)
-                newPreference = 'auto';
-            } else { // currentSavedPreference is 'auto' or null (not set)
-                // If auto (or not set), switch to dark mode manually
-                newPreference = 'dark';
-            }
-            setTheme(newPreference);
-        });
-    }
-
-    // Optional: Periodically check time to update theme if it's 'auto'
+    // Set an interval to periodically check and update the theme
     setInterval(() => {
-        const currentSavedPreference = localStorage.getItem(themeKey);
-        if (currentSavedPreference === 'auto') {
-            applyTheme(getAutomaticTheme()); // Only apply, don't re-save 'auto'
-        }
-    }, 60000); // Check every minute (adjust as needed for precision vs performance)
+        applyThemeToBody(getCurrentTimeBasedTheme());
+    }, 60000); // Check every minute (60000 milliseconds)
 
 });
 
 
-// 🕒 Live time updater (keep as is)
+// 🕒 Live time updater
 const tday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const tmonth = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
