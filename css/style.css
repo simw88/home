@@ -36,13 +36,11 @@ body.dark-mode {
 
 body {
   margin: 0;
-  padding: 0;
+  padding: 0; /* DEFAULT: No top padding (mobile-first) */
   font-family: Arial, sans-serif;
   background: var(--bg-color);
   text-align: center;
   position: relative;
-  /* Default padding-top for larger screens - 200px */
-  padding-top: 200px;
   color: var(--text-color); /* Apply text color */
   transition: background 0.3s ease, color 0.3s ease; /* Smooth transition */
 }
@@ -73,24 +71,25 @@ body {
   background-color: pink; /* Force pink regardless of theme */
 }
 
-/* Clock Display */
+/* Clock Display (Mobile-first defaults) */
 #clockbox {
   font-size: 1.4em;
   font-weight: 500;
-  margin: 30px auto 20px auto;
+  margin: 15px auto 10px auto; /* Reduced margin for mobile-first */
   width: fit-content;
   color: var(--text-color); /* Use variable */
   position: relative;
+  order: -1; /* Place it after the image, but before other default-ordered elements on mobile */
   transition: color 0.3s ease;
 }
 
-/* Main Container */
+/* Main Container (Mobile-first defaults) */
 .container {
   max-width: 960px;
   margin: 0 auto;
   background: var(--container-bg); /* Use variable */
   border-radius: 12px;
-  padding: 25px;
+  padding: 15px; /* Reduced padding for mobile-first */
   box-shadow: 0 8px 24px var(--shadow-color); /* Use variable */
   display: flex;
   flex-direction: column;
@@ -100,14 +99,14 @@ body {
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Random Image (Default for Desktop) */
+/* Random Image (Mobile-first defaults) */
 .image-box {
-  position: absolute; /* Absolute position for desktop */
-  top: 25px;
-  left: 25px;
-  width: 150px;
-  height: 150px;
-  z-index: 1; /* Corrected: Set z-index to 1, so it's visible and behind menu items */
+  position: static; /* DEFAULT: Static position for mobile-first */
+  width: 60px; /* DEFAULT: Smaller size for mobile-first */
+  height: 60px; /* DEFAULT: Smaller size for mobile-first */
+  margin: 15px auto 0; /* DEFAULT: Center horizontally, add top margin for spacing */
+  order: -2; /* DEFAULT: Place it before other flex items in the column */
+  z-index: auto; /* DEFAULT: Reset z-index */
 }
 
 .image-box img {
@@ -129,20 +128,23 @@ body {
   position: relative;
 }
 
+/* Dropdown Menu (Mobile-first defaults) */
 .dropdown-menu {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column; /* DEFAULT: Force vertical stacking on mobile */
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 10px;
-  justify-content: center;
+  gap: 5px; /* Adjust vertical spacing between items */
+  width: 100%; /* Make the menu container take full width */
+  align-items: center; /* Center the menu items horizontally within the menu container */
 }
 
 .dropdown-menu > li {
-  position: relative; /* Needs to be positioned for z-index to work */
-  width: 170px;
-  z-index: 2; /* Key Change: Give main menu items a higher z-index than the image (1 < 2) */
+  position: relative; /* Needs to be positioned for its children (submenus) */
+  width: 90%; /* Make each menu item take almost full width on mobile */
+  margin: 0; /* Remove any horizontal margins */
+  z-index: auto; /* KEY CHANGE: Remove explicit z-index for mobile li to fix stacking context */
 }
 
 .dropdown-menu > li > a {
@@ -156,7 +158,7 @@ body {
   text-decoration: none;
   text-align: center;
   display: block;
-  white-space: nowrap;
+  white-space: normal; /* Allow text to wrap within the button if it's too long */
   transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
@@ -337,37 +339,50 @@ body.dark-mode .custom-dropdown:hover .selected-engine {
   background: var(--dropdown-submenu-link-hover-bg);
 }
 
-/* Media Query for Mobile Devices (768px and smaller) */
-@media (max-width: 768px) {
+/* --- Desktop Styles (Apply when viewport is wider than 768px) --- */
+@media (min-width: 769px) {
   body {
-    padding-top: 0; /* No top padding on screens 768px wide or less */
+    padding-top: 200px; /* Apply top padding for desktop */
   }
 
-  /* Adjustments for image-box on mobile */
+  /* Desktop Adjustments for image-box */
   .image-box {
-    position: static; /* Bring it back into normal document flow */
-    width: 60px; /* Make it much smaller */
-    height: 60px; /* Maintain aspect ratio */
-    margin: 15px auto 0; /* Center horizontally, add top margin for spacing */
-    order: -2; /* Place it before other flex items in the column (.container is flex-direction: column) */
-    z-index: auto; /* Reset z-index - not strictly necessary as position is static for mobile */
+    position: absolute; /* Absolute position for desktop */
+    top: 25px;
+    left: 25px;
+    width: 150px;
+    height: 150px;
+    z-index: 1; /* Set z-index to 1 for desktop */
+    order: 0; /* Reset order for desktop as it's positioned */
+    margin: 0; /* Remove auto margin from mobile */
   }
 
-  /* Optional: Adjust clockbox margin if it's too close to the top on mobile */
+  /* Desktop Adjustments for clockbox */
   #clockbox {
-    margin-top: 15px; /* Reduce top margin for clockbox on mobile, after the image */
-    order: -1; /* Place it after the image, but before other default-ordered elements */
+    margin: 30px auto 20px auto; /* Revert to desktop margins */
+    order: 0; /* Reset order for desktop */
   }
 
-  /* Optional: Adjust container padding if it's too much for smaller screens */
+  /* Desktop Adjustments for container padding */
   .container {
-    padding: 15px; /* Reduce overall padding for the container on mobile */
+    padding: 25px; /* Revert to desktop padding */
   }
 
-  /* For mobile, if you want the main menu items to also have a specific z-index, you can add it here.
-     But since image is static, it will just follow order.
-  .dropdown-menu > li {
-      z-index: auto;
+  /* Desktop Dropdown Menu Alignment */
+  .dropdown-menu {
+    flex-direction: row; /* Revert to horizontal flex for desktop */
+    flex-wrap: wrap; /* Allow wrapping */
+    gap: 10px; /* Horizontal gap */
+    justify-content: center; /* Center horizontally */
+    width: auto; /* Allow menu to size based on content */
   }
-  */
+
+  .dropdown-menu > li {
+    width: 170px; /* Revert to fixed width for desktop */
+    z-index: 2; /* Give main menu items a higher z-index than the image */
+  }
+
+  .dropdown-menu > li > a {
+    white-space: nowrap; /* Prevent wrapping for desktop menu items */
+  }
 }
