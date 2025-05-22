@@ -1,35 +1,102 @@
+:root {
+  /* Light Mode Colors */
+  --bg-color: #f0f0f5;
+  --container-bg: #fff;
+  --text-color: #333;
+  --dropdown-item-bg: #f0f0f5;
+  --dropdown-item-hover-bg: pink;
+  --dropdown-link-color: gray;
+  --dropdown-submenu-bg: #f9f9f9;
+  --dropdown-submenu-link-color: black;
+  --dropdown-submenu-link-hover-bg: #eee;
+  --border-color: #ccc;
+  --shadow-color: rgba(0, 0, 0, 0.08);
+  --input-bg: #fff;
+  --input-text-color: #333;
+  --placeholder-color: #888;
+}
+
+body.dark-mode {
+  /* Dark Mode Colors */
+  --bg-color: #212121;
+  --container-bg: #333;
+  --text-color: #eee;
+  --dropdown-item-bg: #444;
+  --dropdown-item-hover-bg: #666; /* This variable is for other elements, but we'll override below for pink hover */
+  --dropdown-link-color: #eee;
+  --dropdown-submenu-bg: #2b2b2b;
+  --dropdown-submenu-link-color: #eee;
+  --dropdown-submenu-link-hover-bg: #3a3a3a;
+  --border-color: #555;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --input-bg: #444;
+  --input-text-color: #eee;
+  --placeholder-color: #bbb;
+}
+
 body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  background: #f0f0f5;
+  background: var(--bg-color);
   text-align: center;
   position: relative;
-  padding-top: 50px; 
+  padding-top: 50px;
+  color: var(--text-color); /* Apply text color */
+  transition: background 0.3s ease, color 0.3s ease; /* Smooth transition */
 }
+
+/* Dark Mode Toggle Button Styling */
+.dark-mode-toggle {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: var(--dropdown-item-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.5em;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20; /* Ensure it's above other elements */
+  color: var(--dropdown-link-color);
+  box-shadow: 0 2px 5px var(--shadow-color);
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Specific hover color for the dark mode toggle button */
+.dark-mode-toggle:hover {
+  background-color: pink; /* Force pink regardless of theme */
+}
+
 /* Clock Display */
 #clockbox {
   font-size: 1.4em;
   font-weight: 500;
   margin: 30px auto 20px auto;
   width: fit-content;
-  color: #333;
+  color: var(--text-color); /* Use variable */
   position: relative;
+  transition: color 0.3s ease;
 }
 
 /* Main Container */
 .container {
   max-width: 960px;
   margin: 0 auto;
-  background: #fff;
+  background: var(--container-bg); /* Use variable */
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px var(--shadow-color); /* Use variable */
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
   position: relative;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Random Image (Left Side) */
@@ -49,6 +116,7 @@ body {
   display: block;
 }
 
+/* Hide image-box on screens smaller than 768px (common breakpoint for tablets/phones) */
 @media (max-width: 768px) {
   .image-box {
     display: none;
@@ -64,7 +132,6 @@ body {
   width: 100%;
   gap: 15px;
   position: relative;
-  /* z-index removed here as it was causing issues. */
 }
 
 .dropdown-menu {
@@ -79,25 +146,37 @@ body {
 
 .dropdown-menu > li {
   position: relative;
-  width: auto;
+  /* Adjust this width until "Email and Shopping" fits on one line */
+  width: 170px; /* Increased from 160px - you might need to fine-tune this */
 }
 
 .dropdown-menu > li > a {
-  background: #f0f0f5;
-  color: gray;
+  background: var(--dropdown-item-bg);
+  color: var(--dropdown-link-color);
   padding: 10px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 16px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   text-decoration: none;
   text-align: center;
   display: block;
+  /* Key Change: Force text to stay on one line */
+  white-space: nowrap;
+  /* Optional: Add overflow properties if text might still be too long and you want truncation */
+  /* overflow: hidden; */
+  /* text-overflow: ellipsis; */
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
+/* Force pink hover for main dropdown items */
 .dropdown-menu > li:hover > a {
-  background-color: pink;
-  color: gray;
+  background-color: pink; /* Always pink on hover */
+}
+
+/* Specific text color for main dropdown items when hovered in dark mode */
+body.dark-mode .dropdown-menu > li:hover > a {
+    color: rgba(0, 0, 0, 0.8); /* Dark text on pink in dark mode */
 }
 
 .dropdown-menu li ul {
@@ -108,16 +187,16 @@ body {
   display: block;
   top: 100%;
   left: 0;
-  min-width: 140px;
+  /* Submenu width is 100% of its parent LI (which now has a fixed width) */
+  width: 100%;
   list-style: none;
   padding: 0;
   margin: 0;
-  background: #f9f9f9;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background: var(--dropdown-submenu-bg);
+  box-shadow: 0 4px 8px var(--shadow-color);
   border-radius: 6px;
   z-index: 10;
-  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
-  width: 100%;
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .dropdown-menu li:hover ul {
@@ -133,13 +212,13 @@ body {
   display: block;
   padding: 10px;
   text-decoration: none;
-  color: black;
-  /* white-space: nowrap; - REMOVED THIS LINE */
-  white-space: normal; /* Added explicitly to allow wrapping */
+  color: var(--dropdown-submenu-link-color);
+  white-space: normal; /* Allow wrapping for sub-menu items */
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .dropdown-menu li ul li a:hover {
-  background: #eee;
+  background: var(--dropdown-submenu-link-hover-bg);
 }
 
 /* Search Section */
@@ -167,9 +246,17 @@ body {
   padding: 10px;
   font-size: 16px;
   border-radius: 6px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   width: 100%;
   max-width: 550px;
+  background-color: var(--input-bg);
+  color: var(--input-text-color);
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.search-container input::placeholder {
+  color: var(--placeholder-color);
+  transition: color 0.3s ease;
 }
 
 textarea {
@@ -182,31 +269,46 @@ textarea {
   font-size: 20px;
   resize: vertical;
   border-radius: 6px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  color: var(--input-text-color);
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+textarea::placeholder {
+  color: var(--placeholder-color);
+  transition: color 0.3s ease;
 }
 
 /* Custom Dropdown for Search Engines */
 .custom-dropdown {
   position: relative;
   display: inline-block;
-  width: 140px;
+  width: 140px; /* This is a fixed width */
   text-align: center;
 }
 
 .selected-engine {
-  background: #f0f0f5;
-  color: gray;
+  background: var(--dropdown-item-bg);
+  color: var(--dropdown-link-color);
   padding: 10px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 16px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   white-space: nowrap; /* Keeping this for the selected engine display as it's usually short */
   text-align: center;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
+/* Force pink hover for the selected search engine dropdown */
 .custom-dropdown:hover .selected-engine {
-  background-color: pink;
+  background-color: pink; /* Always pink on hover */
+}
+
+/* Specific text color for search engine dropdown when hovered in dark mode */
+body.dark-mode .custom-dropdown:hover .selected-engine {
+    color: rgba(0, 0, 0, 0.8); /* Dark text on pink in dark mode */
 }
 
 .dropdown-options {
@@ -217,15 +319,15 @@ textarea {
   position: absolute;
   top: 100%;
   left: 0;
-  width: 100%;
+  width: 100%; /* Takes 100% of the parent .custom-dropdown's width (140px) */
   list-style: none;
   padding: 0;
   margin: 0;
-  background: #f9f9f9;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background: var(--dropdown-submenu-bg);
+  box-shadow: 0 4px 8px var(--shadow-color);
   border-radius: 6px;
   z-index: 10;
-  transition: max-height 0.2s ease-in-out, opacity 0.2s ease-in-out;
+  transition: max-height 0.2s ease-in-out, opacity 0.2s ease-in-out, background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .custom-dropdown:hover .dropdown-options {
@@ -235,12 +337,12 @@ textarea {
 
 .dropdown-options li {
   padding: 10px;
-  color: #333;
+  color: var(--dropdown-submenu-link-color);
   cursor: pointer;
-  /* white-space: nowrap; - REMOVED THIS LINE */
   white-space: normal; /* Added explicitly to allow wrapping */
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .dropdown-options li:hover {
-  background: #f0f0f5;
+  background: var(--dropdown-submenu-link-hover-bg);
 }
