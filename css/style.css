@@ -49,6 +49,12 @@ body {
   display: block;
 }
 
+@media (max-width: 768px) {
+  .image-box {
+    display: none;
+  }
+}
+
 /* Image and Menu Row - Renamed to better reflect its purpose and now within container */
 .header-row {
   display: flex;
