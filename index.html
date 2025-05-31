@@ -64,12 +64,18 @@
                 <li data-value="https://exhentai.org/" data-name="f_search">Panda</li>
             </ul>
         </div>
-        <input id="searchbox" autofocus="" autocomplete="off" type="text" name="q" placeholder="Search...">
+        <div class="input-with-button">
+          <input id="searchbox" autofocus="" autocomplete="off" type="text" name="q" placeholder="Search...">
+          <button type="button" id="clearSearchBtn" class="clear-button">X</button>
+        </div>
       </form>
     </div>
   </div>
 </div>
-<textarea id="todolist" placeholder="To do List"></textarea>
+<div class="input-with-button textarea-container">
+  <textarea id="todolist" placeholder="To do List"></textarea>
+  <button type="button" id="clearTodolistBtn" class="clear-button">X</button>
+</div>
 <div id="todolist-preview" class="todolist-preview-style"></div>
 </body>
 </html>
