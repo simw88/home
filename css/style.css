@@ -262,6 +262,18 @@ textarea::placeholder {
   transition: color 0.3s ease;
 }
 
+/* ⭐ NEW: Hide scrollbar for textarea on all browsers ⭐ */
+.textarea-container textarea::-webkit-scrollbar {
+    width: 0; /* For vertical scrollbar in Webkit browsers (Chrome, Safari, Edge) */
+    height: 0; /* For horizontal scrollbar in Webkit browsers */
+    background: transparent; /* Makes the scrollbar track transparent */
+}
+.textarea-container textarea {
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none;  /* For IE and Edge */
+}
+/* ⭐ END NEW ⭐ */
+
 /* Custom Dropdown for Search Engines */
 .custom-dropdown {
   position: relative;
@@ -429,7 +441,7 @@ body.dark-mode .custom-dropdown:hover .selected-engine {
   }
 }
 
-/* ⭐ NEW: Override for Mobile Landscape (e.g., S24 Ultra in landscape) ⭐ */
+/* Override for Mobile Landscape (e.g., S24 Ultra in landscape) */
 /* This targets devices that are wide (like desktop) but also relatively short (like a phone) */
 @media (min-width: 769px) and (max-height: 600px) {
   body {
