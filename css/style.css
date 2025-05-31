@@ -47,8 +47,8 @@ body {
 
 /* Clock Display (Mobile-first defaults) */
 #clockbox {
-  font-size: 1.9em;
-  font-weight: 530;
+  font-size: 1.4em;
+  font-weight: 500;
   margin: 15px auto 10px auto; /* Reduced margin for mobile-first */
   width: fit-content;
   color: var(--text-color); /* Use variable */
@@ -367,7 +367,7 @@ body.dark-mode .custom-dropdown:hover .selected-engine {
 /* --- Desktop Styles (Apply when viewport is wider than 768px) --- */
 @media (min-width: 769px) {
   body {
-    padding-top: 200px;
+    padding-top: 200px; /* Apply top padding for desktop */
   }
 
   /* Desktop Adjustments for image-box */
@@ -426,5 +426,67 @@ body.dark-mode .custom-dropdown:hover .selected-engine {
       margin-bottom: 10px;
       width: 500px; /* Fix width for desktop to prevent auto-sizing */
       margin: 30px auto 10px auto; /* Ensure it stays centered on desktop too */
+  }
+}
+
+/* ⭐ NEW: Override for Mobile Landscape (e.g., S24 Ultra in landscape) ⭐ */
+/* This targets devices that are wide (like desktop) but also relatively short (like a phone) */
+@media (min-width: 769px) and (max-height: 600px) {
+  body {
+    padding-top: 0; /* Remove the extra padding applied in desktop mode */
+  }
+
+  /* Revert image-box to its mobile default styling/positioning */
+  .image-box {
+    position: static; /* Back to normal document flow */
+    width: 60px;
+    height: 60px;
+    margin: 15px auto 0; /* Center horizontally, add top margin */
+    order: -2; /* Ensure it comes first in flex flow */
+    z-index: auto; /* Reset z-index */
+  }
+
+  /* Revert clockbox to its mobile default styling/positioning */
+  #clockbox {
+    margin: 15px auto 10px auto; /* Mobile margins */
+    order: -1; /* Ensure it comes after image, before others */
+  }
+
+  /* Revert container padding to mobile default */
+  .container {
+    padding: 15px; /* Mobile padding */
+  }
+
+  /* Revert dropdown menu to mobile vertical stacking */
+  .dropdown-menu {
+    flex-direction: column; /* Vertical stacking */
+    gap: 5px;
+    width: 100%;
+    align-items: center;
+  }
+  .dropdown-menu > li {
+    width: 90%; /* Mobile width */
+    z-index: auto; /* Reset z-index */
+  }
+  .dropdown-menu > li > a {
+    white-space: normal; /* Allow text wrapping */
+  }
+
+  /* Revert search form to mobile vertical stacking */
+  .search-container form {
+      flex-direction: column; /* Vertical stacking */
+      align-items: center;
+  }
+  /* Ensure these maintain mobile-first behavior on mobile landscape too */
+  .search-container .input-with-button {
+      width: 100%;
+      max-width: 550px; /* Maintain overall max-width control */
+  }
+
+  /* Revert textarea container to mobile width and margins */
+  .textarea-container {
+      width: 100%; /* Mobile width */
+      max-width: 500px; /* Max width remains for overall form width control */
+      margin: 30px auto 10px auto; /* Mobile margins */
   }
 }
