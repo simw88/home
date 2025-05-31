@@ -1,36 +1,34 @@
 document.addEventListener("DOMContentLoaded", () => {
     // 🖼️ Random .png image picker
-    const imageList = [
-        "imgs/img1.png",
-        "imgs/img2.png",
-        "imgs/img3.png",
-        "imgs/img4.png",
-        "imgs/img5.png",
-        "imgs/img6.png",
-        "imgs/img7.png",
-        "imgs/img8.png",
-        "imgs/img9.png",
-        "imgs/img10.png",
-        "imgs/img11.png",
-        "imgs/img12.png",
+    const IMAGE_LIST = [
+        "imgs/img1.png", "imgs/img2.png", "imgs/img3.png",
+        "imgs/img4.png", "imgs/img5.png", "imgs/img6.png",
+        "imgs/img7.png", "imgs/img8.png", "imgs/img9.png",
+        "imgs/img10.png", "imgs/img11.png", "imgs/img12.png",
     ];
     const randImg = document.getElementById("randImg");
-    if (randImg) { // Check if element exists before trying to set its source
-        randImg.src = imageList[Math.floor(Math.random() * imageList.length)];
+    if (randImg) {
+        randImg.src = IMAGE_LIST[Math.floor(Math.random() * IMAGE_LIST.length)];
     }
 
     // --- Remembering Textbox Logic ---
     const rememberingTextbox = document.getElementById('todolist');
-    const storageKey = 'myTextboxContent';
+    const STORAGE_KEY = 'myTextboxContent';
 
-    if (rememberingTextbox) { // Check if the textbox exists on the page
-        const savedContent = localStorage.getItem(storageKey);
+    if (rememberingTextbox) {
+        const savedContent = localStorage.getItem(STORAGE_KEY);
         if (savedContent) {
             rememberingTextbox.value = savedContent;
         }
 
         rememberingTextbox.addEventListener('input', () => {
-            localStorage.setItem(storageKey, rememberingTextbox.value);
+            try {
+                localStorage.setItem(STORAGE_KEY, rememberingTextbox.value);
+            } catch (e) {
+                console.error("Failed to save to local storage:", e);
+                // Optionally inform the user or handle the error gracefully
+            }
+            toggleClearButtonVisibility(rememberingTextbox, clearTodolistBtn);
         });
     }
     // --- End of Remembering Textbox Logic ---
@@ -56,16 +54,18 @@ document.addEventListener("DOMContentLoaded", () => {
             updateSearchFormAction(initialOption.dataset.value, initialOption.dataset.name);
         }
 
-        dropdownOptionsList.querySelectorAll("li").forEach(option => {
-            option.addEventListener("click", () => {
+        // Event delegation for dropdown options
+        dropdownOptionsList.addEventListener("click", (event) => {
+            const option = event.target.closest('li[data-value][data-name]'); // Ensures we click on a valid option
+            if (option) {
                 const newValue = option.dataset.value;
                 const newName = option.dataset.name;
                 const newText = option.textContent;
 
                 selectedEngineDisplay.textContent = newText;
                 updateSearchFormAction(newValue, newName);
-                searchBox.focus(); // Added this line to focus the search box
-            });
+                searchBox.focus();
+            }
         });
     }
 
@@ -76,21 +76,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Function to get the current desired theme based on the hour and minute
     function getCurrentTimeBasedTheme() {
-        const currentHour = new Date().getHours(); // Gets the hour in 0-23 format
-        const currentMinutes = new Date().getMinutes(); // Gets the minutes in 0-59 format
+        const currentHour = new Date().getHours();
+        const currentMinutes = new Date().getMinutes();
 
-        // Dark mode condition:
-        // Either it's after the sunset hour (e.g., 20:00, 21:00, etc.)
-        // OR it's the sunset hour (19:00) or later
-        // OR it's before the sunrise hour (e.g., 00:00, 01:00, 02:00, 03:00)
-        // OR it's the sunrise hour (04:00) but before 04:30
-        if (currentHour > SUNSET_HOUR || // After 7 PM
-            (currentHour === SUNSET_HOUR && currentMinutes >= 0) || // Exactly 7 PM or later minutes in 7 PM hour
-            currentHour < SUNRISE_HOUR || // Before 4 AM
-            (currentHour === SUNRISE_HOUR && currentMinutes < 30)) { // Exactly 4 AM but before 4:30 AM
-            return 'dark'; // It's "night time" for your desired dark mode period
+        if (currentHour > SUNSET_HOUR ||
+            (currentHour === SUNSET_HOUR && currentMinutes >= 0) ||
+            currentHour < SUNRISE_HOUR ||
+            (currentHour === SUNRISE_HOUR && currentMinutes < 30)) {
+            return 'dark';
         } else {
-            return 'light'; // It's "day time"
+            return 'light';
         }
     }
 
@@ -103,20 +98,58 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Immediately apply the correct theme on page load
     applyThemeToBody(getCurrentTimeBasedTheme());
 
-    // Set an interval to periodically check and update the theme
     setInterval(() => {
         applyThemeToBody(getCurrentTimeBasedTheme());
-    }, 60000); // Check every minute (60000 milliseconds)
+    }, 60000); // Check every minute
 
+    // --- Clear Search and To-Do List Buttons ---
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    const clearTodolistBtn = document.getElementById('clearTodolistBtn');
+
+    // Function to toggle button visibility
+    function toggleClearButtonVisibility(inputField, button) {
+        if (inputField && button) {
+            if (inputField.value.length > 0) {
+                button.style.display = 'flex';
+            } else {
+                button.style.display = 'none';
+            }
+        }
+    }
+
+    if (clearSearchBtn && searchBox) {
+        clearSearchBtn.addEventListener('click', () => {
+            searchBox.value = '';
+            toggleClearButtonVisibility(searchBox, clearSearchBtn);
+            searchBox.focus();
+        });
+        searchBox.addEventListener('input', () => {
+            toggleClearButtonVisibility(searchBox, clearSearchBtn);
+        });
+        toggleClearButtonVisibility(searchBox, clearSearchBtn); // Initial check on load
+    }
+
+    if (clearTodolistBtn && rememberingTextbox) {
+        clearTodolistBtn.addEventListener('click', () => {
+            rememberingTextbox.value = '';
+            try {
+                localStorage.removeItem(STORAGE_KEY);
+            } catch (e) {
+                console.error("Failed to clear from local storage:", e);
+            }
+            toggleClearButtonVisibility(rememberingTextbox, clearTodolistBtn);
+            rememberingTextbox.focus();
+        });
+        toggleClearButtonVisibility(rememberingTextbox, clearTodolistBtn); // Initial check on load
+    }
 });
 
 
 // 🕒 Live time updater
-const tday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const tmonth = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const T_DAY = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const T_MONTH = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 function GetClock() {
     const d = new Date();
@@ -145,13 +178,11 @@ function GetClock() {
     if (nsec <= 9) nsec = "0" + nsec;
 
     const clockbox = document.getElementById('clockbox');
-    if (clockbox) { // Ensure clockbox exists before updating
-        clockbox.innerHTML = `${tday[nday]}, ${tmonth[nmonth]} ${ndate}, ${nyear} ${nhour}:${nmin}:${nsec}${ap}`;
+    if (clockbox) {
+        clockbox.innerHTML = `${T_DAY[nday]}, ${T_MONTH[nmonth]} ${ndate}, ${nyear} ${nhour}:${nmin}:${nsec}${ap}`;
     }
 }
 
-// The window.onload will ensure GetClock is called once the page is fully loaded,
-// and then set the interval for subsequent updates.
 window.onload = function () {
     GetClock();
     setInterval(GetClock, 1000);
