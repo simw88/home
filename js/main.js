@@ -11,15 +11,25 @@ document.addEventListener("DOMContentLoaded", () => {
         randImg.src = IMAGE_LIST[Math.floor(Math.random() * IMAGE_LIST.length)];
     }
 
-    // --- Remembering Textbox Logic ---
+    // --- Remembering Textbox Logic & Auto-Resizing ---
     const rememberingTextbox = document.getElementById('todolist');
     const STORAGE_KEY = 'myTextboxContent';
+
+    // Function to auto-resize the textarea
+    function autoResizeTextarea(textarea) {
+        if (!textarea) return;
+        textarea.style.height = 'auto'; // Reset height to recalculate scrollHeight
+        textarea.style.height = textarea.scrollHeight + 'px'; // Set height to content's scrollHeight
+    }
 
     if (rememberingTextbox) {
         const savedContent = localStorage.getItem(STORAGE_KEY);
         if (savedContent) {
             rememberingTextbox.value = savedContent;
         }
+
+        // Initial resize in case there's saved content
+        autoResizeTextarea(rememberingTextbox);
 
         rememberingTextbox.addEventListener('input', () => {
             try {
@@ -29,9 +39,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Optionally inform the user or handle the error gracefully
             }
             toggleClearButtonVisibility(rememberingTextbox, clearTodolistBtn);
+            autoResizeTextarea(rememberingTextbox); // Auto-resize on input
         });
     }
-    // --- End of Remembering Textbox Logic ---
+    // --- End of Remembering Textbox Logic & Auto-Resizing ---
 
     // 🔍 Update form action based on custom search engine dropdown
     const searchForm = document.getElementById("searchform");
@@ -140,6 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error("Failed to clear from local storage:", e);
             }
             toggleClearButtonVisibility(rememberingTextbox, clearTodolistBtn);
+            autoResizeTextarea(rememberingTextbox); // Resize after clearing
             rememberingTextbox.focus();
         });
         toggleClearButtonVisibility(rememberingTextbox, clearTodolistBtn); // Initial check on load
