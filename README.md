@@ -3,3 +3,5 @@ this this the 5th version of my homepage. this is everything I wanted to create 
 Version 5.1: Time dependant darkmode added and main item box length unified 
 
 Version 5.2: small edits
+
+Version 5.3: added buttons to remove text and some of the code is cleaned I guess or whatever 
