@@ -156,6 +156,63 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         toggleClearButtonVisibility(rememberingTextbox, clearTodolistBtn); // Initial check on load
     }
+
+    // ⭐ Updated: Image replacement and 4chan dropdown toggle on clockbox click ⭐
+    const clockbox = document.getElementById('clockbox');
+    const randImgElement = document.getElementById("randImg"); // Get the image element
+    let isFlowerImageDisplayed = false; // State variable for image toggle
+
+    // More robust selector for 4chan dropdown - using the ID previously added.
+    // If the ID was not used, fallback to existing logic.
+    let fourChanDropdown = document.getElementById('fourchanDropdown');
+
+    // Fallback logic if the ID is not present (e.g., if user reverts index.html)
+    if (!fourChanDropdown) {
+        fourChanDropdown = document.querySelector('.dropdown-menu li:nth-child(3)');
+        if (!fourChanDropdown) {
+            const dropdownItems = document.querySelectorAll('.dropdown-menu > li');
+            fourChanDropdown = Array.from(dropdownItems).find(li => {
+                const link = li.querySelector('a');
+                return link && link.textContent.toLowerCase().includes('4chan');
+            });
+        }
+        if (!fourChanDropdown) {
+            const dropdownLinks = document.querySelectorAll('.dropdown-menu > li > a');
+            const fourChanLink = Array.from(dropdownLinks).find(link =>
+                link.href && link.href.includes('4chan')
+            );
+            if (fourChanLink) {
+                fourChanDropdown = fourChanLink.parentElement;
+            }
+        }
+    }
+
+
+    if (clockbox && randImgElement) {
+        // No cursor change on hover, so this line remains removed
+        // clockbox.style.cursor = 'pointer';
+
+        clockbox.addEventListener('click', () => {
+            if (isFlowerImageDisplayed) {
+                // If flower is currently displayed, revert to random image
+                randImgElement.src = IMAGE_LIST[Math.floor(Math.random() * IMAGE_LIST.length)];
+                isFlowerImageDisplayed = false;
+            } else {
+                // If random image is displayed, change to flower.png
+                randImgElement.src = "imgs/flower.png";
+                isFlowerImageDisplayed = true;
+            }
+
+            // Toggle 4chan dropdown if found
+            if (fourChanDropdown) {
+                fourChanDropdown.classList.toggle('hidden');
+                console.log('4chan dropdown toggled'); // For debugging
+            } else {
+                console.warn('4chan dropdown not found'); // For debugging
+            }
+        });
+    }
+    // ⭐ End Updated ⭐
 });
 
 
