@@ -32,18 +32,19 @@ body.dark-mode {
   --input-bg: #444;
   --input-text-color: #eee;
   --placeholder-color: #bbb;
-}
+  }
 
 body {
+  /* Reverted body background to only use --bg-color */
   margin: 0;
   padding: 0; /* DEFAULT: No top padding (mobile-first) */
   font-family: Arial, sans-serif;
-  background: var(--bg-color);
+  background: var(--bg-color); /* Body background color will change with theme */
   text-align: center;
   position: relative;
   color: var(--text-color); /* Apply text color */
   transition: background 0.3s ease, color 0.3s ease; /* Smooth transition */
-}
+  }
 
 /* Clock Display (Mobile-first defaults) */
 #clockbox {
@@ -61,7 +62,7 @@ body {
 .container {
   max-width: 960px;
   margin: 0 auto;
-  background: var(--container-bg); /* Use variable */
+  background: var(--container-bg); /* Use variable for base background color */
   border-radius: 12px;
   padding: 15px; /* Reduced padding for mobile-first */
   box-shadow: 0 8px 24px var(--shadow-color); /* Use variable */
@@ -375,6 +376,23 @@ body.dark-mode .custom-dropdown:hover .selected-engine {
     transform: none; /* Remove transform for textarea button */
 }
 
+/* New: Hidden class for toggling visibility */
+.hidden {
+  display: none !important; /* Use !important to ensure it overrides other display properties */
+}
+
+/* Optional: Add transition for smoother hide/show */
+.image-box,
+.dropdown-menu > li:nth-child(3) { /* Target the 4chan li specifically */
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* When hidden, apply initial state for transition */
+.image-box.hidden,
+.dropdown-menu > li:nth-child(3).hidden {
+  opacity: 0;
+  transform: translateY(-20px); /* Example: move up slightly as it fades out */
+}
 
 /* --- Desktop Styles (Apply when viewport is wider than 768px) --- */
 @media (min-width: 769px) {
