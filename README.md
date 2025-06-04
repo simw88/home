@@ -8,4 +8,4 @@ Version 5.2: small edits
 
 Version 5.3: added buttons to remove text and some of the code is cleaned I guess or whatever 
 
-Version 5.4: added an option to hide image (replaced with another image) and one of the dropdowns
+Version 5.4: added an option to hide image (replaced with another image), one of the dropdowns, and while in mobile click the label and have it collapse 
