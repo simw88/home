@@ -1,6 +1,5 @@
 This was made using AI. My ideas, Gemini's code. This fella can't code for crud #(octothorpe)dealwithit
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+~~~
 this this the 5th version of my homepage. this is everything I wanted to create about 10 years ago. 
 
 Version 5.1: Time dependant darkmode added and main item box length unified 
