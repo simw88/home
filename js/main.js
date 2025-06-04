@@ -189,9 +189,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     if (clockbox && randImgElement) {
-        // No cursor change on hover, so this line remains removed
-        // clockbox.style.cursor = 'pointer';
-
         clockbox.addEventListener('click', () => {
             if (isFlowerImageDisplayed) {
                 // If flower is currently displayed, revert to random image
@@ -213,6 +210,90 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
     // ⭐ End Updated ⭐
+
+    // --- Dropdown Logic (for both mobile click and desktop hover cleanup) ---
+    const dropdownLabels = document.querySelectorAll('.dropdown-menu > li > a');
+    const allSubmenus = document.querySelectorAll('.dropdown-menu li ul');
+
+    // Function to close a specific submenu
+    function closeSubmenu(submenu) {
+        submenu.style.maxHeight = '0';
+        submenu.style.opacity = '0';
+        // Remove the 'active' class to reset hover styles
+        if (submenu.parentElement) {
+            submenu.parentElement.classList.remove('active');
+        }
+    }
+
+    // Function to open a specific submenu
+    function openSubmenu(submenu) {
+        submenu.style.maxHeight = '500px'; // Needs to be large enough to contain content
+        submenu.style.opacity = '1';
+        // Add an 'active' class to keep it open on mobile, can be used for styling
+        if (submenu.parentElement) {
+            submenu.parentElement.classList.add('active');
+        }
+    }
+
+    // Event listener for dropdown labels
+    dropdownLabels.forEach(label => {
+        label.addEventListener('click', function(event) {
+            // Only apply click-to-toggle on mobile (e.g., max-width 768px)
+            if (window.innerWidth <= 768) {
+                // Prevent default link behavior if it's just a label placeholder
+                if (this.getAttribute('href') === '#') {
+                    event.preventDefault();
+                }
+
+                const parentLi = this.closest('li');
+                const submenu = parentLi ? parentLi.querySelector('ul') : null;
+
+                if (submenu) {
+                    // Close all other submenus first
+                    allSubmenus.forEach(otherSubmenu => {
+                        if (otherSubmenu !== submenu) {
+                            closeSubmenu(otherSubmenu);
+                        }
+                    });
+
+                    // Toggle the clicked submenu
+                    // Check if the submenu is currently visible (max-height > 0 or opacity > 0)
+                    // Added a check for 'active' class as well for more reliable state
+                    const isCurrentlyOpen = parentLi.classList.contains('active') || (submenu.style.maxHeight !== '0px' && submenu.style.maxHeight !== '' || submenu.style.opacity !== '0' && submenu.style.opacity !== '');
+
+
+                    if (isCurrentlyOpen) {
+                        closeSubmenu(submenu);
+                    } else {
+                        openSubmenu(submenu);
+                    }
+                }
+            }
+        });
+    });
+
+    // Handle window resize to clean up inline styles and ensure desktop hover works
+    let isMobileView = window.innerWidth <= 768; // Initial state
+
+    window.addEventListener('resize', () => {
+        const newIsMobileView = window.innerWidth <= 768;
+
+        // If we transition from mobile to desktop view
+        if (isMobileView && !newIsMobileView) {
+            allSubmenus.forEach(submenu => {
+                // Remove inline styles set by JavaScript to allow CSS hover to take over
+                submenu.style.maxHeight = '';
+                submenu.style.opacity = '';
+                // Also remove the 'active' class
+                if (submenu.parentElement) {
+                    submenu.parentElement.classList.remove('active');
+                }
+            });
+        }
+        isMobileView = newIsMobileView; // Update the state
+    });
+
+    // ⭐ END UPDATED ⭐
 });
 
 
