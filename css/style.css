@@ -4,7 +4,7 @@
   --container-bg: #fff;
   --text-color: #333;
   --dropdown-item-bg: #f0f0f5;
-  --dropdown-item-hover-bg: pink;
+  --dropdown-item-hover-bg: pink; /* This variable is for other elements, but we'll override below for pink hover */
   --dropdown-link-color: gray;
   --dropdown-submenu-bg: #f9f9f9;
   --dropdown-submenu-link-color: black;
@@ -82,12 +82,14 @@ body {
   margin: 15px auto 0; /* DEFAULT: Center horizontally, add top margin for spacing */
   order: -2; /* DEFAULT: Place it before other flex items in the column */
   z-index: auto; /* DEFAULT: Reset z-index */
+  overflow: hidden; /* Ensure anything overflowing is clipped */
 }
 
 .image-box img {
   width: 100%;
   height: 100%;
-  border-radius: 10px;
+  border-radius: 10px; /* Revert to rectangular/rounded corners */
+  object-fit: contain; /* ⭐ UPDATED: Ensure whole image is visible, no cropping ⭐ */
   display: block;
 }
 
@@ -119,7 +121,7 @@ body {
   position: relative; /* Needs to be positioned for its children (submenus) */
   width: 90%; /* Make each menu item take almost full width on mobile */
   margin: 0; /* Remove any horizontal margins */
-  z-index: auto; /* KEY CHANGE: Remove explicit z-index for mobile li to fix stacking context */
+  z-index: 5; /* Keep a base z-index for individual list items */
 }
 
 .dropdown-menu > li > a {
@@ -137,9 +139,10 @@ body {
   transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-/* ⭐ UPDATED: Force pink for active dropdown item (when clicked on mobile) ⭐ */
+/* Force pink for active dropdown item */
 .dropdown-menu > li.active > a {
   background-color: pink; /* Pink background when active (clicked open) */
+  color: rgba(0, 0, 0, 0.8); /* Dark text on pink for readability */
 }
 
 /* Specific text color for main dropdown items when active in dark mode */
@@ -147,17 +150,30 @@ body.dark-mode .dropdown-menu > li.active > a {
     color: rgba(0, 0, 0, 0.8); /* Dark text on pink in dark mode */
 }
 
-.dropdown-menu li ul {
-  position: absolute;
+/* Ensure hover only applies when NOT active */
+.dropdown-menu > li:not(.active):hover > a {
+  background-color: var(--dropdown-item-hover-bg); /* Use pink from variable */
+  color: rgba(0, 0, 0, 0.8); /* Dark text on hover */
+}
+
+
+/* Dark mode specific hover/active text color */
+body.dark-mode .dropdown-menu > li:hover > a,
+body.dark-mode .dropdown-menu > li.active > a {
+    color: rgba(0, 0, 0, 0.8); /* Dark text on pink in dark mode */
+}
+
+.dropdown-menu ul {
+  list-style: none;
+  padding: 0;
+  position: absolute; /* Keep absolute positioning */
   max-height: 0;
   overflow: hidden;
   opacity: 0;
   display: block;
-  top: 100%;
+  top: 100%; /* Position below the parent li */
   left: 0;
   width: 100%;
-  list-style: none;
-  padding: 0;
   margin: 0;
   background: var(--dropdown-submenu-bg);
   box-shadow: 0 4px 8px var(--shadow-color);
@@ -166,16 +182,20 @@ body.dark-mode .dropdown-menu > li.active > a {
   transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, background 0.3s ease, box-shadow 0.3s ease;
 }
 
-.dropdown-menu li:hover ul {
-  max-height: 500px;
+/* Desktop hover and mobile active will trigger this */
+.dropdown-menu li:hover > ul,
+.dropdown-menu li.active > ul {
+  max-height: 500px; /* Sufficiently large value for animation */
   opacity: 1;
+  overflow: visible; /* Allow content to be visible */
 }
 
-.dropdown-menu li ul li {
+
+.dropdown-menu ul li {
   width: 100%;
 }
 
-.dropdown-menu li ul li a {
+.dropdown-menu ul li a {
   display: block;
   padding: 10px;
   text-decoration: none;
@@ -184,7 +204,7 @@ body.dark-mode .dropdown-menu > li.active > a {
   transition: background 0.3s ease, color 0.3s ease;
 }
 
-.dropdown-menu li ul li a:hover {
+.dropdown-menu ul li a:hover {
   background: var(--dropdown-submenu-link-hover-bg);
 }
 
@@ -246,7 +266,7 @@ body.dark-mode .dropdown-menu > li.active > a {
 .textarea-container textarea {
   text-align: center; /* Keep text-align center as requested by user previously */
   width: 100%; /* Fill the container */
-  height: 150px;
+  min-height: 150px; /* Ensure initial height */
   padding: 10px 40px 10px 40px; /* Adjusted padding to be symmetrical for visual centering */
   box-sizing: border-box; /* Include padding and border */
   font-size: 20px;
@@ -263,7 +283,7 @@ textarea::placeholder {
   transition: color 0.3s ease;
 }
 
-/* ⭐ NEW: Hide scrollbar for textarea on all browsers ⭐ */
+/* Hide scrollbar for textarea on all browsers */
 .textarea-container textarea::-webkit-scrollbar {
     width: 0; /* For vertical scrollbar in Webkit browsers (Chrome, Safari, Edge) */
     height: 0; /* For horizontal scrollbar in Webkit browsers */
@@ -273,7 +293,6 @@ textarea::placeholder {
     scrollbar-width: none; /* For Firefox */
     -ms-overflow-style: none;  /* For IE and Edge */
 }
-/* ⭐ END NEW ⭐ */
 
 /* Custom Dropdown for Search Engines */
 .custom-dropdown {
@@ -321,11 +340,12 @@ body.dark-mode .custom-dropdown:hover .selected-engine {
   background: var(--dropdown-submenu-bg);
   box-shadow: 0 4px 8px var(--shadow-color);
   border-radius: 6px;
-  z-index: 10;
+  z-index: 100; /* Increased z-index to ensure it's on top */
   transition: max-height 0.2s ease-in-out, opacity 0.2s ease-in-out, background 0.3s ease, box-shadow 0.3s ease;
 }
 
-.custom-dropdown:hover .dropdown-options {
+.custom-dropdown:hover .dropdown-options,
+.custom-dropdown.active .dropdown-options { /* Added active class for JS control */
   max-height: 500px;
   opacity: 1;
 }
@@ -441,17 +461,12 @@ body.dark-mode .custom-dropdown:hover .selected-engine {
     white-space: nowrap; /* Prevent wrapping for desktop menu items */
   }
 
-  /* ⭐ UPDATED: Ensure hover only applies when NOT active on desktop ⭐ */
+  /* Ensure hover only applies when NOT active on desktop */
   .dropdown-menu > li:not(.active):hover > a {
     background-color: pink;
   }
 
-  /* ⭐ NEW: Active class for desktop mode too ⭐ */
-  .dropdown-menu > li.active > a {
-    background-color: pink;
-  }
-
-  /* Specific text color for main dropdown items when hovered in dark mode */
+  /* Specific text color for main dropdown items when hovered or active in dark mode */
   body.dark-mode .dropdown-menu > li:hover > a,
   body.dark-mode .dropdown-menu > li.active > a {
       color: rgba(0, 0, 0, 0.8); /* Dark text on pink in dark mode */
@@ -518,14 +533,10 @@ body.dark-mode .custom-dropdown:hover .selected-engine {
     white-space: normal; /* Allow text wrapping */
   }
 
-  /* ⭐ UPDATED: Ensure hover only applies when NOT active on mobile landscape too ⭐ */
+  /* Ensure hover only applies when NOT active on mobile landscape too */
+  /* This rule specifically targets the non-active state to reset background on hover */
   .dropdown-menu > li:not(.active):hover > a {
     background-color: var(--dropdown-item-bg); /* Reset to normal background */
-  }
-
-  /* ⭐ NEW: Active class for mobile landscape mode too ⭐ */
-  .dropdown-menu > li.active > a {
-    background-color: pink;
   }
 
   /* Specific text color for main dropdown items when active in dark mode */
