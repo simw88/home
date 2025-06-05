@@ -65,9 +65,16 @@ document.addEventListener("DOMContentLoaded", () => {
             updateSearchFormAction(initialOption.dataset.value, initialOption.dataset.name);
         }
 
+        // Toggle custom dropdown on click of selected-engine display
+        selectedEngineDisplay.addEventListener("click", (event) => {
+            event.stopPropagation();
+            searchEngineDropdown.classList.toggle("active");
+        });
+
         // Event delegation for dropdown options
         dropdownOptionsList.addEventListener("click", (event) => {
-            const option = event.target.closest('li[data-value][data-name]'); // Ensures we click on a valid option
+            event.stopPropagation();
+            const option = event.target.closest('li[data-value][data-name]');
             if (option) {
                 const newValue = option.dataset.value;
                 const newName = option.dataset.name;
@@ -76,6 +83,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 selectedEngineDisplay.textContent = newText;
                 updateSearchFormAction(newValue, newName);
                 searchBox.focus();
+                searchEngineDropdown.classList.remove("active"); // Close dropdown after selection
+            }
+        });
+
+        // Close custom dropdown when clicking outside it
+        document.addEventListener("click", (event) => {
+            if (searchEngineDropdown.classList.contains("active") && !searchEngineDropdown.contains(event.target)) {
+                searchEngineDropdown.classList.remove("active");
             }
         });
     }
@@ -109,11 +124,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Initial theme application
     applyThemeToBody(getCurrentTimeBasedTheme());
 
+    // Update theme every minute
     setInterval(() => {
         applyThemeToBody(getCurrentTimeBasedTheme());
     }, 60000); // Check every minute
+    // ⭐ END Dark Mode Logic ⭐
 
     // --- Clear Search and To-Do List Buttons ---
     const clearSearchBtn = document.getElementById('clearSearchBtn');
@@ -157,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
         toggleClearButtonVisibility(rememberingTextbox, clearTodolistBtn); // Initial check on load
     }
 
-    // ⭐ Updated: Image replacement and 4chan dropdown toggle on clockbox click ⭐
+    // Updated: Image replacement and 4chan dropdown toggle on clockbox click
     const clockbox = document.getElementById('clockbox');
     const randImgElement = document.getElementById("randImg"); // Get the image element
     let isFlowerImageDisplayed = false; // State variable for image toggle
@@ -209,95 +227,95 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
-    // ⭐ End Updated ⭐
 
     // --- Dropdown Logic (for both mobile click and desktop hover cleanup) ---
     const dropdownLabels = document.querySelectorAll('.dropdown-menu > li > a');
-    const allSubmenus = document.querySelectorAll('.dropdown-menu li ul');
+    const allDropdownLis = document.querySelectorAll('.dropdown-menu > li');
 
     // Function to close a specific submenu
-    function closeSubmenu(submenu) {
-        submenu.style.maxHeight = '0';
-        submenu.style.opacity = '0';
-        // Remove the 'active' class to reset hover styles
-        if (submenu.parentElement) {
-            submenu.parentElement.classList.remove('active');
+    function closeSubmenu(parentLi) {
+        if (parentLi) {
+            parentLi.classList.remove('active');
+            parentLi.style.zIndex = ''; // Reset z-index
+            const submenu = parentLi.querySelector('ul');
+            if (submenu) {
+                submenu.style.maxHeight = '';
+                submenu.style.opacity = '';
+            }
         }
     }
 
     // Function to open a specific submenu
-    function openSubmenu(submenu) {
-        submenu.style.maxHeight = '500px'; // Needs to be large enough to contain content
-        submenu.style.opacity = '1';
-        // Add an 'active' class to keep it open on mobile, can be used for styling
-        if (submenu.parentElement) {
-            submenu.parentElement.classList.add('active');
+    function openSubmenu(parentLi) {
+        if (parentLi) {
+            // Set a higher z-index when opening to ensure it's on top
+            parentLi.style.zIndex = '100'; // Higher than other elements
+            parentLi.classList.add('active');
+            const submenu = parentLi.querySelector('ul');
+            if (submenu) {
+                submenu.style.maxHeight = submenu.scrollHeight + 'px';
+                submenu.style.opacity = '1';
+            }
         }
     }
 
-    // Event listener for dropdown labels
-    dropdownLabels.forEach(label => {
-        label.addEventListener('click', function(event) {
-            // Only apply click-to-toggle on mobile (e.g., max-width 768px)
-            if (window.innerWidth <= 768) {
-                // Prevent default link behavior if it's just a label placeholder
-                if (this.getAttribute('href') === '#') {
-                    event.preventDefault();
+   // Event listener for dropdown labels
+dropdownLabels.forEach(label => {
+    label.addEventListener('click', function(event) {
+        const parentLi = this.closest('li');
+        const submenu = parentLi ? parentLi.querySelector('ul') : null;
+
+        if (submenu) {
+            // Prevent default link behavior if it's just a label placeholder
+            if (this.getAttribute('href') === '#') {
+                event.preventDefault();
+            }
+
+            // Crucial: Determine if we are on a mobile/touch device
+            const isMobile = window.innerWidth <= 768 || window.matchMedia('(hover: none)').matches;
+
+            if (isMobile) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                // Check if THIS specific dropdown is currently active
+                const isThisActive = parentLi.classList.contains('active');
+                
+                // Close ALL dropdowns first
+                allDropdownLis.forEach(li => {
+                    closeSubmenu(li);
+                });
+                
+                // If THIS dropdown was closed, open it
+                if (!isThisActive) {
+                    openSubmenu(parentLi);
                 }
+            }
+        }
+    });
+});
 
-                const parentLi = this.closest('li');
-                const submenu = parentLi ? parentLi.querySelector('ul') : null;
-
-                if (submenu) {
-                    // Close all other submenus first
-                    allSubmenus.forEach(otherSubmenu => {
-                        if (otherSubmenu !== submenu) {
-                            closeSubmenu(otherSubmenu);
-                        }
-                    });
-
-                    // Toggle the clicked submenu
-                    // Check if the submenu is currently visible (max-height > 0 or opacity > 0)
-                    // Added a check for 'active' class as well for more reliable state
-                    const isCurrentlyOpen = parentLi.classList.contains('active') || (submenu.style.maxHeight !== '0px' && submenu.style.maxHeight !== '' || submenu.style.opacity !== '0' && submenu.style.opacity !== '');
-
-
-                    if (isCurrentlyOpen) {
-                        closeSubmenu(submenu);
-                    } else {
-                        openSubmenu(submenu);
-                    }
-                }
+    // Handle clicks outside the dropdown to retract it more robustly
+    document.addEventListener('click', (event) => {
+        allDropdownLis.forEach(parentLi => {
+            // Only close if it's active AND the click was outside this specific dropdown
+            if (parentLi.classList.contains('active') && !parentLi.contains(event.target)) {
+                closeSubmenu(parentLi);
             }
         });
     });
 
-    // Handle window resize to clean up inline styles and ensure desktop hover works
-    let isMobileView = window.innerWidth <= 768; // Initial state
-
+    // Handle window resize to clean up inline styles and ensure proper state
     window.addEventListener('resize', () => {
-        const newIsMobileView = window.innerWidth <= 768;
-
-        // If we transition from mobile to desktop view
-        if (isMobileView && !newIsMobileView) {
-            allSubmenus.forEach(submenu => {
-                // Remove inline styles set by JavaScript to allow CSS hover to take over
-                submenu.style.maxHeight = '';
-                submenu.style.opacity = '';
-                // Also remove the 'active' class
-                if (submenu.parentElement) {
-                    submenu.parentElement.classList.remove('active');
-                }
-            });
-        }
-        isMobileView = newIsMobileView; // Update the state
+        // On any resize (including orientation change), always close all dropdowns
+        allDropdownLis.forEach(parentLi => {
+            closeSubmenu(parentLi);
+        });
     });
-
-    // ⭐ END UPDATED ⭐
 });
 
 
-// 🕒 Live time updater
+// 🕒 Live time updater (Kept outside DOMContentLoaded to match original structure)
 const T_DAY = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const T_MONTH = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -333,6 +351,7 @@ function GetClock() {
     }
 }
 
+// Ensure GetClock runs initially and updates every second
 window.onload = function () {
     GetClock();
     setInterval(GetClock, 1000);
