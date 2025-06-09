@@ -50,6 +50,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchForm = document.getElementById('searchForm');
     const searchInput = document.getElementById('searchInput');
 
+    // Add an event listener for the 'submit' event on the form
+    searchForm.addEventListener('submit', (event) => {
+        // Prevent the default form submission behavior
+        event.preventDefault(); 
+
+        const baseUrl = searchForm.action; // Get the currently set action URL
+        const paramName = searchInput.name; // Get the currently set input name
+
+        if (searchInput.value.trim() !== '') {
+            const query = encodeURIComponent(searchInput.value.trim());
+            // Construct the final URL based on the current search engine
+            let finalUrl = baseUrl;
+            if (paramName && query) { // Only append query if paramName exists
+                finalUrl += (baseUrl.includes('?') ? '&' : '?') + `${paramName}=${query}`;
+            } else if (query && baseUrl.includes('nyaa.si')) { // Special case for Nyaa if it's just the base URL
+                finalUrl += `?${query}`;
+            }
+
+            window.open(finalUrl, '_blank'); // Open in a new tab
+        }
+        // Clear the search input after submission (optional, but good UX)
+        searchInput.value = ''; 
+        toggleClearButton(searchInput, searchClearButton);
+    });
+
     // 3. Date and Time Display
     const datetimeDisplay = document.getElementById('datetimeDisplay');
     const fourChanLabel = document.getElementById('fourChan');
@@ -58,15 +83,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let isFlowerModeActive = false; // State variable to track if flower.png mode is active
 
+    function getOrdinalSuffix(day) {
+        if (day > 3 && day < 21) return 'th';
+        switch (day % 10) {
+            case 1: return 'st';
+            case 2: return 'nd';
+            case 3: return 'rd';
+            default: return 'th';
+        }
+    }
+
     function updateDateTime() {
         const now = new Date();
-        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
 
-        const formattedDate = now.toLocaleDateString(undefined, dateOptions);
-        const formattedTime = now.toLocaleTimeString(undefined, timeOptions);
+        const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-        datetimeDisplay.textContent = `${formattedDate} ${formattedTime}`;
+        const dayName = weekdays[now.getDay()];
+        const dayNumber = now.getDate();
+        const ordinalSuffix = getOrdinalSuffix(dayNumber);
+        const monthName = months[now.getMonth()];
+        const year = now.getFullYear();
+
+        let hours = now.getHours();
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+
+        hours = hours % 12;
+        hours = hours === 0 ? 12 : hours; // the hour '0' should be '12'
+
+        const formattedTime = `${hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds} ${ampm}`;
+
+        datetimeDisplay.textContent = `${dayName}, ${dayNumber}${ordinalSuffix} of ${monthName}, ${year}, at ${formattedTime}`;
     }
 
     // Update time every second
@@ -146,6 +195,16 @@ document.addEventListener('DOMContentLoaded', () => {
             searchInput.focus(); // Keep focus on the search input
         });
     });
+
+    // Set a default search engine on page load.
+    // This is crucial to ensure action and name are set initially.
+    // You can pick one of your existing options, e.g., Google.
+    const defaultSearchOption = document.querySelector('.search-engine-option[data-value="https://www.google.com/search"]');
+    if (defaultSearchOption) {
+        searchForm.action = defaultSearchOption.dataset.value;
+        searchInput.name = defaultSearchOption.dataset.name;
+        document.querySelector('.search-input-group .label').textContent = defaultSearchOption.textContent;
+    }
 
     // 6. Clear Input Button Functionality
     const searchClearButton = document.querySelector('.clear-button[data-target="searchInput"]');
