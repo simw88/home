@@ -24,7 +24,7 @@ body::before {
     height: 100%;
     background-image: url('../imgs/Pattern.png'); /* CHANGED TO Pattern.png */
     background-repeat: repeat;
-    opacity: 0.3; /* Set the opacity to 30% for the background image only */
+    opacity: 0.1; /* Set the opacity to 30% for the background image only */
     z-index: -1; /* Position behind other content */
 }
 
