@@ -30,176 +30,135 @@ document.addEventListener('DOMContentLoaded', () => {
         clearTimeout(imageClickTimeout); // Clear any previous timeout
 
         imageClickTimeout = setTimeout(() => {
-            // Reset count if clicks are too slow (not within the delay)
-            imageClickCount = 0;
+            // Reset count if clicks are too slow
+            if (imageClickCount < IMAGE_CLICK_THRESHOLD) {
+                imageClickCount = 0;
+            }
         }, IMAGE_CLICK_RESET_DELAY);
 
         if (imageClickCount === IMAGE_CLICK_THRESHOLD) {
-            // Toggle dark mode based on current state
-            if (document.body.classList.contains('dark-mode')) {
-                removeDarkMode();
-            } else {
-                applyDarkMode();
-            }
-            imageClickCount = 0; // Reset count after successful toggle
-            clearTimeout(imageClickTimeout); // Clear timeout immediately as action was taken
+            document.body.classList.toggle('dark-mode');
+            imageClickCount = 0; // Reset count after toggling
         }
     });
 
-    // 2. Search Engine Functionality
-    const searchForm = document.getElementById('searchForm');
-    const searchInput = document.getElementById('searchInput');
-
-    // 3. Date and Time Display
+    // 2. Date and Time Display
     const datetimeDisplay = document.getElementById('datetimeDisplay');
-    const fourChanLabel = document.getElementById('fourChan');
-    // Get the label-wrapper for 4chan as well, so we can toggle its display
-    const fourChanWrapper = fourChanLabel ? fourChanLabel.closest('.label-wrapper') : null;
-
-    let isFlowerModeActive = false; // State variable to track if flower.png mode is active
 
     function updateDateTime() {
         const now = new Date();
-        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
-
-        const formattedDate = now.toLocaleDateString(undefined, dateOptions);
-        const formattedTime = now.toLocaleTimeString(undefined, timeOptions);
-
-        datetimeDisplay.textContent = `${formattedDate} ${formattedTime}`;
+        const options = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        };
+        const formattedDateTime = now.toLocaleDateString('en-US', options);
+        datetimeDisplay.textContent = formattedDateTime;
     }
 
-    // Update time every second
+    // Update every second
     setInterval(updateDateTime, 1000);
-    // Initial call to display time immediately
-    updateDateTime();
+    updateDateTime(); // Initial call to display immediately
 
-    // Event listener for tapping the time and date (toggle functionality)
-    datetimeDisplay.addEventListener('click', () => {
-        if (isFlowerModeActive) {
-            // Revert to random image
-            imgElement.src = getRandomImage();
-            imgElement.alt = "Dynamic Background Image";
+    // 3. Search Engine Dropdown
+    const searchEngineLabel = document.getElementById('searchEngine');
+    const searchEngineDropdown = searchEngineLabel.nextElementSibling;
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchInput');
+    let currentSearchAction = "https://www.google.com/search";
+    let currentSearchParam = "q";
 
-            // Make the 4chan label appear again
-            if (fourChanWrapper) {
-                fourChanWrapper.style.display = ''; // Revert to default display (e.g., 'block' or 'flex' depending on CSS)
-            }
-            isFlowerModeActive = false;
-        } else {
-            // Change to flower.png
-            imgElement.src = 'imgs/flower.png';
-            imgElement.alt = "Flower Image";
-
-            // Hide the 4chan label
-            if (fourChanWrapper) {
-                fourChanWrapper.style.display = 'none';
-            }
-            isFlowerModeActive = true;
-        }
+    searchEngineLabel.addEventListener('click', (event) => {
+        event.stopPropagation(); // Prevent the document click from immediately closing it
+        searchEngineDropdown.classList.toggle('show');
     });
 
-
-    // 4. Dropdown functionality for labels (Email, News, 4chan, etc.)
-    document.querySelectorAll('.label-wrapper').forEach(wrapper => {
-        const label = wrapper.querySelector('.label');
-        const dropdownContent = wrapper.querySelector('.dropdown-content');
-
-        if (label && dropdownContent) {
-            // Toggle dropdown visibility on label click
-            label.addEventListener('click', (event) => {
-                event.stopPropagation(); // Prevent click from propagating to document
-                // Close other open dropdowns
-                document.querySelectorAll('.dropdown-content.show').forEach(openDropdown => {
-                    if (openDropdown !== dropdownContent) {
-                        openDropdown.classList.remove('show');
-                    }
-                });
-                dropdownContent.classList.toggle('show');
-            });
-        }
+    searchEngineDropdown.querySelectorAll('.search-engine-option').forEach(option => {
+        option.addEventListener('click', () => {
+            currentSearchAction = option.dataset.value;
+            currentSearchParam = option.dataset.name;
+            searchEngineLabel.textContent = option.textContent; // Update label text
+            searchForm.action = currentSearchAction; // Update form action
+            searchInput.name = currentSearchParam; // Update input name for parameter
+            searchEngineDropdown.classList.remove('show'); // Hide dropdown
+            searchInput.focus(); // Focus on search input after selection
+        });
     });
 
-    // Close dropdowns when clicking outside
+    // Close dropdown if clicked outside
     document.addEventListener('click', (event) => {
-        document.querySelectorAll('.dropdown-content.show').forEach(openDropdown => {
-            // Check if the click is outside the dropdown and its parent label-wrapper
-            const isClickInsideDropdown = openDropdown.contains(event.target);
-            const isClickInsideLabel = openDropdown.previousElementSibling && openDropdown.previousElementSibling.contains(event.target);
-
-            if (!isClickInsideDropdown && !isClickInsideLabel) {
-                openDropdown.classList.remove('show');
-            }
-        });
+        if (!searchEngineLabel.contains(event.target) && !searchEngineDropdown.contains(event.target)) {
+            searchEngineDropdown.classList.remove('show');
+        }
     });
 
+    // Set initial search form action and input name
+    searchForm.action = currentSearchAction;
+    searchInput.name = currentSearchParam;
 
-    // 5. Search Engine Selection Logic
-    document.querySelectorAll('.search-engine-option').forEach(option => {
-        option.addEventListener('click', function() {
-            const baseUrl = this.dataset.value;
-            const paramName = this.dataset.name;
-            searchForm.action = baseUrl; // Set the form's action URL
-            searchInput.name = paramName; // Set the search input's name attribute
-            document.querySelector('.search-input-group .label').textContent = this.textContent; // Update button text
-            document.querySelector('.search-input-group .dropdown-content').classList.remove('show'); // Hide dropdown
-            searchInput.focus(); // Keep focus on the search input
-        });
-    });
-
-    // 6. Clear Input Button Functionality
-    const searchClearButton = document.querySelector('.clear-button[data-target="searchInput"]');
+    // 4. Todo List Functionality
     const todoInput = document.getElementById('todoInput');
-    const todoClearButton = document.querySelector('.clear-button[data-target="todoInput"]');
+    const todoClearButton = document.querySelector('.todo-section .clear-button');
 
-    // Function to show/hide clear button based on input content
-    function toggleClearButton(inputElement, clearButtonElement) {
-        if (inputElement.value.length > 0) {
-            clearButtonElement.style.display = 'block'; // Show the button
-        } else {
-            clearButtonElement.style.display = 'none'; // Hide the button
-        }
-    }
-
-    // Function to clear the input field
-    function clearInput(inputElement, clearButton) {
-        inputElement.value = '';
-        toggleClearButton(inputElement, clearButton); // Hide button after clearing
-        inputElement.focus(); // Keep focus for user convenience
-        // Clear from localStorage as well
-        if (inputElement === todoInput) {
-            localStorage.removeItem('todoListContent');
-        }
-    }
-
-    // Event listeners for search input
-    searchInput.addEventListener('input', () => {
-        toggleClearButton(searchInput, searchClearButton);
-    });
-    searchClearButton.addEventListener('click', () => {
-        clearInput(searchInput, searchClearButton);
-    });
-
-    // Event listeners for todo input
-    todoInput.addEventListener('input', () => {
-        toggleClearButton(todoInput, todoClearButton);
-        // Save todo list content to localStorage on every input change
-        localStorage.setItem('todoListContent', todoInput.value);
-    });
-    todoClearButton.addEventListener('click', () => {
-        clearInput(todoInput, todoClearButton);
-    });
-
-    // Initial check on page load in case fields are pre-filled (e.g., from browser restore)
-    toggleClearButton(searchInput, searchClearButton);
-
-    // Load todo list content from localStorage on page load
+    // Load saved todo content on page load
     const savedTodoContent = localStorage.getItem('todoListContent');
     if (savedTodoContent) {
         todoInput.value = savedTodoContent;
     }
-    toggleClearButton(todoInput, todoClearButton); // Check visibility for loaded content
 
+    todoInput.addEventListener('input', () => {
+        localStorage.setItem('todoListContent', todoInput.value);
+        toggleClearButton(todoInput, todoClearButton);
+    });
+
+    todoClearButton.addEventListener('click', () => {
+        todoInput.value = '';
+        localStorage.removeItem('todoListContent');
+        toggleClearButton(todoInput, todoClearButton);
+        todoInput.focus();
+    });
+
+    // Clear Button Functionality (for both search and todo)
+    const clearButtons = document.querySelectorAll('.clear-button');
+
+    function toggleClearButton(inputElement, buttonElement) {
+        if (inputElement.value.length > 0) {
+            buttonElement.style.display = 'block';
+        } else {
+            buttonElement.style.display = 'none';
+        }
+    }
+
+    clearButtons.forEach(button => {
+        const targetId = button.dataset.target;
+        const inputElement = document.getElementById(targetId);
+
+        if (inputElement) {
+            // Initial check for clear button visibility
+            toggleClearButton(inputElement, button);
+
+            // Event listener for input changes
+            inputElement.addEventListener('input', () => {
+                toggleClearButton(inputElement, button);
+            });
+
+            // Event listener for clear button click
+            button.addEventListener('click', () => {
+                inputElement.value = '';
+                // If it's the search input, trigger input event to hide button
+                if (inputElement.id === 'searchInput') {
+                    inputElement.dispatchEvent(new Event('input'));
+                }
+                // If it's the todo input, the todoInput.addEventListener 'input' already handles it
+                inputElement.focus();
+            });
+        }
+    });
 
     // --- Automatic Dark Mode Functionality ---
     function applyDarkMode() {
@@ -230,17 +189,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Kaomoji Display Functionality (NEW) ---
     const kaomojis = [
-        "(✿◠ᴗ◠)", "•⩊•", "₍^ .^₎⟆", "ᶠᶸᶜᵏᵧₒᵤ!"
-    ];
-    const kaomojiDisplay = document.getElementById('kaomojiDisplay');
+        "(✿◠ᴗ◠)", "•⩊•", "₍^. .^₎⟆", "ᶠᶸᶜᵏᵧₒᵤ!", "(,,•᷄ࡇ•᷅ ,,)?", "(ง'̀-'́)ง", "ʕ •̀ o •́ ʔ", "ಠ_ಠ", "(づ￣ ³￣)づ", "(´・ω・`)", "(´∀｀)♡", "o(｀ω´ )o", "ᕕ( ᐛ )ᕗ", "(´｡• ᵕ •｡`) ♡", "(ง ͡ʘ ͜ʖ ͡ʘ)ง"
+    ]; // Added more kaomojis for variety!
 
-    function displayRandomKaomoji() {
-        if (kaomojiDisplay) {
-            const randomIndex = Math.floor(Math.random() * kaomojis.length);
-            kaomojiDisplay.textContent = kaomojis[randomIndex];
-        }
+    const kaomojiDisplay = document.getElementById('kaomojiDisplay'); // Get the kaomoji display element
+
+    // Function to set a random kaomoji
+    function setRandomKaomoji() {
+        const randomIndex = Math.floor(Math.random() * kaomojis.length);
+        kaomojiDisplay.textContent = kaomojis[randomIndex];
     }
 
-    // Call this function on page load
-    displayRandomKaomoji();
+    // Set an initial random kaomoji when the page loads
+    setRandomKaomoji();
+
+    // Add click event listener to change kaomoji on tap
+    kaomojiDisplay.addEventListener('click', setRandomKaomoji);
 });
