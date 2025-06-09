@@ -22,9 +22,9 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('../imgs/pattern.png');
+    background-image: url('../imgs/Pattern.png'); /* CHANGED TO Pattern.png */
     background-repeat: repeat;
-    opacity: 0.1; /* Set the opacity to 10% for the background image only */
+    opacity: 0.3; /* Set the opacity to 30% for the background image only */
     z-index: -1; /* Position behind other content */
 }
 
@@ -369,7 +369,7 @@ body.dark-mode {
 
 /* Dark mode for the background image (adjust opacity for dark mode too if needed) */
 body.dark-mode::before {
-    background-image: url('../imgs/pattern.png'); /* Keep pattern */
+    background-image: url('../imgs/Pattern.png'); /* Keep pattern */
     opacity: 0.2; /* Slightly less opaque in dark mode for better contrast if desired */
 }
 
