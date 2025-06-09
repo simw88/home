@@ -1,20 +1,19 @@
+/* Global/Base Styles */
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f5; /* Keep a fallback background color */
-    color: #333; /* Default text color */
+    font-family: Roboto;
+    background-color: #f0f0f5;
+    color: #333;
     display: flex;
     justify-content: center;
-    /* Default for mobile and small screens */
-    align-items: center; /* Vertically center by default */
-    height: 100vh; /* Changed from min-height to height */
-    box-sizing: border-box; /* Include padding in height calculation */
-    transition: background-color 0.5s ease, color 0.5s ease; /* Smooth transition for dark mode */
-    position: relative; /* Needed for pseudo-element positioning */
-    z-index: 1; /* Ensure body content is above the pseudo-element */
+    align-items: center;
+    height: 100vh;
+    box-sizing: border-box;
+    transition: background-color 0.5s ease, color 0.5s ease;
+    position: relative;
+    z-index: 1;
 }
 
-/* Pseudo-element for background image with opacity */
 body::before {
     content: '';
     position: absolute;
@@ -24,75 +23,53 @@ body::before {
     height: 100%;
     background-image: url('../imgs/Pattern.png');
     background-repeat: repeat;
-    opacity: 0.1; /* Set the opacity to 10% for the background image only */
-    z-index: -1; /* Position behind other content */
+    opacity: 0.1;
+    z-index: -1;
 }
 
-/* Apply desktop-specific styles for larger screens */
-@media (min-width: 769px) { /* This targets screens wider than 768px, i.e., desktop */
-    body {
-        align-items: flex-start; /* Align content to the top of the flex container */
-        padding-top: 25vh; /* Add padding to push the container down from the top on desktop */
-    }
-
-    /* Specific styling for the search engine label wrapper (DESKTOP ONLY) */
-    .search-input-group .label-wrapper {
-        width: 110px; /* Changed to 110px as requested */
-        flex-shrink: 0; /* Prevent it from shrinking */
-    }
-
-    /* Specific styling for the search engine dropdown content (DESKTOP ONLY) */
-    .search-input-group .label-wrapper .dropdown-content {
-        width: 110px; /* Match the width of its button/wrapper */
-        min-width: 110px; /* Ensure it doesn't get smaller */
-    }
-}
-
+/* Layout & Structure */
 .container {
-    display: flex; /* Flex container for left and main panels */
-    background-color: #ffffff; /* White container */
-    border-radius: 15px; /* Rounded edges */
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.15); /* Uniform shadow around all corners */
-    width: 1000px;  /* Adjusted STATIC WIDTH to 1000px as requested */
+    display: flex;
+    background-color: rgba(255, 255, 255, 0.42);
+    border: 3px solid rgb(255, 194, 199);
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.32);
+    width: 1000px;
     height: 330px;
-    transition: background-color 0.5s ease, box-shadow 0.5s ease; /* Smooth transition for dark mode */
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
 }
 
 .left-panel {
-    width: 250px; /* Fixed width for the left panel on desktop */
-    background-color: #ffffff; /* Changed to white to match container */
+    width: 250px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 0.1px solid rgba(255, 255, 255, 0.18);
     display: flex;
-    justify-content: center; /* Centers content horizontally within the panel */
-    align-items: center;   /* Centers content vertically within the panel */
-    overflow: hidden; /* Keep overflow hidden for the image within this panel */
-    /* Match the container's border-radius for the left corners */
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
     border-top-left-radius: 15px;
     border-bottom-left-radius: 15px;
-    transition: background-color 0.5s ease; /* Smooth transition for dark mode */
+    transition: background-color 0.5s ease;
 }
 
 .left-panel img {
-    width: 100%; /* Image fills 100% width of its parent (.left-panel) */
-    height: 100%; /* Image fills 100% height of its parent (.left-panel) */
-    object-fit: contain; /* Image will now fit entirely within the panel, scaling down if necessary */
-    display: block; /* Ensures proper sizing */
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    border-radius: 5%;
 }
 
 .main-content {
-    flex: 1; /* Takes up the remaining available space within the static container */
+    flex: 1;
     padding: 7px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Align content to the top */
-    gap: 15px; /* Adjust this value as needed for desired spacing */
-    /* Add border-radius for the right corners to match container */
+    justify-content: flex-start;
+    gap: 15px;
     border-top-right-radius: 15px;
     border-bottom-right-radius: 15px;
-    /* Optional: If main-content's content could overflow, add its own overflow hidden */
-    /* overflow: hidden; */
 }
 
-/* Style for the datetime display */
+/* Components */
 .datetime-display {
     font-size: 1.3em;
     font-weight: 750;
@@ -101,111 +78,96 @@ body::before {
     margin-bottom: 10px;
     padding: 10px;
     border-radius: 8px;
-    
-    transition: background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease; /* Smooth transition for dark mode */
+    transition: background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
 }
-
 
 .labels-section {
     display: flex;
-    flex-direction: row;    /* Lays out children horizontally on larger screens */
-    flex-wrap: wrap;        /* Allows items to wrap to the next line if space runs out */
-    gap: 5px;              /* Spacing between the horizontal labels */
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 11px;
     margin-bottom: 10px;
-    justify-content: center; /* Centers the labels horizontally within their section */
+    justify-content: center;
 }
 
 .label-wrapper {
     position: relative;
     display: inline-block;
     vertical-align: top;
-    width: 220px; /* Set a uniform width for other label wrappers on desktop */
+	font-size: 1.2em;
+    width: 220px;
 }
 
 .label {
-    font-size: 1.2em;
-    color: #333; /* Changed to #333 */
+    font-size: 1em;
+    color: #333;
     cursor: pointer;
     transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    padding: 10px 20px; /* Padding to give it a button shape */
-    border-radius: 8px; /* Rounded corners for button */
-    background-color: #f0f0f0; /* Light grey background for the button */
-    display: block; /* Ensures padding and width work as expected */
-    text-align: center; /* Center the text */
-    border: 1px solid #d0d0d0; /* Subtle border for button definition */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Soft shadow for depth */
-    width: 100%; /* Make label take full width of its wrapper */
-    box-sizing: border-box; /* Include padding and border in width */
-    white-space: nowrap; /* Prevents text from wrapping */
-    overflow: hidden; /* Hides overflowing text */
-    text-overflow: ellipsis; /* Displays an ellipsis (...) for clipped text */
+    padding: 10px 20px;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    display: block;
+    text-align: center;
+    border: 1px solid #d0d0d0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    width: 100%;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* Apply hover effect to .label when its parent .label-wrapper is hovered */
 .label-wrapper:hover .label, .label:hover {
     background-color: pink;
-    border-color: pink;
-    box-shadow: 0 4px 8px rgba(255, 105, 180, 0.2); /* More prominent shadow on hover */
+    border-color: #C0FFF4;
+    box-shadow: 8px 8px 8px rgba(192, 255, 244, 0.6);
+	border-radius: 8px 8px 0px 0px;
 }
 
 .dropdown-content {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.3s ease, visibility 0.3s ease, background-color 0.5s ease, color 0.5s ease; /* Smooth transition for dark mode */
+    transition: opacity 0.3s ease, visibility 0.3s ease, background-color 0.5s ease, color 0.5s ease;
     position: absolute;
     background-color: #f9f9f9;
-    min-width: 200px; /* Default min-width for other dropdowns */
+    min-width: 220px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 9999; /* High z-index */
+    z-index: 9999;
     border-radius: 5px;
     padding: 10px 0;
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    width: 200px; /* Default width for other dropdowns, will be affected by parent wrapper */
+    width: 200px;
     max-width: calc(100vw - 40px);
     box-sizing: border-box;
-
     max-height: 80vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }
 
-/* Desktop hover (will only apply on screens wider than 768px, though container is static) */
-@media (min-width: 769px) {
-    .label-wrapper:hover .dropdown-content {
-        opacity: 1;
-        visibility: visible;
-        pointer-events: auto;
-    }
-}
-
-/* JavaScript activated class for showing the dropdown (for click toggle) */
 .dropdown-content.show {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
 }
 
-/* Target LI elements for dropdown content in search section */
 .dropdown-content li {
     color: black;
     padding: 8px 16px;
-    text-decoration: none; /* In case any default browser styling applies */
+    text-decoration: none;
     display: block;
     transition: background-color 0.3s ease;
-    cursor: pointer; /* Indicate that these are clickable */
-    width: 100%; /* Ensure full width for stacking */
-    box-sizing: border-box; /* Include padding/border in width */
-    text-align: center; /* Added to center the text within the list item */
-    /* Removed font-weight from here */
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
 }
 
 .dropdown-content li:hover {
     background-color: #f1f1f1;
 }
-
 
 .dropdown-content a {
     color: #333;
@@ -223,113 +185,107 @@ body::before {
     background-color: #f1f1f1;
 }
 
-/* Specific styling for list items and links within dropdowns for Email, News, and 4chan sections */
 .labels-section .label-wrapper .dropdown-content li,
-.labels-section .label-wrapper .dropdown-content a {
-    font-weight: 500; /* Made text slightly bolder for these specific dropdowns */
+.labels-section .label-wrapper .dropdown-content a,
+.search-input-group .label-wrapper .dropdown-content li,
+.search-input-group .label-wrapper .dropdown-content a {
+    font-weight: 500;
 }
 
-
-/* Search Section layout */
 .search-section {
     display: flex;
-    flex-direction: column; /* Stacks its immediate children (search-input-group and todo-section) vertically */
-    gap: 25px; /* Spacing between the search-input-group and the todo-section */
-    align-items: center; /* Centers the content horizontally */
+    flex-direction: column;
+    gap: 25px;
+    align-items: center;
 }
 
-/* Wrapper for search engine dropdown and search input */
 .search-input-group {
     display: flex;
-    flex-direction: row; /* Arranges search engine dropdown and search input horizontally on desktop */
-    gap: 15px; /* Spacing between search dropdown and input */
-    align-items: center; /* Vertically aligns items within this group */
-    width: 100%; /* Ensures this group takes full width within .search-section */
-    box-sizing: border-box; /* Include padding/border in width */
+    flex-direction: row;
+    gap: 15px;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-/* New styles for input with clear button wrapper */
 .input-with-clear,
 .textarea-with-clear {
     position: relative;
-    display: flex; /* Makes input and button align */
-    flex-grow: 1; /* Allows it to take available space within searchForm */
-    align-items: center; /* Vertically align content */
-    width: 100%; /* Ensure textarea-with-clear takes full width */
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    width: 100%;
 }
 
 #searchForm {
     flex-grow: 1;
     display: flex;
-    gap: 10px;
+    gap: 5px;
     align-items: center;
 }
 
 #searchInput {
-    flex-grow: 1; /* Added flex-grow */
-    width: auto; /* Changed from 100% to auto for flex-grow */
+    flex-grow: 1;
+    width: auto;
     padding: 10px;
-    padding-right: 30px; /* Retained 30px padding for search input */
+    padding-right: 30px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    font-size: 1em;
-    transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease; /* Smooth transition for dark mode */
+    font-size: 1.2em;
+    transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
 }
 
-/* Style for the Todo Textarea */
 .todo-section {
-    width: 100%; /* Make it take full width, inheriting from .search-section's stretching */
+    width: 100%;
 }
 
 #todoInput {
-    flex-grow: 1; /* Added flex-grow */
-    width: auto; /* Changed from 100% to auto for flex-grow */
-    min-height: 100px; /* Minimum height for the textbox */
-    padding: 10px;
-    padding-right: 40px; /* Increased padding to give more space for the button */
+    flex-grow: 1;
+    width: auto;
+    min-height: 100px;
+	padding: 1px;
+    padding-right: 40px;
     border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 1em;
-    resize: vertical; /* Allow vertical resizing by the user */
-    box-sizing: border-box; /* Include padding and border in the width */
-    overflow: hidden; /* Add this line to hide the scrollbar */
-    text-align: left; /* Ensure typed text remains left-aligned */
-    transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease; /* Smooth transition for dark mode */
+    border: 1.5px solid #ccc;
+    resize: vertical;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-align: left;
+	transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
 }
 
 #todoInput::placeholder {
-    text-align: center; /* Center the placeholder text */
-    color: #999; /* Ensure a visible color */
-    opacity: 1; /* Ensure it's not transparent */
-    transition: color 0.5s ease, opacity 0.5s ease; /* Smooth transition for dark mode */
+    text-align: center;
+    color: #999;
+    opacity: 1;
+    transition: color 0.5s ease, opacity 0.5s ease;
 }
 
 #todoInput:focus::placeholder {
-    color: #999; /* Ensure it stays visible on focus */
-    opacity: 1; /* Ensure it stays visible on focus */
+    color: #999;
+    opacity: 1;
 }
 
-/* Updated .clear-button for circular shape and "X" using pseudo-elements */
 .clear-button {
-    display: none; /* Initially hidden */
-    background-color: #ddd; /* Default background color */
-    color: transparent; /* Hide the default text */
+    display: none;
+    background-color: #ddd;
+    color: transparent;
     border: none;
-    width: 20px; /* Adjust size as needed */
+    width: 20px;
     height: 20px;
     padding: 0;
     margin-left: 5px;
     cursor: pointer;
-    border-radius: 50%; /* Make it a circle */
+    border-radius: 50%;
     font-size: 1em;
-    line-height: 20px; /* Adjust line-height */
+    line-height: 20px;
     text-align: center;
-    position: absolute; /* Position absolutely within its parent .input-with-clear or .textarea-with-clear */
-    right: 5px; /* Align to the right of the input/textarea */
-    top: 50%; /* Center vertically */
-    transform: translateY(-50%); /* Adjust for perfect vertical centering */
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
     box-sizing: border-box;
-    transition: background-color 0.5s ease; /* Smooth transition for dark mode */
+    transition: background-color 0.5s ease;
 }
 
 .clear-button::before,
@@ -338,18 +294,17 @@ body::before {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 70%; /* Adjust X thickness */
+    width: 70%;
     height: 2px;
     background-color: #333;
     transform: translate(-50%, -50%) rotate(45deg);
-    transition: background-color 0.5s ease; /* Smooth transition for dark mode */
+    transition: background-color 0.5s ease;
 }
 
 .clear-button::after {
     transform: translate(-50%, -50%) rotate(-45deg);
 }
 
-/* Hover effect for .clear-button */
 .clear-button:hover {
     background-color: pink;
 }
@@ -359,29 +314,183 @@ body::before {
     background-color: #fff;
 }
 
-
-/* --- Dark Mode Styles --- */
-body.dark-mode {
-    background-color: #1a1a1a; /* Dark background */
-    color: #f0f0f0; /* Light text */
+.kaomoji-display {
+    display: none;
+    text-align: center;
+    font-size: 1.5em;
+    margin-top: -25px;
+    color: #555;
+    transition: color 0.5s ease;
 }
 
-/* Dark mode for the background image (adjust opacity for dark mode too if needed) */
+/* Media Queries */
+@media (min-width: 769px) {
+    body {
+        align-items: flex-start;
+        padding-top: 25vh;
+    }
+
+    .search-input-group .label-wrapper {
+        width: 110px;
+        flex-shrink: 0;
+    }
+
+    .search-input-group .label-wrapper .dropdown-content {
+        width: 110px;
+        min-width: 110px;
+    }
+
+    .labels-section {
+        max-width: 451px;
+		padding-left: 125px;
+    }
+
+    .search-section {
+        position: relative;
+        padding-bottom: 65px;
+    }
+
+    .search-section .todo-section {
+        position: absolute;
+        bottom: -75px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 95%;
+        max-width: 700px;
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+        padding: 10px;
+        box-sizing: border-box;
+        z-index: 10;
+        min-height: 100px;
+        display: block;
+    }
+
+    .search-section .todo-section .textarea-with-clear {
+        height: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-section .todo-section #todoInput {
+        min-height: 80px;
+        height: auto;
+        max-height: 100%;
+        width: 100%;
+        border-radius: 8px;
+        box-shadow: none;
+    }
+
+    .search-section .todo-section .clear-button {
+        right: 15px;
+    }
+
+    .label-wrapper:hover .dropdown-content {
+        opacity: 5;
+        visibility: visible;
+        pointer-events: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .left-panel {
+        width: 100%;
+        height: 150px;
+        margin-bottom: 20px;
+        background-color: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(40px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        order: -1;
+        border-radius: 0;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .main-content {
+        border-radius: 0;
+        padding: 20px;
+    }
+
+    .left-panel img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        display: block;
+    }
+
+    .labels-section {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+		font-weight: bold;
+		font-size: 1em;
+    }
+
+    .search-section {
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    .search-input-group {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    .label-wrapper {
+        width: 100%;
+    }
+
+    .label {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .dropdown-content {
+        width: 100%;
+        left: 0;
+        transform: translateX(0);
+    }
+
+    #searchInput, #todoInput {
+        padding-right: 30px;
+    }
+
+    .kaomoji-display {
+        display: block;
+    }
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+}
+
 body.dark-mode::before {
-    background-image: url('../imgs/Pattern.png'); /* Keep pattern */
-    opacity: 0.2; /* Slightly less opaque in dark mode for better contrast if desired */
+    background-image: url('../imgs/Pattern.png');
+    opacity: 0.2;
 }
 
 body.dark-mode .container {
-    background-color: #2b2b2b; /* Darker container */
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4); /* Uniform shadow in dark mode */
+    background-color: rgba(43, 43, 43, 0.42);
+    border: 3px solid rgb(192, 255, 244);
+    box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5);
 }
 
 body.dark-mode .left-panel {
-    background-color: #2b2b2b; /* Darker left panel to match container */
+    background-color: rgba(43, 43, 43, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.18);
 }
 
-/* Removed background-color and box-shadow for dark mode .datetime-display */
 body.dark-mode .datetime-display {
     color: #e0e0e0;
 }
@@ -389,22 +498,21 @@ body.dark-mode .datetime-display {
 body.dark-mode .label {
     background-color: #3a3a3a;
     color: #e0e0e0;
-    border-color: #4a4a4a;
+    border-color: #C0FFF4;
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-/* Dark mode: Keep pink hover for labels and set font color to match light mode hover */
 body.dark-mode .label-wrapper:hover .label,
 body.dark-mode .label:hover {
-    background-color: pink; /* Pink hover in dark mode */
-    border-color: pink;     /* Pink border in dark mode */
-    box-shadow: 0 4px 8px rgba(255, 105, 180, 0.4); /* Pink-ish shadow in dark mode */
-    color: #333; /* Keep same font color as light mode hover */
+    background-color: pink;
+    border-color: pink;
+    box-shadow: 8px 8px 8px rgba(26,26,26,0.3);
+    color: #333;
 }
 
 body.dark-mode .dropdown-content {
     background-color: #3a3a3a;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+    box-shadow: 8px 8px 8px rgba(26,26,26,0.3);
 }
 
 body.dark-mode .dropdown-content li,
@@ -426,7 +534,7 @@ body.dark-mode #todoInput {
 
 body.dark-mode #searchInput::placeholder,
 body.dark-mode #todoInput::placeholder {
-    color: #aaaaaa; /* Lighter placeholder in dark mode */
+    color: #aaaaaa;
 }
 
 body.dark-mode .clear-button {
@@ -438,122 +546,24 @@ body.dark-mode .clear-button::after {
     background-color: #e0e0e0;
 }
 
-/* Dark mode: Keep pink hover for clear buttons */
 body.dark-mode .clear-button:hover {
-    background-color: pink; /* Pink hover in dark mode */
+    background-color: pink;
 }
 
-
-/* --- Mobile-Specific Layout Adjustments (ACTIVE BELOW 768px WIDTH) --- */
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-        height: auto;
-    }
-
-    .left-panel {
-        width: 100%;
-        height: 150px;
-        margin-bottom: 20px;
-        background-color: #ffffff; /* Mobile: Same as container in light mode */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        order: -1; /* Moves it to the top */
-        border-radius: 0; /* Ensures no rounded corners on the top/bottom left for mobile */
-        border-bottom: 1px solid #ccc; /* Separating line at the bottom */
-    }
-
-    /* Dark mode for mobile left panel */
-    body.dark-mode .left-panel {
-        background-color: #2b2b2b; /* Darker left panel to match container */
-        border-bottom: 1px solid #4a4a4a; /* Dark mode separating line */
-    }
-    body.dark-mode .left-panel img {
-        /* If specific dark mode image filtering is needed, add here */
-    }
-
-
-    /* Remove border-radius from main-content on mobile if it's full width and not rounded */
-    .main-content {
-        border-radius: 0;
-    }
-
-    /* Constrain the image size within the mobile left panel */
-    .left-panel img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-        display: block;
-    }
-
-    .main-content {
-        padding: 20px;
-    }
-
-    .labels-section {
-        flex-direction: column;
-        gap: 10px;
-        margin-bottom: 20px;
-    }
-
-    /* Search elements */
-    .search-section {
-        gap: 10px;
-        align-items: stretch;
-    }
-
-    /* Search input group also stacks vertically on mobile */
-    .search-input-group {
-        flex-direction: column;
-        gap: 10px;
-        align-items: stretch;
-    }
-
-    .label-wrapper {
-        width: 100%; /* All label wrappers are 100% width on mobile */
-    }
-    .label {
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    /* Adjust dropdown width on mobile for uniformity */
-    .dropdown-content {
-        width: 100%; /* Make dropdown take full width of its wrapper on mobile */
-        left: 0;
-        transform: translateX(0);
-    }
-
-    /* Mobile specific adjustment for todo section */
-    .todo-section {
-        /* margin-top is now handled by .search-section gap */
-    }
-
-    /* Adjust search input and textarea padding for mobile too */
-    #searchInput, #todoInput {
-        padding-right: 30px; /* Ensure space for clear button on mobile */
-    }
+body.dark-mode .search-section .todo-section {
+    background-color: #2b2b2b;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
 }
 
-/* Hide kaomoji display by default on desktop */
-.kaomoji-display {
-    display: none; /* Hidden by default */
-    text-align: center; /* Center the text when visible */
-    font-size: 1.5em; /* Adjust font size as needed */
-    margin-top: -25px; /* Adjusted to remove more space */
-    color: #555; /* Default color, adjust as desired */
-    transition: color 0.5s ease; /* Smooth transition for dark mode */
-}
-
-/* Show kaomoji display only on mobile */
-@media (max-width: 768px) {
-    .kaomoji-display {
-        display: block; /* Make it visible on mobile */
-    }
-}
-
-/* Dark mode styles for kaomoji */
 body.dark-mode .kaomoji-display {
-    color: #aaaaaa; /* Lighter color in dark mode */
+    color: #aaaaaa;
+}
+
+@media (max-width: 768px) {
+    body.dark-mode .left-panel {
+        background-color: rgba(43, 43, 43, 0.8);
+        backdrop-filter: blur(40px);
+        border: 1px solid rgba(0, 0, 0, 0.18);
+        border-bottom: 1px solid #4a4a4a;
+    }
 }
