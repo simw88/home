@@ -54,7 +54,7 @@ body::before {
     border-radius: 15px; /* Rounded edges */
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.15); /* Uniform shadow around all corners */
     width: 1000px;  /* Adjusted STATIC WIDTH to 1000px as requested */
-    height: 380px;
+    height: 330px;
     transition: background-color 0.5s ease, box-shadow 0.5s ease; /* Smooth transition for dark mode */
 }
 
@@ -80,11 +80,11 @@ body::before {
 
 .main-content {
     flex: 1; /* Takes up the remaining available space within the static container */
-    padding: 30px;
+    padding: 7px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start; /* Align content to the top */
-    gap: 20px; /* Adjust this value as needed for desired spacing */
+    gap: 15px; /* Adjust this value as needed for desired spacing */
     /* Add border-radius for the right corners to match container */
     border-top-right-radius: 15px;
     border-bottom-right-radius: 15px;
@@ -101,8 +101,7 @@ body::before {
     margin-bottom: 10px;
     padding: 10px;
     border-radius: 8px;
-    background-color: transparent; /* Removed background color */
-    box-shadow: none; /* Removed box shadow */
+    
     transition: background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease; /* Smooth transition for dark mode */
 }
 
@@ -235,7 +234,7 @@ body::before {
 .search-section {
     display: flex;
     flex-direction: column; /* Stacks its immediate children (search-input-group and todo-section) vertically */
-    gap: 15px; /* Spacing between the search-input-group and the todo-section */
+    gap: 25px; /* Spacing between the search-input-group and the todo-section */
     align-items: center; /* Centers the content horizontally */
 }
 
@@ -482,8 +481,8 @@ body.dark-mode .clear-button:hover {
 
     /* Constrain the image size within the mobile left panel */
     .left-panel img {
-        max-width: 80%;
-        max-height: 80%;
+        max-width: 100%;
+        max-height: 100%;
         object-fit: contain;
         display: block;
     }
