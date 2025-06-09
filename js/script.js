@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Kaomoji Display Functionality (NEW) ---
     const kaomojis = [
-        "(✿◠ᴗ◠)", "(•⩊•)", "₍^. .^₎⟆", "(˶ˆ꒳ˆ˵)"
+        "(✿◠ᴗ◠)", "(•w•)", "(^. .^>)⟆", "("^w^")"
     ];
     const kaomojiDisplay = document.getElementById('kaomojiDisplay');
 
