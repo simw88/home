@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Image Changing on Reload
     const leftPanel = document.querySelector('.left-panel');
     const images = [
         'imgs/img1.png', 'imgs/img2.png', 'imgs/img3.png', 'imgs/img4.png',
@@ -17,71 +16,58 @@ document.addEventListener('DOMContentLoaded', () => {
     imgElement.alt = "Dynamic Background Image";
     leftPanel.appendChild(imgElement);
 
-    // Dark Mode Manual Toggle Variables
     let imageClickCount = 0;
     let imageClickTimeout;
     const IMAGE_CLICK_THRESHOLD = 3;
-    const IMAGE_CLICK_RESET_DELAY = 500; // milliseconds
+    const IMAGE_CLICK_RESET_DELAY = 500;
 
-    // Add event listener for triple-click on image to toggle dark mode
     imgElement.addEventListener('click', () => {
         imageClickCount++;
-
-        clearTimeout(imageClickTimeout); // Clear any previous timeout
+        clearTimeout(imageClickTimeout);
 
         imageClickTimeout = setTimeout(() => {
-            // Reset count if clicks are too slow (not within the delay)
             imageClickCount = 0;
         }, IMAGE_CLICK_RESET_DELAY);
 
         if (imageClickCount === IMAGE_CLICK_THRESHOLD) {
-            // Toggle dark mode based on current state
             if (document.body.classList.contains('dark-mode')) {
                 removeDarkMode();
             } else {
                 applyDarkMode();
             }
-            imageClickCount = 0; // Reset count after successful toggle
-            clearTimeout(imageClickTimeout); // Clear timeout immediately as action was taken
+            imageClickCount = 0;
+            clearTimeout(imageClickTimeout);
         }
     });
 
-    // 2. Search Engine Functionality
     const searchForm = document.getElementById('searchForm');
     const searchInput = document.getElementById('searchInput');
 
-    // Add an event listener for the 'submit' event on the form
     searchForm.addEventListener('submit', (event) => {
-        // Prevent the default form submission behavior
-        event.preventDefault(); 
+        event.preventDefault();
 
-        const baseUrl = searchForm.action; // Get the currently set action URL
-        const paramName = searchInput.name; // Get the currently set input name
+        const baseUrl = searchForm.action;
+        const paramName = searchInput.name;
 
         if (searchInput.value.trim() !== '') {
             const query = encodeURIComponent(searchInput.value.trim());
-            // Construct the final URL based on the current search engine
             let finalUrl = baseUrl;
-            if (paramName && query) { // Only append query if paramName exists
+            if (paramName && query) {
                 finalUrl += (baseUrl.includes('?') ? '&' : '?') + `${paramName}=${query}`;
-            } else if (query && baseUrl.includes('nyaa.si')) { // Special case for Nyaa if it's just the base URL
+            } else if (query && baseUrl.includes('nyaa.si')) {
                 finalUrl += `?${query}`;
             }
-
-            window.open(finalUrl, '_blank'); // Open in a new tab
+            window.open(finalUrl, '_blank');
         }
-        // Clear the search input after submission (optional, but good UX)
-        searchInput.value = ''; 
+        searchInput.value = '';
         toggleClearButton(searchInput, searchClearButton);
     });
 
-    // 3. Date and Time Display
     const datetimeDisplay = document.getElementById('datetimeDisplay');
     const fourChanLabel = document.getElementById('fourChan');
-    // Get the label-wrapper for 4chan as well, so we can toggle its display
     const fourChanWrapper = fourChanLabel ? fourChanLabel.closest('.label-wrapper') : null;
 
-    let isFlowerModeActive = false; // State variable to track if flower.png mode is active
+    let isFlowerModeActive = false;
 
     function getOrdinalSuffix(day) {
         if (day > 3 && day < 21) return 'th';
@@ -95,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateDateTime() {
         const now = new Date();
-
         const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -111,36 +96,28 @@ document.addEventListener('DOMContentLoaded', () => {
         const ampm = hours >= 12 ? 'PM' : 'AM';
 
         hours = hours % 12;
-        hours = hours === 0 ? 12 : hours; // the hour '0' should be '12'
+        hours = hours === 0 ? 12 : hours;
 
-        const formattedTime = `${hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds} ${ampm}`;
-
+        const formattedTime = `${hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds} ${amppm}`;
         datetimeDisplay.textContent = `${dayName}, ${dayNumber}${ordinalSuffix} of ${monthName}, ${year}, at ${formattedTime}`;
     }
 
-    // Update time every second
     setInterval(updateDateTime, 1000);
-    // Initial call to display time immediately
     updateDateTime();
 
-    // Event listener for tapping the time and date (toggle functionality)
     datetimeDisplay.addEventListener('click', () => {
         if (isFlowerModeActive) {
-            // Revert to random image
             imgElement.src = getRandomImage();
             imgElement.alt = "Dynamic Background Image";
 
-            // Make the 4chan label appear again
             if (fourChanWrapper) {
-                fourChanWrapper.style.display = ''; // Revert to default display (e.g., 'block' or 'flex' depending on CSS)
+                fourChanWrapper.style.display = '';
             }
             isFlowerModeActive = false;
         } else {
-            // Change to flower.png
             imgElement.src = 'imgs/flower.png';
             imgElement.alt = "Flower Image";
 
-            // Hide the 4chan label
             if (fourChanWrapper) {
                 fourChanWrapper.style.display = 'none';
             }
@@ -148,17 +125,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
-    // 4. Dropdown functionality for labels (Email, News, 4chan, etc.)
     document.querySelectorAll('.label-wrapper').forEach(wrapper => {
         const label = wrapper.querySelector('.label');
         const dropdownContent = wrapper.querySelector('.dropdown-content');
 
         if (label && dropdownContent) {
-            // Toggle dropdown visibility on label click
             label.addEventListener('click', (event) => {
-                event.stopPropagation(); // Prevent click from propagating to document
-                // Close other open dropdowns
+                event.stopPropagation();
                 document.querySelectorAll('.dropdown-content.show').forEach(openDropdown => {
                     if (openDropdown !== dropdownContent) {
                         openDropdown.classList.remove('show');
@@ -169,10 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Close dropdowns when clicking outside
     document.addEventListener('click', (event) => {
         document.querySelectorAll('.dropdown-content.show').forEach(openDropdown => {
-            // Check if the click is outside the dropdown and its parent label-wrapper
             const isClickInsideDropdown = openDropdown.contains(event.target);
             const isClickInsideLabel = openDropdown.previousElementSibling && openDropdown.previousElementSibling.contains(event.target);
 
@@ -182,23 +153,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-
-    // 5. Search Engine Selection Logic
     document.querySelectorAll('.search-engine-option').forEach(option => {
         option.addEventListener('click', function() {
             const baseUrl = this.dataset.value;
             const paramName = this.dataset.name;
-            searchForm.action = baseUrl; // Set the form's action URL
-            searchInput.name = paramName; // Set the search input's name attribute
-            document.querySelector('.search-input-group .label').textContent = this.textContent; // Update button text
-            document.querySelector('.search-input-group .dropdown-content').classList.remove('show'); // Hide dropdown
-            searchInput.focus(); // Keep focus on the search input
+            searchForm.action = baseUrl;
+            searchInput.name = paramName;
+            document.querySelector('.search-input-group .label').textContent = this.textContent;
+            document.querySelector('.search-input-group .dropdown-content').classList.remove('show');
+            searchInput.focus();
         });
     });
 
-    // Set a default search engine on page load.
-    // This is crucial to ensure action and name are set initially.
-    // You can pick one of your existing options, e.g., Google.
     const defaultSearchOption = document.querySelector('.search-engine-option[data-value="https://www.google.com/search"]');
     if (defaultSearchOption) {
         searchForm.action = defaultSearchOption.dataset.value;
@@ -206,32 +172,27 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.search-input-group .label').textContent = defaultSearchOption.textContent;
     }
 
-    // 6. Clear Input Button Functionality
     const searchClearButton = document.querySelector('.clear-button[data-target="searchInput"]');
     const todoInput = document.getElementById('todoInput');
     const todoClearButton = document.querySelector('.clear-button[data-target="todoInput"]');
 
-    // Function to show/hide clear button based on input content
     function toggleClearButton(inputElement, clearButtonElement) {
         if (inputElement.value.length > 0) {
-            clearButtonElement.style.display = 'block'; // Show the button
+            clearButtonElement.style.display = 'block';
         } else {
-            clearButtonElement.style.display = 'none'; // Hide the button
+            clearButtonElement.style.display = 'none';
         }
     }
 
-    // Function to clear the input field
     function clearInput(inputElement, clearButton) {
         inputElement.value = '';
-        toggleClearButton(inputElement, clearButton); // Hide button after clearing
-        inputElement.focus(); // Keep focus for user convenience
-        // Clear from localStorage as well
+        toggleClearButton(inputElement, clearButton);
+        inputElement.focus();
         if (inputElement === todoInput) {
             localStorage.removeItem('todoListContent');
         }
     }
 
-    // Event listeners for search input
     searchInput.addEventListener('input', () => {
         toggleClearButton(searchInput, searchClearButton);
     });
@@ -239,28 +200,22 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInput(searchInput, searchClearButton);
     });
 
-    // Event listeners for todo input
     todoInput.addEventListener('input', () => {
         toggleClearButton(todoInput, todoClearButton);
-        // Save todo list content to localStorage on every input change
         localStorage.setItem('todoListContent', todoInput.value);
     });
     todoClearButton.addEventListener('click', () => {
         clearInput(todoInput, todoClearButton);
     });
 
-    // Initial check on page load in case fields are pre-filled (e.g., from browser restore)
     toggleClearButton(searchInput, searchClearButton);
 
-    // Load todo list content from localStorage on page load
     const savedTodoContent = localStorage.getItem('todoListContent');
     if (savedTodoContent) {
         todoInput.value = savedTodoContent;
     }
-    toggleClearButton(todoInput, todoClearButton); // Check visibility for loaded content
+    toggleClearButton(todoInput, todoClearButton);
 
-
-    // --- Automatic Dark Mode Functionality ---
     function applyDarkMode() {
         document.body.classList.add('dark-mode');
     }
@@ -271,9 +226,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkTimeForDarkMode() {
         const now = new Date();
-        const hour = now.getHours(); // 0-23
+        const hour = now.getHours();
 
-        // Dark mode from 7 PM (19) to 5 AM (before 5)
         if (hour >= 19 || hour < 5) {
             applyDarkMode();
         } else {
@@ -281,13 +235,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Initial check when the page loads
     checkTimeForDarkMode();
+    setInterval(checkTimeForDarkMode, 60 * 1000);
 
-    // Check every minute to automatically switch themes
-    setInterval(checkTimeForDarkMode, 60 * 1000); // Check every 60 seconds
-
-    // --- Kaomoji Display Functionality (NEW) ---
     const kaomojis = [
         "(✿◠ᴗ◠)", "( ˶ˆ꒳ˆ˵ )", "(〃´𓎟`〃)", "ଘ(੭˃ᴗ˂)੭", "(˶‾᷄ ⁻̫ ‾᷅˵)"
     ];
@@ -300,10 +250,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Call this function on page load to set an initial kaomoji
     displayRandomKaomoji();
 
-    // Add click event listener to change kaomoji on tap (THIS IS THE ADDED LINE)
     if (kaomojiDisplay) {
         kaomojiDisplay.addEventListener('click', displayRandomKaomoji);
     }
