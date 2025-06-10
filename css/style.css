@@ -355,9 +355,9 @@ body::before {
     .datetime-section {
         position: absolute;
         top: -50px;
-        left: 76px;
+        left: 46px;
         transform: translateX(-50%);
-        width: 90%;
+        width: 82%;
         height: 10%;
         background-color: white;
         border-radius:  15px 50px 0px 0px;
