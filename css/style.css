@@ -30,7 +30,7 @@ body::before {
 /* Layout & Structure */
 .container {
     display: flex;
-    background-color: rgba(255, 255, 255, 0.42);
+    background-color: #E0E6E5;
     border: 3px solid white;
     border-radius: 0px 15px 15px 0px;
     box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.32);
