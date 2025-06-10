@@ -352,7 +352,7 @@ body::before {
     .datetime-section {
         position: absolute;
         top: -50px;
-        left: 8.2%;
+        left: 61px;
         transform: translateX(-50%);
         width: 85%;
 	height: 10%;
