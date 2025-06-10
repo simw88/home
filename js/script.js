@@ -38,7 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (query && baseUrl.includes('nyaa.si')) {
                 finalUrl += `?${query}`;
             }
-            window.open(finalUrl, '_blank');
+            // Open in the same tab (default browser behavior if target is not _blank)
+            window.location.href = finalUrl;
         }
         searchInput.value = '';
         toggleClearButton(searchInput, searchClearButton);
