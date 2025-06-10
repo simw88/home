@@ -32,7 +32,7 @@ body::before {
     display: flex;
     background-color: #E0E6E5;
     border: 3px solid white; /* Consistent border width */
-    border-radius: 0px 15px 15px 0px;
+    border-radius: 0px 20px 20px 20px;
     box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.32);
     transition: background-color 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease;
     width: 1000px;
@@ -355,9 +355,9 @@ body::before {
     .datetime-section {
         position: absolute;
         top: -50px;
-        left: 59px;
+        left: 76px;
         transform: translateX(-50%);
-        width: 85%;
+        width: 90%;
         height: 10%;
         background-color: white;
         border-radius:  15px 50px 0px 0px;
