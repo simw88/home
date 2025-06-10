@@ -98,8 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
         hours = hours % 12;
         hours = hours === 0 ? 12 : hours;
 
-        const formattedTime = `${hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds} ${amppm}`;
-        datetimeDisplay.textContent = `${dayName}, ${dayNumber}${ordinalSuffix} of ${monthName}, ${year}, at ${formattedTime}`;
+        const formattedTime = `${hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds} ${ampm}`;
+        datetimeDisplay.textContent = `Today is ${dayName}, the ${dayNumber}${ordinalSuffix} of ${monthName}. It's ${formattedTime}`;
     }
 
     setInterval(updateDateTime, 1000);
