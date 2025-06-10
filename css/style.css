@@ -32,22 +32,22 @@ body::before {
     display: flex;
     background-color: rgba(255, 255, 255, 0.42);
     border: 3px solid rgb(255, 194, 199);
+	border-radius: 0px 0px 15px 0px;
     box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.32);
     width: 1000px;
-    height: 330px;
+    height: 260px;
     transition: background-color 0.5s ease, box-shadow 0.5s ease;
 }
 
 .left-panel {
     width: 250px;
     background-color: rgba(255, 255, 255, 0.8);
-    border: 0.1px solid rgba(255, 255, 255, 0.18);
+    border-right: 3px solid pink;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
+    border-radius: 0px;
     transition: background-color 0.5s ease;
 }
 
@@ -67,26 +67,44 @@ body::before {
     gap: 15px;
     border-top-right-radius: 15px;
     border-bottom-right-radius: 15px;
+    position: relative; /* Added for absolute positioning of datetime/todo sections */
 }
 
 /* Components */
+.datetime-section {
+    /* Base styles for the new box - these will be overridden for desktop */
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+    padding: 10px;
+    box-sizing: border-box;
+    z-index: 10;
+    min-height: 50px; /* Base height for mobile */
+    display: flex; /* To center content within the box */
+    align-items: center; /* To center content within the box */
+    justify-content: center; /* To center content within the box */
+    width: 95%; /* Default width for mobile */
+    margin: 0 auto 15px auto; /* Default margin for non-desktop */
+}
+
 .datetime-display {
     font-size: 1.3em;
     font-weight: 750;
     color: #333;
     text-align: center;
-    margin-bottom: 10px;
-    padding: 10px;
     border-radius: 8px;
     transition: background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
+    width: 100%; /* Ensure it takes full width of its new parent */
 }
 
 .labels-section {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 11px;
-    margin-bottom: 10px;
+	min-width: 220px;
+	margin-top: 17px;
+    margin-bottom: -7px;
     justify-content: center;
 }
 
@@ -95,7 +113,7 @@ body::before {
     display: inline-block;
     vertical-align: top;
 	font-size: 1.2em;
-    width: 220px;
+    width: 220px; /* General width for all label-wrappers */
 }
 
 .label {
@@ -108,9 +126,8 @@ body::before {
     background-color: #f0f0f0;
     display: block;
     text-align: center;
-    border: 1px solid #d0d0d0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    width: 100%;
+    border: 3px solid pink;
+	min-width: 220px; /* General min-width for all labels */
     box-sizing: border-box;
     white-space: nowrap;
     overflow: hidden;
@@ -131,7 +148,7 @@ body::before {
     transition: opacity 0.3s ease, visibility 0.3s ease, background-color 0.5s ease, color 0.5s ease;
     position: absolute;
     background-color: #f9f9f9;
-    min-width: 220px;
+    min-width: 220px; /* General min-width for all dropdowns */
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 9999;
     border-radius: 5px;
@@ -139,7 +156,7 @@ body::before {
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    width: 200px;
+    width: 200px; /* General width for all dropdowns */
     max-width: calc(100vw - 40px);
     box-sizing: border-box;
     max-height: 80vh;
@@ -147,6 +164,7 @@ body::before {
     -webkit-overflow-scrolling: touch;
 }
 
+/* This is crucial for showing the dropdown, controlled by JS */
 .dropdown-content.show {
     opacity: 1;
     visibility: visible;
@@ -204,7 +222,7 @@ body::before {
     flex-direction: row;
     gap: 15px;
     align-items: center;
-    width: 100%;
+    width: 100%; /* Default desktop width, will be overridden by max-width on desktop */
     box-sizing: border-box;
 }
 
@@ -220,6 +238,7 @@ body::before {
 #searchForm {
     flex-grow: 1;
     display: flex;
+	width: 338px;
     gap: 5px;
     align-items: center;
 }
@@ -230,12 +249,12 @@ body::before {
     padding: 10px;
     padding-right: 30px;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 3px solid pink;
     font-size: 1.2em;
     transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
 }
 
-.todo-section {
+.todo-section { /*mobile*/
     width: 100%;
 }
 
@@ -243,25 +262,21 @@ body::before {
     flex-grow: 1;
     width: auto;
     min-height: 100px;
-	padding: 1px;
-    padding-right: 40px;
-    border-radius: 5px;
-    border: 1.5px solid #ccc;
-    resize: vertical;
-    box-sizing: border-box;
+	padding-right: 40px;
+    border: 3px solid pink;
     overflow: hidden;
     text-align: left;
 	transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
 }
 
-#todoInput::placeholder {
+#todoInput::placeholder { /*required for the placeholder text to stay centred*/
     text-align: center;
     color: #999;
     opacity: 1;
     transition: color 0.5s ease, opacity 0.5s ease;
 }
 
-#todoInput:focus::placeholder {
+#todoInput:focus::placeholder { /*text colour*/
     color: #999;
     opacity: 1;
 }
@@ -281,8 +296,8 @@ body::before {
     line-height: 20px;
     text-align: center;
     position: absolute;
-    right: 5px;
-    top: 50%;
+    right: 4px;
+    top: 25%;
     transform: translateY(-50%);
     box-sizing: border-box;
     transition: background-color 0.5s ease;
@@ -330,41 +345,78 @@ body::before {
         padding-top: 25vh;
     }
 
+    .main-content {
+        padding-top: 15px; /* Adjust main-content padding to make space for datetime*/
+    }
+
+    .datetime-section {
+        position: absolute;
+        top: -50px;
+        left: 8.5%;
+        transform: translateX(-50%);
+        width: 85%;
+		height: 10%;
+        background-color: white;
+        border-radius:  15px 50px 0px 0px;
+        border: 3px solid rgb(255, 194, 199);
+        box-sizing: border-box;
+        z-index: 1;
+    }
+
+    .datetime-display {
+        font-size: 1.3em;
+        margin-bottom: 0;
+        padding: 0;
+    }
+
+    /* Specific styles for the search button and its dropdown */
+    .search-input-group {
+        /* These properties are specific to desktop and should NOT affect mobile */
+        max-width: 550px; /* Desktop specific width */
+        margin: 0 auto; /* Center on desktop */
+        /* Retain other flex properties for explicit clarity within this breakpoint */
+        display: flex;
+        flex-direction: row;
+        gap: 15px;
+        align-items: center;
+        box-sizing: border-box;
+    }
+
     .search-input-group .label-wrapper {
-        width: 110px;
-        flex-shrink: 0;
+        width: 110px; /* Desired width for the search engine label wrapper */
+        min-width: 110px; /* Ensure it doesn't shrink below this */
+        flex-shrink: 0; /* Prevents the label-wrapper from shrinking */
+    }
+
+    .search-input-group .label-wrapper .label {
+        width: 110px; /* Match the width of the label wrapper */
+        min-width: 110px; /* Ensure the label itself doesn't shrink */
     }
 
     .search-input-group .label-wrapper .dropdown-content {
-        width: 110px;
-        min-width: 110px;
+        width: 110px; /* Match the width of the label for the dropdown content */
+        min-width: 110px; /* Ensure the dropdown content doesn't shrink */
     }
 
     .labels-section {
         max-width: 451px;
-		padding-left: 125px;
+		padding-left: 145px; /* This will need to be re-evaluated if datetime-section pushes labels down */
     }
 
     .search-section {
         position: relative;
-        padding-bottom: 65px;
+        padding-bottom: 54px;
+        margin-top: 8px;
     }
 
     .search-section .todo-section {
         position: absolute;
-        bottom: -75px;
+        bottom: -60px;
         left: 50%;
         transform: translateX(-50%);
-        width: 95%;
+		width: 95%;
         max-width: 700px;
-        background-color: #ffffff;
-        border-radius: 15px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
-        padding: 10px;
-        box-sizing: border-box;
-        z-index: 10;
         min-height: 100px;
-        display: block;
     }
 
     .search-section .todo-section .textarea-with-clear {
@@ -373,7 +425,7 @@ body::before {
         align-items: center;
     }
 
-    .search-section .todo-section #todoInput {
+    .search-section .todo-section #todoInput { /* inner border outline thing*/
         min-height: 80px;
         height: auto;
         max-height: 100%;
@@ -397,6 +449,16 @@ body::before {
     .container {
         flex-direction: column;
         height: auto;
+    }
+	
+	.search-input-group {
+        max-width: 800px; /* Changed to a larger value */
+        margin: 0 auto;
+        display: flex;
+        flex-direction: row;
+        gap: 15px;
+        align-items: center;
+        box-sizing: border-box;
     }
 
     .left-panel {
@@ -426,23 +488,55 @@ body::before {
         display: block;
     }
 
+    /* Mobile styles for datetime-section - ensure no desktop positioning */
+    .datetime-section {
+        position: static;
+        transform: none;
+        width: 100%;
+        min-height: auto;
+        padding: .5px; /* Adjust padding for mobile datetime section */
+        background-color: transparent; /* Make background transparent in mobile */
+        box-shadow: none; /* Remove shadow in mobile */
+        border: none; /* Remove border in mobile */
+    }
+
+    .datetime-display {
+        font-size: 1.1em;
+        margin-bottom: 0; /* No extra margin needed within the section */
+        padding: 5px; /* Keep padding inside display for mobile */
+        background-color: transparent; /* Ensure background is transparent */
+    }
+
     .labels-section {
         flex-direction: column;
         gap: 10px;
         margin-bottom: 20px;
 		font-weight: bold;
 		font-size: 1em;
+        padding-left: 0; /* Reset padding-left for mobile */
     }
 
     .search-section {
         gap: 10px;
-        align-items: stretch;
+        align-items: stretch; /* Keep this to stretch children (search input group) */
+        margin-top: -6; /* Reset margin-top for mobile */
     }
 
     .search-input-group {
         flex-direction: column;
         gap: 10px;
-        align-items: stretch;
+        align-items: center; /* This centers the items if they are narrower than the parent */
+        width: 100%; /* Make the search input group span full width */
+        box-sizing: border-box;
+    }
+
+    #searchInput {
+        flex-grow: 1; /* Allow it to grow to fill the container */
+        width: auto; /* Allow natural sizing, let flex-grow take over */
+        flex-shrink: 1; /* Explicitly allow shrinking */
+        min-width: 0; /* Allow it to shrink smaller than content if needed */
+        max-width: none; /* Remove max-width to allow it to be as wide as other boxes */
+        box-sizing: border-box;
     }
 
     .label-wrapper {
@@ -458,10 +552,6 @@ body::before {
         width: 100%;
         left: 0;
         transform: translateX(0);
-    }
-
-    #searchInput, #todoInput {
-        padding-right: 30px;
     }
 
     .kaomoji-display {
@@ -488,7 +578,14 @@ body.dark-mode .container {
 
 body.dark-mode .left-panel {
     background-color: rgba(43, 43, 43, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.18);
+    border: 3px solid rgba(0, 0, 0, 0.18);
+	border-right-color: pink;
+}
+
+body.dark-mode .datetime-section {
+    background-color: #2b2b2b;
+	border-color: rgb(192, 255, 244);
+	border-bottom-color: pink;
 }
 
 body.dark-mode .datetime-display {
@@ -498,8 +595,7 @@ body.dark-mode .datetime-display {
 body.dark-mode .label {
     background-color: #3a3a3a;
     color: #e0e0e0;
-    border-color: #C0FFF4;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    border: 3px solid rgb(192, 255, 244);
 }
 
 body.dark-mode .label-wrapper:hover .label,
@@ -525,16 +621,22 @@ body.dark-mode .dropdown-content a:hover {
     background-color: #505050;
 }
 
-body.dark-mode #searchInput,
+
+body.dark-mode #searchInput {
+    background-color: #3a3a3a;
+    color: #e0e0e0;
+}
+
 body.dark-mode #todoInput {
     background-color: #3a3a3a;
     color: #e0e0e0;
-    border-color: #4a4a4a;
+    border-color: #C0FFF4;
+	border-bottom-color: pink;
 }
 
 body.dark-mode #searchInput::placeholder,
 body.dark-mode #todoInput::placeholder {
-    color: #aaaaaa;
+    background-color: #3a3a3a;
 }
 
 body.dark-mode .clear-button {
@@ -550,19 +652,13 @@ body.dark-mode .clear-button:hover {
     background-color: pink;
 }
 
-body.dark-mode .search-section .todo-section {
-    background-color: #2b2b2b;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-}
-
 body.dark-mode .kaomoji-display {
-    color: #aaaaaa;
+    color: green;
 }
 
 @media (max-width: 768px) {
     body.dark-mode .left-panel {
         background-color: rgba(43, 43, 43, 0.8);
-        backdrop-filter: blur(40px);
         border: 1px solid rgba(0, 0, 0, 0.18);
         border-bottom: 1px solid #4a4a4a;
     }
