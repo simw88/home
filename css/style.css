@@ -34,15 +34,15 @@ body::before {
     border: 3px solid white; /* Consistent border width */
     border-radius: 0px 15px 15px 0px;
     box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.32);
+    transition: background-color 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease;
     width: 1000px;
     height: 260px;
-    transition: background-color 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease;
 }
 
 .left-panel {
     width: 250px;
     background-color: rgba(255, 255, 255, 0.8);
-    border-right: 3px solid pink; /* Explicitly border-right */
+    border-right: 3px solid pink;
     /* Ensure other borders are accounted for if needed, e.g., border: 3px solid transparent; */
     border-top: 3px solid transparent; /* Ensure 3px space on top/left/bottom */
     border-bottom: 3px solid transparent;
@@ -129,7 +129,7 @@ body::before {
     background-color: white;
     display: block;
     text-align: center;
-    border: 3px solid pink; /* Consistent border width */
+    border: 3px solid #1A1A1A; /* Changed to #1A1A1A */
     min-width: 220px;
     box-sizing: border-box;
     white-space: nowrap;
@@ -175,7 +175,7 @@ body::before {
 }
 
 .dropdown-content li {
-    color: black;
+    color: #1A1A1A; /* Changed to #1A1A1A */
     padding: 8px 16px;
     text-decoration: none;
     display: block;
@@ -252,7 +252,7 @@ body::before {
     padding: 10px;
     padding-right: 30px;
     border-radius: 5px;
-    border: 3px solid pink; /* Consistent border width */
+    border: 3px solid #1A1A1A; /* Changed to #1A1A1A */
     font-size: 1.2em;
     transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
 }
@@ -266,7 +266,7 @@ body::before {
     width: auto;
     min-height: 100px;
     padding-right: 40px;
-    border: 3px solid pink; /* Consistent border width */
+    border: 3px solid #1A1A1A; /* Changed to #1A1A1A */
     overflow: hidden;
     text-align: left;
     transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
@@ -355,7 +355,8 @@ body::before {
     .datetime-section {
         position: absolute;
         top: -50px;
-        transform: translateX(-42%);
+        left: 59px;
+        transform: translateX(-50%);
         width: 85%;
         height: 10%;
         background-color: white;
@@ -556,113 +557,5 @@ body::before {
 
     .kaomoji-display {
         display: block;
-    }
-}
-
-/* Dark Mode Styles */
-body.dark-mode {
-    background-color: #1a1a1a;
-    color: #f0f0f0;
-}
-
-body.dark-mode::before {
-    background-image: url('../imgs/Pattern.png');
-    opacity: 0.2;
-}
-
-body.dark-mode .container {
-    background-color: rgba(43, 43, 43, 0.42);
-    border: 3px solid rgb(192, 255, 244); /* Keep consistent width */
-    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.6);
-}
-
-body.dark-mode .left-panel {
-    background-color: rgba(43, 43, 43, 0.8);
-    /* Ensure consistent border application with light mode */
-    border-top: 3px solid transparent; /* Ensure 3px space on top/left/bottom */
-    border-bottom: 3px solid transparent;
-    border-left: 3px solid transparent;
-    border-right: 3px solid pink; /* Explicitly border-right */
-}
-
-body.dark-mode .datetime-section {
-    background-color: #2b2b2b;
-    border: 3px solid rgb(192, 255, 244); /* Keep consistent width */
-    border-bottom-color: pink;
-}
-
-body.dark-mode .datetime-display {
-    color: #e0e0e0;
-}
-
-body.dark-mode .label {
-    background-color: #3a3a3a;
-    color: #e0e0e0;
-    border: 3px solid rgb(192, 255, 244); /* Keep consistent width */
-}
-
-body.dark-mode .label-wrapper:hover .label,
-body.dark-mode .label:hover {
-    background-color: pink;
-    border-color: pink;
-    box-shadow: 8px 8px 8px rgba(26,26,26,0.3);
-    color: #333;
-}
-
-body.dark-mode .dropdown-content {
-    background-color: #3a3a3a;
-    box-shadow: 8px 8px 8px rgba(26,26,26,0.3);
-}
-
-body.dark-mode .dropdown-content li,
-body.dark-mode .dropdown-content a {
-    color: #e0e0e0;
-}
-
-body.dark-mode .dropdown-content li:hover,
-body.dark-mode .dropdown-content a:hover {
-    background-color: #505050;
-}
-
-body.dark-mode #searchInput {
-    background-color: #3a3a3a;
-    color: #e0e0e0;
-    border: 3px solid #C0FFF4; /* Keep consistent width */
-}
-
-body.dark-mode #todoInput {
-    background-color: #3a3a3a;
-    color: #e0e0e0;
-    border: 3px solid #C0FFF4; /* Keep consistent width */
-    border-bottom-color: pink;
-}
-
-body.dark-mode #searchInput::placeholder,
-body.dark-mode #todoInput::placeholder {
-    background-color: #3a3a3a;
-}
-
-body.dark-mode .clear-button {
-    background-color: #5a5a5a;
-}
-
-body.dark-mode .clear-button::before,
-body.dark-mode .clear-button::after {
-    background-color: #e0e0e0;
-}
-
-body.dark-mode .clear-button:hover {
-    background-color: pink;
-}
-
-body.dark-mode .kaomoji-display {
-    color: green;
-}
-
-@media (max-width: 768px) {
-    body.dark-mode .left-panel {
-        background-color: rgba(43, 43, 43, 0.8);
-        border: 1px solid rgba(0, 0, 0, 0.18);
-        border-bottom: 1px solid #4a4a4a;
     }
 }
