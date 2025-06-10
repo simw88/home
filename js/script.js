@@ -16,28 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
     imgElement.alt = "Dynamic Background Image";
     leftPanel.appendChild(imgElement);
 
-    let imageClickCount = 0;
-    let imageClickTimeout;
-    const IMAGE_CLICK_THRESHOLD = 3;
-    const IMAGE_CLICK_RESET_DELAY = 500;
-
     imgElement.addEventListener('click', () => {
-        imageClickCount++;
-        clearTimeout(imageClickTimeout);
-
-        imageClickTimeout = setTimeout(() => {
-            imageClickCount = 0;
-        }, IMAGE_CLICK_RESET_DELAY);
-
-        if (imageClickCount === IMAGE_CLICK_THRESHOLD) {
-            if (document.body.classList.contains('dark-mode')) {
-                removeDarkMode();
-            } else {
-                applyDarkMode();
-            }
-            imageClickCount = 0;
-            clearTimeout(imageClickTimeout);
-        }
+        // Change to a new random image on click
+        imgElement.src = getRandomImage();
     });
 
     const searchForm = document.getElementById('searchForm');
@@ -215,28 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
         todoInput.value = savedTodoContent;
     }
     toggleClearButton(todoInput, todoClearButton);
-
-    function applyDarkMode() {
-        document.body.classList.add('dark-mode');
-    }
-
-    function removeDarkMode() {
-        document.body.classList.remove('dark-mode');
-    }
-
-    function checkTimeForDarkMode() {
-        const now = new Date();
-        const hour = now.getHours();
-
-        if (hour >= 19 || hour < 5) {
-            applyDarkMode();
-        } else {
-            removeDarkMode();
-        }
-    }
-
-    checkTimeForDarkMode();
-    setInterval(checkTimeForDarkMode, 60 * 1000);
 
     const kaomojis = [
         "(✿◠ᴗ◠)", "( ˶ˆ꒳ˆ˵ )", "(〃´𓎟`〃)", "ଘ(੭˃ᴗ˂)੭", "(˶‾᷄ ⁻̫ ‾᷅˵)"
