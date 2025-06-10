@@ -372,6 +372,7 @@ body::before {
         font-size: 1.3em;
         margin-bottom: 0;
         padding: 0;
+        text-align: left;
     }
 
     .search-input-group {
