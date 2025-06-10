@@ -13,3 +13,5 @@ Version 5.4: added an option to hide image (replaced with another image), one of
 Version 6: rebuilt because bugs couldn't be fixed. layout is basically the same, mobile mode's dropdowns actually close when tapped lable is tapped, new background image applied, random kaomoji between two elements in mobile mode, click the random image 3 time to swap to darkmode temporally 
 
 6.2: changed things and mobile mode broke. it's fixed now
+
+version 6.3: removed dorkmode - didn't like it, so its gone. New images load when clicked
