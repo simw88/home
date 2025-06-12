@@ -5,3 +5,5 @@ Version 6: rebuilt because bugs couldn't be fixed. layout is basically the same,
 6.2: changed things and mobile mode broke. it's fixed now
 
 version 6.3: removed dorkmode - didn't like it, so its gonezo. New images load when clicked
+
+version 7: changed it
