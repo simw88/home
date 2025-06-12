@@ -157,6 +157,18 @@ document.getElementById('todoInput').addEventListener('keypress', function(e) {
     }
 });
 
+// NEW: Scroll to todo input on focus in mobile mode
+const todoInput = document.getElementById('todoInput');
+if (todoInput) { // Ensure the element exists before adding event listener
+    todoInput.addEventListener('focus', function() {
+        // Use the same mobile breakpoint defined for dropdowns
+        if (window.innerWidth <= MOBILE_BREAKPOINT) {
+            // Scroll the input into view smoothly, positioning it at the nearest edge of the viewport
+            this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    });
+}
+
 // Initialize
 renderTodos();
 
