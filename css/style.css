@@ -5,13 +5,13 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     min-height: 100vh;
-    overflow-x: hidden;
+    overflow-x: hidden; /* Keep this to prevent horizontal scrollbars if content shifts */
     color: white;
     transition: background 0.5s ease;
 }
@@ -93,6 +93,8 @@ body.hide-panda-search #pandaSearchEngine {
     gap: 10px; /* Modified: Space between main-content and new-sidebar-widget, reduced by 50% */
     width: 100%;
     align-items: stretch; /* Modified: Align items to stretch their height */
+    /* NEW: Shift left to visually center the main-content by compensating for the sidebar */
+    transform: translateX(calc(-1 * (218px + 10px) / 2)); /* Half of widget width + gap */
 }
 
 .main-content {
@@ -445,6 +447,7 @@ body.hide-panda-search #pandaSearchEngine {
         flex-direction: column-reverse; /* Changed to column-reverse to put sidebar on top */
         align-items: center; /* Center items when stacked */
         gap: 20px; /* Spacing between main-content and new-sidebar-widget when stacked */
+        transform: none; /* IMPORTANT: Remove the transform for mobile view */
     }
 
     /* No need for z-index here specifically now as it's set globally */
