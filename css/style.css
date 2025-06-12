@@ -95,6 +95,8 @@ body.hide-panda-search #pandaSearchEngine {
     align-items: stretch; /* Modified: Align items to stretch their height */
     /* NEW: Shift left to visually center the main-content by compensating for the sidebar */
     transform: translateX(calc(-1 * (218px + 10px) / 2)); /* Half of widget width + gap */
+    /* NEW: Ensure primary-content-area stacks above todo-section */
+    z-index: 2; /* Set a higher z-index than todo-section */
 }
 
 .main-content {
@@ -102,9 +104,8 @@ body.hide-panda-search #pandaSearchEngine {
     flex-direction: column;
     gap: 30px;
     width: 100%; /* Will be overridden by flex: 1 */
-    /* max-width: 800px; REMOVED to allow flexible sizing */
     flex: 1; /* Allows main-content to grow and shrink */
-    z-index: 10; /* Added: ensures main-content is above todo-section */
+    /* Removed z-index: 10 from here, as it's better to manage parent stacking */
 }
 
 /* New Sidebar Widget */
@@ -318,6 +319,8 @@ body.hide-panda-search #pandaSearchEngine {
     max-width: 500px;
     margin: 0 auto;
     padding: 20px;
+    /* NEW: Ensure todo-section stacks below primary-content-area */
+    z-index: 1; /* Set a lower z-index than primary-content-area */
 }
 
 .todo-input {
