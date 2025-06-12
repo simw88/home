@@ -1,562 +1,495 @@
-/* Global/Base Styles */
-body {
+* {
     margin: 0;
-    font-family: Roboto;
-    background-color: #f0f0f5;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    padding: 0;
     box-sizing: border-box;
-    transition: background-color 0.5s ease, color 0.5s ease;
-    position: relative;
-    z-index: 1;
 }
 
-body::before {
-    content: '';
-    position: absolute;
+body {
+    font-family: -apple-system, BlinkMacMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: white;
+    transition: background 0.5s ease;
+}
+
+.background-overlay {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('../imgs/Pattern.png');
-    background-repeat: repeat;
-    opacity: 0.1;
-    z-index: -1;
+    background:
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
 }
 
-/* Layout & Structure */
 .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1000px;
+    margin: 40px auto 20px auto;
+    padding: 20px;
     display: flex;
-    background-color: #E0E6E5;
-    border: 3px solid white; /* Consistent border width */
-    border-radius: 0px 20px 20px 20px;
-    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.32);
-    transition: background-color 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease;
-    width: 1000px;
-    height: 260px;
-}
-
-.left-panel {
-    width: 250px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-right: 3px solid pink;
-    /* Ensure other borders are accounted for if needed, e.g., border: 3px solid transparent; */
-    border-top: 3px solid transparent; /* Ensure 3px space on top/left/bottom */
-    border-bottom: 3px solid transparent;
-    border-left: 3px solid transparent;
-    display: flex;
-    justify-content: center;
+    flex-direction: column; /* Stacks primary-content-area and todo-section vertically */
     align-items: center;
-    overflow: hidden;
-    border-radius: 0px;
-    transition: background-color 0.5s ease, border-color 0.5s ease; /* Add border-color transition */
+    gap: 30px; /* Space between primary-content-area and todo-section */
 }
 
-.left-panel img {
+.liquid-glass {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    padding: 25px;
+    text-align: center;
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+.time-display {
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.time-display:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* New rule for hiding the boards tab */
+body.hide-boards-tab #boardsTabContainer {
+    display: none !important;
+}
+
+/* New rule for hiding the Panda search engine */
+body.hide-panda-search #pandaSearchEngine {
+    display: none !important;
+}
+
+/* New Wrapper for Main Content and Sidebar Widget */
+.primary-content-area {
+    display: flex;
+    flex-direction: row-reverse; /* Changed to row-reverse to move sidebar to the left */
+    gap: 10px; /* Modified: Space between main-content and new-sidebar-widget, reduced by 50% */
     width: 100%;
-    height: 100%;
-    object-fit: fill;
-    border-radius: 5%;
+    align-items: stretch; /* Modified: Align items to stretch their height */
 }
 
 .main-content {
-    flex: 1;
-    padding: 7px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    gap: 15px;
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
-    position: relative;
+    gap: 30px;
+    width: 100%; /* Will be overridden by flex: 1 */
+    /* max-width: 800px; REMOVED to allow flexible sizing */
+    flex: 1; /* Allows main-content to grow and shrink */
+    z-index: 10; /* Added: ensures main-content is above todo-section */
 }
 
-/* Components */
-.datetime-section {
-    background-color: #ffffff;
-    border-radius: 15px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
-    padding: 10px;
-    box-sizing: border-box;
-    z-index: 10;
-    min-height: 50px;
+/* New Sidebar Widget */
+.new-sidebar-widget {
+    width: 218px;
+    height: auto; /* Modified: Allow height to stretch */
+    flex-shrink: 0; /* Prevents it from shrinking below 218px */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0; /* Removed inner padding as requested */
+}
+
+/* Inside new-sidebar-widget, style the image */
+.new-sidebar-widget img {
+    max-width: 100%;
+    width: 100%; /* Added: Ensure image takes full width of its parent */
+    height: 100%; /* Added: Ensure image takes full height of its parent */
+    object-fit: cover; /* Modified: Fill the container, cropping if necessary */
+    border-radius: 10px;
+    display: block; /* Ensures no extra space below the image */
+}
+
+.category-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 5;
+}
+
+.tab-container {
+    position: relative;
+    padding: 12px 25px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.05rem;
+    font-weight: 600;
+    user-select: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 95%;
-    margin: 0 auto 15px auto;
+    min-width: 150px;
 }
 
-.datetime-display {
-    font-size: 1.3em;
-    font-weight: 750;
-    color: #333;
-    text-align: center;
-    border-radius: 8px;
-    transition: background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
-    width: 100%;
+.tab-container:hover {
+    background: rgba(255, 255, 255, 0.15);
 }
 
-.labels-section {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 11px;
-    min-width: 220px;
-    margin-top: 17px;
-    margin-bottom: -7px;
-    justify-content: center;
-}
-
-.label-wrapper {
-    position: relative;
-    display: inline-block;
-    vertical-align: top;
-    font-size: 1.2em;
-    width: 220px;
-}
-
-.label {
-    font-size: 1em;
-    color: #333;
-    cursor: pointer;
-    transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    padding: 10px 20px;
-    border-radius: 8px;
-    background-color: white;
-    display: block;
-    text-align: center;
-    border: 3px solid #1A1A1A; /* Changed to #1A1A1A */
-    min-width: 220px;
-    box-sizing: border-box;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.label-wrapper:hover .label, .label:hover {
-    background-color: pink;
-    border-color: #C0FFF4;
-    box-shadow: 8px 8px 8px rgba(192, 255, 244, 0.6);
-    border-radius: 8px 8px 0px 0px;
-}
-
-.dropdown-content {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity 0.3s ease, visibility 0.3s ease, background-color 0.5s ease, color 0.5s ease;
+.dropdown-menu {
+    display: none;
     position: absolute;
-    background-color: #f9f9f9;
-    min-width: 220px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 9999;
-    border-radius: 5px;
-    padding: 10px 0;
-    top: 100%;
+    top: calc(100% + 10px);
     left: 50%;
     transform: translateX(-50%);
-    width: 200px;
-    max-width: calc(100vw - 40px);
-    box-sizing: border-box;
-    max-height: 80vh;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+    padding: 10px 0;
+    min-width: 180px;    
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.5);
+    z-index: 9999; /* Increased z-index */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    
+    overflow: hidden;
 }
 
-/* This is crucial for showing the dropdown, controlled by JS */
-.dropdown-content.show {
+.dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+    filter: blur(10px);
+    z-index: -1;
+    border-radius: inherit;
+}
+
+.dropdown-menu.active-dropdown {
+    display: block;
     opacity: 1;
-    visibility: visible;
     pointer-events: auto;
+    transform: translate3d(-50%, 0, 0);
+    -webkit-transform: translate3d(-50%, 0, 0);
+    will-change: transform, opacity;	
 }
 
-.dropdown-content li {
-    color: #1A1A1A; /* Changed to #1A1A1A */
-    padding: 8px 16px;
-    text-decoration: none;
+.dropdown-item {
     display: block;
-    transition: background-color 0.3s ease;
-    cursor: pointer;
-    width: 100%;
-    box-sizing: border-box;
-    text-align: center;
-}
-
-.dropdown-content li:hover {
-    background-color: #f1f1f1;
-}
-
-.dropdown-content a {
-    color: #333;
-    font-weight: bold;
-    padding: 8px 16px;
+    padding: 10px 20px;
+    color: white;
     text-decoration: none;
-    display: block;
-    transition: background-color 0.3s ease;
-    width: 100%;
-    box-sizing: border-box;
-    text-align: center;
+    text-align: left;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    position: relative;
+    z-index: 1;
 }
 
-.dropdown-content a:hover {
-    background-color: #f1f1f1;
+.dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+    transform: translateX(1px);
+	color: rgba(61, 61, 61, 61%);
 }
 
-.labels-section .label-wrapper .dropdown-content li,
-.labels-section .label-wrapper .dropdown-content a,
-.search-input-group .label-wrapper .dropdown-content li,
-.search-input-group .label-wrapper .dropdown-content a {
-    font-weight: 500;
-}
-
+/* Search Section */
 .search-section {
     display: flex;
     flex-direction: column;
-    gap: 25px;
-    align-items: center;
-}
-
-.search-input-group {
-    display: flex;
-    flex-direction: row;
     gap: 15px;
-    align-items: center;
     width: 100%;
-    box-sizing: border-box;
 }
 
-.input-with-clear,
-.textarea-with-clear {
-    position: relative;
+.search-engines {
     display: flex;
-    flex-grow: 1;
-    align-items: center;
-    width: 100%;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
-#searchForm {
-    flex-grow: 1;
-    display: flex;
-    width: 338px;
-    gap: 5px;
-    align-items: center;
-}
-
-#searchInput {
-    flex-grow: 1;
-    width: auto;
-    padding: 10px;
-    padding-right: 30px;
-    border-radius: 5px;
-    border: 3px solid #1A1A1A; /* Changed to #1A1A1A */
-    font-size: 1.2em;
-    transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
-}
-
-.todo-section { /*mobile*/
-    width: 100%;
-}
-
-#todoInput {
-    flex-grow: 1;
-    width: auto;
-    min-height: 100px;
-    padding-right: 40px;
-    border: 3px solid #1A1A1A; /* Changed to #1A1A1A */
-    overflow: hidden;
-    text-align: left;
-    transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
-}
-
-#todoInput::placeholder {
-    text-align: center;
-    color: #999;
-    opacity: 1;
-    transition: color 0.5s ease, opacity 0.5s ease;
-}
-
-#todoInput:focus::placeholder {
-    color: #999;
-    opacity: 1;
-}
-
-.clear-button {
-    display: none;
-    background-color: #ddd;
-    color: transparent;
-    border: none;
-    width: 20px;
-    height: 20px;
-    padding: 0;
-    margin-left: 5px;
+.search-engine {
+    padding: 8px 15px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
     cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    user-select: none;
+    border: 1px solid transparent;
+}
+
+.search-engine:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.search-engine.active {
+    background: rgba(255, 255, 255, 0.25);
+    font-weight: bold;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.search-box {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.search-input-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease, background 0.3s ease;
+    padding-right: 40px;
+}
+
+.search-input:focus {
+    border-color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.clear-text-button {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.clear-text-button:hover {
+    opacity: 1;
+    color: white;
+}
+
+/* To-Do List */
+.todo-section {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.todo-input {
+    width: 100%;
+    padding: 12px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    margin-bottom: 15px;
+    transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.todo-input:focus {
+    border-color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.todo-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.todo-list {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Custom Scrollbar for todo-list */
+.todo-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.todo-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.todo-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+.todo-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+
+.todo-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    min-width: 0;
+}
+
+.todo-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.todo-text {
+    flex: 1;
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    min-width: 0;
+    white-space: pre-wrap;
+}
+
+.todo-delete {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 100, 100, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 50%;
-    font-size: 1em;
-    line-height: 20px;
-    text-align: center;
-    position: absolute;
-    right: 4px;
-    top: 25%;
-    transform: translateY(-50%);
-    box-sizing: border-box;
-    transition: background-color 0.5s ease;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0.5rem;
+    align-self: flex-start;
+    margin-top: 0.25rem;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
-.clear-button::before,
-.clear-button::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 70%;
-    height: 2px;
-    background-color: #333;
-    transform: translate(-50%, -50%) rotate(45deg);
-    transition: background-color 0.5s ease;
+.todo-delete:hover {
+    background: rgba(255, 100, 100, 0.15);
+    color: rgba(255, 80, 80, 1);
+    transform: scale(1.1);
+    border-color: rgba(255, 100, 100, 0.3);
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.3);
 }
 
-.clear-button::after {
-    transform: translate(-50%, -50%) rotate(-45deg);
-}
-
-.clear-button:hover {
-    background-color: pink;
-}
-
-.clear-button:hover::before,
-.clear-button:hover::after {
-    background-color: #fff;
-}
-
-.kaomoji-display {
-    display: none;
-    text-align: center;
-    font-size: 1.5em;
-    margin-top: -25px;
-    color: #555;
-    transition: color 0.5s ease;
-}
-
-/* Media Queries */
-@media (min-width: 769px) {
-    body {
-        align-items: flex-start;
-        padding-top: 25vh;
-    }
-
-    .main-content {
-        padding-top: 15px;
-    }
-
-    .datetime-section {
-        position: absolute;
-        top: -50px;
-        left: 46px;
-        transform: translateX(-50%);
-        width: 82%;
-        height: 10%;
-        background-color: white;
-        border-radius:  15px 50px 0px 0px;
-        border: 3px solid white;
-        border-bottom-color: pink;
-        box-sizing: border-box;
-        z-index: 1;
-        transition: background-color 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease;
-    }
-
-    .datetime-display {
-        font-size: 1.3em;
-        margin-bottom: 0;
-        padding: 0;
-        text-align: center;
-    }
-
-    .search-input-group {
-        max-width: 550px;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: row;
-        gap: 15px;
-        align-items: center;
-        box-sizing: border-box;
-    }
-
-    .search-input-group .label-wrapper {
-        width: 110px;
-        min-width: 110px;
-        flex-shrink: 0;
-    }
-
-    .search-input-group .label-wrapper .label {
-        width: 110px;
-        min-width: 110px;
-    }
-
-    .search-input-group .label-wrapper .dropdown-content {
-        width: 110px;
-        min-width: 110px;
-    }
-
-    .labels-section {
-        max-width: 451px;
-        padding-left: 145px;
-    }
-
-    .search-section {
-        position: relative;
-        padding-bottom: 54px;
-        margin-top: 8px;
-    }
-
-    .search-section .todo-section {
-        position: absolute;
-        bottom: -60px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 95%;
-        max-width: 700px;
-        min-height: 100px;
-    }
-
-    .search-section .todo-section .textarea-with-clear {
-        height: 100%;
-        display: flex;
-        align-items: center;
-    }
-
-    .search-section .todo-section #todoInput {
-        min-height: 80px;
-        height: auto;
-        max-height: 100%;
-        width: 100%;
-        border-radius: 8px;
-        box-shadow: none;
-    }
-
-    .search-section .todo-section .clear-button {
-        right: 15px;
-    }
-
-    .label-wrapper:hover .dropdown-content {
-        opacity: 5;
-        visibility: visible;
-        pointer-events: auto;
-    }
-}
-
+/* Responsive adjustments */
 @media (max-width: 768px) {
     .container {
-        flex-direction: column;
-        height: auto;
+        margin: 20px auto;
+        padding: 15px;
+        gap: 20px; /* Adjust gap for mobile */
     }
 
-    .search-input-group {
-        max-width: 800px;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: row;
-        gap: 15px;
-        align-items: center;
-        box-sizing: border-box;
+    .time-display {
+        font-size: 0.9rem;
+        padding: 10px 20px;
     }
 
-    .left-panel {
-        width: 100%;
-        height: 150px;
-        margin-bottom: 20px;
-        background-color: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(40px);
-        border: 1px solid rgba(255, 255, 255, 0.18); /* Consistent border for mobile */
-        border-bottom: 1px solid #ccc;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        order: -1;
-        border-radius: 0;
+    /* Change primary-content-area to column layout on mobile */
+    .primary-content-area {
+        flex-direction: column-reverse; /* Changed to column-reverse to put sidebar on top */
+        align-items: center; /* Center items when stacked */
+        gap: 20px; /* Spacing between main-content and new-sidebar-widget when stacked */
     }
 
+    /* No need for z-index here specifically now as it's set globally */
     .main-content {
-        border-radius: 0;
-        padding: 20px;
+        gap: 20px; /* Adjust gap for mobile */
     }
 
-    .left-panel img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-        display: block;
+    .new-sidebar-widget {
+        width: 59px; /* Set width for mobile */
+        height: 58px; /* Set height for mobile */
+        padding: 0; /* Ensures no inner padding on mobile */
     }
 
-    .datetime-section {
-        position: static;
-        transform: none;
-        width: 100%;
-        min-height: auto;
-        padding: .5px;
-        background-color: transparent;
-        box-shadow: none;
-        border: none;
+    /* Ensure image is contained within its fixed-height container on mobile */
+    .new-sidebar-widget img {
+        max-height: 100%; /* Limit image height to container's height */
+        object-fit: contain; /* Scale down the image to fit fully within the container */
     }
 
-    .datetime-display {
-        font-size: 1.1em;
-        margin-bottom: 0;
-        padding: 5px;
-        background-color: transparent;
+    .category-tabs {
+        gap: 10px; /* Reduced gap for tabs in mobile */
+        flex-direction: column; /* Stack tabs vertically */
+        align-items: stretch; /* Make tabs fill the width of their container */
+        width: 100%; /* Ensure the container itself takes full width */
+        flex-wrap: nowrap; /* Prevent wrapping (though not strictly necessary with column direction) */
     }
 
-    .labels-section {
-        flex-direction: column;
-        gap: 10px;
-        margin-bottom: 20px;
-        font-weight: bold;
-        font-size: 1em;
-        padding-left: 0;
+    .tab-container {
+        /* No need for min-width on mobile when stretching to full width */
+        min-width: unset; /* Remove min-width constraint */
+        width: 100%; /* Make each tab take the full width */
+        margin-bottom: 0; /* Remove any potential bottom margin if it causes issues with gap */
     }
 
-    .search-section {
-        gap: 10px;
-        align-items: stretch;
-        margin-top: -6px;
+    .search-engines {
+        flex-wrap: nowrap; /* Prevent wrapping for search engines */
+        justify-content: center; /* Center items to keep them grouped */
+        gap: 5px; /* Further reduce gap to make them fit */
+        padding: 0 5px; /* Add slight horizontal padding if needed */
     }
 
-    .search-input-group {
-        flex-direction: column;
-        gap: 10px;
-        align-items: center;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    #searchInput {
-        flex-grow: 1;
-        width: auto;
-        flex-shrink: 1;
-        min-width: 0;
-        max-width: none;
-        box-sizing: border-box;
-    }
-
-    .label-wrapper {
-        width: 100%;
-    }
-
-    .label {
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .dropdown-content {
-        width: 100%;
-        left: 0;
-        transform: translateX(0);
-    }
-
-    .kaomoji-display {
-        display: block;
+    .search-engine {
+        flex-grow: 0; /* Prevent from growing when space is available */
+        flex-shrink: 0; /* Prevent from shrinking below content size */
+        font-size: 0.8rem; /* Slightly smaller font for better fit */
+        padding: 6px 10px; /* Reduced padding */
     }
 }
