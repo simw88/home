@@ -2,88 +2,86 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homepage</title>
-    <link rel="icon" href="imgs/home.png" type="image/png">
     <link rel="stylesheet" href="css/style.css">
+	<link rel="icon" href="imgs/home.png" type="image/png">
 </head>
 <body>
+    <div class="background-overlay"></div>
+
+    <div class="time-display liquid-glass" onclick="toggleTimeDisplay()">
+        <span id="current-time"></span>
+    </div>
+
     <div class="container">
-        <div class="left-panel">
+        <div class="primary-content-area">
+            <div class="main-content liquid-glass">
+                <div class="category-tabs">
+                    <div class="tab tab-container">
+                        📧 Email & Shopping
+                        <div class="dropdown-menu">
+                            <a href="https://mail.google.com" rel="noopener noreferrer" class="dropdown-item">Gmail</a>
+                            <a href="https://app.tuta.com/login" rel="noopener noreferrer" class="dropdown-item">Tuta</a>
+                            <a href="https://online.asb.co.nz/auth/" rel="noopener noreferrer" class="dropdown-item">ASB</a>
+                            <a href="https://www.vodafone.co.nz/knox/login_handler.jsp?template=myvodafone" rel="noopener noreferrer" class="dropdown-item">Vodafone</a>
+                            <a href="https://www.trademe.co.nz" rel="noopener noreferrer" class="dropdown-item">Trade Me</a>
+                            <a href="http://www.mightyape.co.nz/" rel="noopener noreferrer" class="dropdown-item">Mighty Ape</a>
+                            <a href="http://www.amazon.com/International-Shipping-Direct/b?node=230659011" rel="noopener noreferrer" class="dropdown-item">Amazon</a>
+                        </div>
+                    </div>
+
+                    <div class="tab tab-container">📺 News & Videos
+                        <div class="dropdown-menu">
+                            <a href="https://www.youtube.com/feed/subscriptions" class="dropdown-item">Youtube</a>
+                            <a href="http://www.vg247.com" class="dropdown-item">VG247</a>
+                            <a href="https://www.torrentfreak.com" class="dropdown-item">TorrentFreak</a>
+                            <a href="https://poa.st/timeline/local" class="dropdown-item">Poast</a>
+                            <a href="https://amerikaner.org" class="dropdown-item">Amerikaner</a>
+                            <a href="https://therightstuff.biz/" class="dropdown-item">The Right Stuff</a>
+                            <a href="https://www.1news.co.nz/" class="dropdown-item">1 News</a>
+                            <a href="https://fmhy.pages.dev/videopiracyguide" class="dropdown-item">Streaming Sites</a>
+                        </div>
+                    </div>
+
+                    <div class="tab tab-container" id="boardsTabContainer">💬 Boards
+                        <div class="dropdown-menu">
+                            <a href="http://4chan.org/" class="dropdown-item">4chan home</a>
+                            <a href="http://boards.4chan.org/a/" class="dropdown-item">/a/ - Anime and Manga</a>
+                            <a href="http://boards.4chan.org/v/" class="dropdown-item">/v/ - Video Games</a>
+                            <a href="http://boards.4chan.org/g/" class="dropdown-item">/g/ - Technology</a>
+                            <a href="http://boards.4chan.org/tv/" class="dropdown-item">/tv/ - Television & Film</a>
+                            <a href="http://boards.4chan.org/fit/" class="dropdown-item">/fit/ - Fitness</a>
+                            <a href="http://boards.4chan.org/o/" class="dropdown-item">/o/ - Auto</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="search-section">
+                    <div class="search-engines">
+                        <div class="search-engine active" data-engine="google">Google</div>
+                        <div class="search-engine" data-engine="Nyaa">Nyaa</div>
+                        <div class="search-engine" data-engine="yandex">Yandex</div>
+                        <div class="search-engine" data-engine="Panda" id="pandaSearchEngine">Panda</div>
+                    </div>
+
+                    <div class="search-box">
+                        <div class="search-input-wrapper">
+                            <input type="text" class="search-input" placeholder="Search..." autocomplete="off" id="searchInput">
+                            <button class="clear-text-button hidden" id="clearSearchButton">×</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="new-sidebar-widget liquid-glass">
+                <img id="suzuImage" src="" alt="Suzu Image">
+            </div>
         </div>
-        <div class="main-content">
-            <div class="datetime-section">
-                <div id="datetimeDisplay" class="datetime-display"></div>
-            </div>
-            <div class="labels-section">
-                <div class="label-wrapper">
-                    <span class="label" id="emailShopping">Email and Shopping</span>
-                    <div class="dropdown-content">
-                        <a href="https://mail.google.com" target="_blank" rel="noopener noreferrer">Gmail</a>
-                        <a href="https://app.tuta.com/login" target="_blank" rel="noopener noreferrer">Tuta</a>
-                        <a href="https://online.asb.co.nz/auth/" target="_blank" rel="noopener noreferrer">ASB</a>
-                        <a href="https://www.vodafone.co.nz/knox/login_handler.jsp?template=myvodafone" target="_blank" rel="noopener noreferrer">Vodafone</a>
-                        <a href="https://www.trademe.co.nz" target="_blank" rel="noopener noreferrer">Trade Me</a>
-                        <a href="http://www.mightyape.co.nz/" target="_blank" rel="noopener noreferrer">Mighty Ape</a>
-                        <a href="http://www.amazon.com/International-Shipping-Direct/b?node=230659011" target="_blank" rel="noopener noreferrer">Amazon</a>
-                        <a href="http://www.vocaroo.com" target="_blank" rel="noopener noreferrer">Vocaroo</a>
-                    </div>
-                </div>
-                <div class="label-wrapper">
-                    <span class="label" id="newsVideos">News and Videos</span>
-                    <div class="dropdown-content">
-                        <a href="https://www.youtube.com/feed/subscriptions" target="_blank" rel="noopener noreferrer">Youtube</a>
-                        <a href="http://www.vg247.com" target="_blank" rel="noopener noreferrer">VG247</a>
-                        <a href="https://www.torrentfreak.com" target="_blank" rel="noopener noreferrer">TorrentFreak</a>
-                        <a href="https://poa.st/timeline/local" target="_blank" rel="noopener noreferrer">Poast</a>
-                        <a href="https://amerikaner.org" target="_blank" rel="noopener noreferrer">Amerikaner</a>
-                        <a href="https://therightstuff.biz/" target="_blank" rel="noopener noreferrer">The Right Stuff</a>
-                        <a href="https://www.1news.co.nz/" target="_blank" rel="noopener noreferrer">1 News</a>
-                        <a href="https://fmhy.pages.dev/videopiracyguide" target="_blank" rel="noopener noreferrer">Streaming Sites</a>
-                    </div>
-                </div>
-                <div class="label-wrapper" id="fourChan">
-                    <span class="label">4chan</span>
-                    <div class="dropdown-content">
-                        <a href="http://4chan.org/" target="_blank" rel="noopener noreferrer">4chan home</a>
-                        <a href="http://boards.4chan.org/a/" target="_blank" rel="noopener noreferrer">/a/ - Anime and Manga</a>
-                        <a href="http://boards.4chan.org/v/" target="_blank" rel="noopener noreferrer">/v/ - Video Games</a>
-                        <a href="http://boards.4chan.org/g/" target="_blank" rel="noopener noreferrer">/g/ - Technology</a>
-                        <a href="http://boards.4chan.org/tv/" target="_blank" rel="noopener noreferrer">/tv/ - Television & Film</a>
-                        <a href="http://boards.4chan.org/fit/" target="_blank" rel="noopener noreferrer">/fit/ - Fitness</a>
-                        <a href="http://boards.4chan.org/o/" target="_blank" rel="noopener noreferrer">/o/ - Auto</a>
-                    </div>
-                </div>
-            </div>
-            <div class="search-section">
-                <span id="kaomojiDisplay" class="kaomoji-display"></span>
-                <div class="search-input-group">
-                    <div class="label-wrapper">
-                        <span class="label">Google</span>
-                        <div class="dropdown-content">
-                            <li class="search-engine-option" data-value="https://www.google.com/search" data-name="q">Google</li>
-                            <li class="search-engine-option" data-value="https://nyaa.si/" data-name="q">Nyaa</li>
-                            <li class="search-engine-option" data-value="https://yandex.com/search/" data-name="text">Yandex</li>
-                            <li class="search-engine-option" data-value="https://exhentai.org/" data-name="f_search">Panda</li>
-                        </div>
-                    </div>
-                    <form id="searchForm" action="https://www.google.com/search">
-                        <div class="input-with-clear">
-                            <input type="text" id="searchInput" name="q" placeholder="Search..." autocomplete="off" autofocus>
-                            <button type="button" class="clear-button" data-target="searchInput">x</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="todo-section">
-                    <div class="textarea-with-clear">
-                        <textarea id="todoInput" placeholder="To do list"></textarea>
-                        <button type="button" class="clear-button" data-target="todoInput">x</button>
-                    </div>
-                </div>
-            </div>
+
+        <div class="todo-section liquid-glass">
+            <input type="text" class="todo-input" placeholder="Add a note..." id="todoInput">
+            <div class="todo-list" id="todoList"></div>
         </div>
     </div>
 
