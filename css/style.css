@@ -169,7 +169,7 @@ body.hide-panda-search #pandaSearchEngine {
     border-radius: 12px;
     padding: 10px 0;
     min-width: 180px;    
-    background: none;
+    background: #D1D7E4; /* Changed from none to the specified color */
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.5);
     z-index: 9999; /* Increased z-index */
