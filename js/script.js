@@ -78,7 +78,7 @@ document.querySelectorAll('.search-engine').forEach(engine => {
         document.querySelectorAll('.search-engine').forEach(e => e.classList.remove('active'));
         this.classList.add('active');
         currentEngine = this.dataset.engine;
-        // ONLY focus search input on desktop
+        // Keep focus for desktop, as this is user-initiated
         if (window.innerWidth > MOBILE_BREAKPOINT) {
             document.getElementById('searchInput').focus();
         }
@@ -100,7 +100,7 @@ searchInput.addEventListener('input', function() {
 
 clearSearchButton.addEventListener('click', function() {
     searchInput.value = '';
-    // ONLY focus search input on desktop after clearing
+    // Keep focus for desktop, as this is user-initiated
     if (window.innerWidth > MOBILE_BREAKPOINT) {
         searchInput.focus();
     }
@@ -232,15 +232,12 @@ function loadRandomSuzuImage() {
     document.getElementById('suzuImage').src = imageUrl;
 }
 
-// Always focus search box, clear its content on page load, and set daily background
+// Clear search box content on page load, and set daily background
 window.addEventListener('load', function() {
     searchInput.value = '';
     clearSearchButton.classList.add('hidden');
 
-    // Only focus search input on desktop (moved from window.load listener)
-    if (window.innerWidth > MOBILE_BREAKPOINT) {
-        searchInput.focus();
-    }
+    // Removed: searchInput.focus(); // This line caused the issue on mobile
 
     // Initial call to set the background and store the current day
     setWeekdayBackground();
@@ -336,7 +333,7 @@ function setupDropdownListeners() {
             tabContainer.addEventListener('mouseleave', handleDesktopMouseLeave);
             if (dropdown) { // Only add if dropdown exists
                 dropdown.addEventListener('mouseenter', handleDropdownMouseEnter);
-                dropdown.addEventListener('mouseleave', handleDropdownMouseLeave);
+                dropdown.removeEventListener('mouseleave', handleDropdownMouseLeave);
             }
         }
     });
