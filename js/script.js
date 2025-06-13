@@ -238,8 +238,11 @@ window.addEventListener('load', function() {
     searchInput.value = '';
     clearSearchButton.classList.add('hidden');
 
-    // Removed: searchInput.focus(); from here
-    // This ensures no element is automatically focused on page load.
+    // Re-introduce focus to the search input after a short delay
+    // This helps ensure your focus call overrides browser's default new tab focus.
+    setTimeout(() => {
+        searchInput.focus();
+    }, 100); // A small delay, e.g., 100ms, often works well
 
     // Initial call to set the background and store the current day
     setWeekdayBackground();
