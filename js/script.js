@@ -78,7 +78,7 @@ document.querySelectorAll('.search-engine').forEach(engine => {
         document.querySelectorAll('.search-engine').forEach(e => e.classList.remove('active'));
         this.classList.add('active');
         currentEngine = this.dataset.engine;
-        // Keep focus for desktop, as this is user-initiated
+        // Keep focus for desktop when search engine is clicked (user-initiated)
         if (window.innerWidth > MOBILE_BREAKPOINT) {
             document.getElementById('searchInput').focus();
         }
@@ -100,7 +100,7 @@ searchInput.addEventListener('input', function() {
 
 clearSearchButton.addEventListener('click', function() {
     searchInput.value = '';
-    // Keep focus for desktop, as this is user-initiated
+    // Keep focus for desktop after clearing (user-initiated)
     if (window.innerWidth > MOBILE_BREAKPOINT) {
         searchInput.focus();
     }
@@ -114,6 +114,7 @@ searchInput.addEventListener('keypress', function(e) {
         window.open(searchEngines[currentEngine] + query, '_blank');
         this.value = ''; // Clear search input after pressing Enter
         clearSearchButton.classList.add('hidden');
+        // Do not focus after search submission, leave it to user
     }
 });
 
@@ -163,7 +164,7 @@ document.getElementById('todoInput').addEventListener('keypress', function(e) {
     }
 });
 
-// UPDATED: Scroll to todo input on focus in mobile mode, positioning it at the top
+// Scroll to todo input on focus in mobile mode, positioning it at the top
 const todoInput = document.getElementById('todoInput');
 if (todoInput) { // Ensure the element exists before adding event listener
     todoInput.addEventListener('focus', function() {
@@ -237,7 +238,8 @@ window.addEventListener('load', function() {
     searchInput.value = '';
     clearSearchButton.classList.add('hidden');
 
-    // Removed: searchInput.focus(); // This line caused the issue on mobile
+    // Removed: searchInput.focus(); from here
+    // This ensures no element is automatically focused on page load.
 
     // Initial call to set the background and store the current day
     setWeekdayBackground();
@@ -246,7 +248,7 @@ window.addEventListener('load', function() {
 
     loadRandomSuzuImage(); // Call this function on page load
 
-    // UPDATED: Add event listener to the image for loading a new one on click, but only if not rep.png
+    // Add event listener to the image for loading a new one on click, but only if not rep.png
     const suzuImageElement = document.getElementById('suzuImage');
     if (suzuImageElement) {
         suzuImageElement.addEventListener('click', function() {
