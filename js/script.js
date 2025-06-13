@@ -238,15 +238,6 @@ window.addEventListener('load', function() {
     searchInput.value = '';
     clearSearchButton.classList.add('hidden');
 
-    // Step 1: Attempt to focus the body to pull focus away from the URL bar
-    document.body.focus();
-
-    // Step 2: Re-introduce focus to the search input after a sufficient delay
-    // This helps ensure your focus call overrides browser's default new tab focus.
-    setTimeout(() => {
-        searchInput.focus();
-    }, 500); // Increased delay to 500ms for more robustness
-
     // Initial call to set the background and store the current day
     setWeekdayBackground();
     // Set an interval to check for day change every minute (60 seconds * 1000 ms/s)
@@ -264,6 +255,65 @@ window.addEventListener('load', function() {
             }
             // If it is rep.png, do nothing.
         });
+    }
+
+    // Improved focus logic for search input
+    function focusSearchInput() {
+        if (window.innerWidth > MOBILE_BREAKPOINT) {
+            try {
+                // First ensure the input is visible and focusable
+                searchInput.style.visibility = 'visible';
+                searchInput.tabIndex = 0;
+                
+                // Focus the input
+                searchInput.focus();
+                
+                // Additional fallback: set selection to ensure cursor is visible
+                searchInput.setSelectionRange(0, 0);
+            } catch (e) {
+                // Fallback if any of the above fails
+                setTimeout(() => {
+                    searchInput.focus();
+                }, 100);
+            }
+        }
+    }
+
+    // Try multiple approaches to ensure focus works
+    // Immediate attempt
+    focusSearchInput();
+    
+    // Delayed attempts with increasing intervals
+    setTimeout(focusSearchInput, 100);
+    setTimeout(focusSearchInput, 500);
+    setTimeout(focusSearchInput, 1000);
+    
+    // Also try when the document becomes visible (handles tab switching)
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden && window.innerWidth > MOBILE_BREAKPOINT) {
+            setTimeout(focusSearchInput, 50);
+        }
+    });
+});
+
+// Add this additional event listener to handle cases where the page becomes active
+window.addEventListener('focus', function() {
+    if (window.innerWidth > MOBILE_BREAKPOINT) {
+        setTimeout(() => {
+            if (document.activeElement === document.body || document.activeElement === document.documentElement) {
+                searchInput.focus();
+            }
+        }, 50);
+    }
+});
+
+// Also add a click handler to the body to focus search when clicking empty space
+document.body.addEventListener('click', function(e) {
+    // Only focus if clicking on the body itself or background elements, not on interactive elements
+    if (e.target === document.body || e.target.classList.contains('background-overlay') || e.target.classList.contains('container')) {
+        if (window.innerWidth > MOBILE_BREAKPOINT) {
+            searchInput.focus();
+        }
     }
 });
 
