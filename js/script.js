@@ -229,8 +229,12 @@ function loadRandomSuzuImage() {
 // Always focus search box, clear its content on page load, and set daily background
 window.addEventListener('load', function() {
     searchInput.value = '';
-    searchInput.focus();
     clearSearchButton.classList.add('hidden');
+
+    // Only focus search input on desktop
+    if (window.innerWidth > MOBILE_BREAKPOINT) { // Use the same breakpoint defined for dropdowns
+        searchInput.focus();
+    }
 
     // Initial call to set the background and store the current day
     setWeekdayBackground();
