@@ -238,11 +238,14 @@ window.addEventListener('load', function() {
     searchInput.value = '';
     clearSearchButton.classList.add('hidden');
 
-    // Re-introduce focus to the search input after a short delay
+    // Step 1: Attempt to focus the body to pull focus away from the URL bar
+    document.body.focus();
+
+    // Step 2: Re-introduce focus to the search input after a sufficient delay
     // This helps ensure your focus call overrides browser's default new tab focus.
     setTimeout(() => {
         searchInput.focus();
-    }, 100); // A small delay, e.g., 100ms, often works well
+    }, 500); // Increased delay to 500ms for more robustness
 
     // Initial call to set the background and store the current day
     setWeekdayBackground();
