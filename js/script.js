@@ -78,7 +78,10 @@ document.querySelectorAll('.search-engine').forEach(engine => {
         document.querySelectorAll('.search-engine').forEach(e => e.classList.remove('active'));
         this.classList.add('active');
         currentEngine = this.dataset.engine;
-        document.getElementById('searchInput').focus();
+        // ONLY focus search input on desktop
+        if (window.innerWidth > MOBILE_BREAKPOINT) {
+            document.getElementById('searchInput').focus();
+        }
     });
 });
 
@@ -97,7 +100,10 @@ searchInput.addEventListener('input', function() {
 
 clearSearchButton.addEventListener('click', function() {
     searchInput.value = '';
-    searchInput.focus();
+    // ONLY focus search input on desktop after clearing
+    if (window.innerWidth > MOBILE_BREAKPOINT) {
+        searchInput.focus();
+    }
     this.classList.add('hidden');
 });
 
@@ -231,8 +237,8 @@ window.addEventListener('load', function() {
     searchInput.value = '';
     clearSearchButton.classList.add('hidden');
 
-    // Only focus search input on desktop
-    if (window.innerWidth > MOBILE_BREAKPOINT) { // Use the same breakpoint defined for dropdowns
+    // Only focus search input on desktop (moved from window.load listener)
+    if (window.innerWidth > MOBILE_BREAKPOINT) {
         searchInput.focus();
     }
 
