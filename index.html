@@ -5,85 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homepage</title>
     <link rel="stylesheet" href="css/style.css">
-	<link rel="icon" href="imgs/home.png" type="image/png">
 </head>
 <body>
-    <div class="background-overlay"></div>
-
-    <div class="time-display liquid-glass" onclick="toggleTimeDisplay()">
-        <span id="current-time"></span>
+    <div class="time-date-container">
+        <span id="clockDisplay"></span>
     </div>
 
-    <div class="container">
-        <div class="primary-content-area">
-            <div class="main-content liquid-glass">
-                <div class="category-tabs">
-                    <div class="tab tab-container">
-                        📧 Email & Shopping
-                        <div class="dropdown-menu">
-                            <a href="https://mail.google.com" rel="noopener noreferrer" class="dropdown-item">Gmail</a>
-                            <a href="https://app.tuta.com/login" rel="noopener noreferrer" class="dropdown-item">Tuta</a>
-                            <a href="https://online.asb.co.nz/auth/" rel="noopener noreferrer" class="dropdown-item">ASB</a>
-                            <a href="https://www.vodafone.co.nz/knox/login_handler.jsp?template=myvodafone" rel="noopener noreferrer" class="dropdown-item">Vodafone</a>
-                            <a href="https://www.trademe.co.nz" rel="noopener noreferrer" class="dropdown-item">Trade Me</a>
-                            <a href="http://www.mightyape.co.nz/" rel="noopener noreferrer" class="dropdown-item">Mighty Ape</a>
-                            <a href="http://www.amazon.com/International-Shipping-Direct/b?node=230659011" rel="noopener noreferrer" class="dropdown-item">Amazon</a>
-                        </div>
-                    </div>
-
-                    <div class="tab tab-container">📺 News & Videos
-                        <div class="dropdown-menu">
-                            <a href="https://www.youtube.com/feed/subscriptions" class="dropdown-item">Youtube</a>
-                            <a href="http://www.vg247.com" class="dropdown-item">VG247</a>
-                            <a href="https://www.torrentfreak.com" class="dropdown-item">TorrentFreak</a>
-                            <a href="https://poa.st/timeline/local" class="dropdown-item">Poast</a>
-                            <a href="https://amerikaner.org" class="dropdown-item">Amerikaner</a>
-                            <a href="https://therightstuff.biz/" class="dropdown-item">The Right Stuff</a>
-                            <a href="https://www.1news.co.nz/" class="dropdown-item">1 News</a>
-                            <a href="https://fmhy.pages.dev/videopiracyguide" class="dropdown-item">Streaming Sites</a>
-                        </div>
-                    </div>
-
-                    <div class="tab tab-container" id="boardsTabContainer">💬 Boards
-                        <div class="dropdown-menu">
-                            <a href="http://4chan.org/" class="dropdown-item">4chan home</a>
-                            <a href="http://boards.4chan.org/a/" class="dropdown-item">/a/ - Anime and Manga</a>
-                            <a href="http://boards.4chan.org/v/" class="dropdown-item">/v/ - Video Games</a>
-                            <a href="http://boards.4chan.org/g/" class="dropdown-item">/g/ - Technology</a>
-                            <a href="http://boards.4chan.org/tv/" class="dropdown-item">/tv/ - Television & Film</a>
-                            <a href="http://boards.4chan.org/fit/" class="dropdown-item">/fit/ - Fitness</a>
-                            <a href="http://boards.4chan.org/o/" class="dropdown-item">/o/ - Auto</a>
-                        </div>
-                    </div>
+    <div class="main-content-wrapper">
+        <div class="image-container"></div>
+        <div class="container">
+            <div class="tabs" id="mainTabs">
+                <div class="tab" data-dropdown-content='[{"text":"Gmail","link":"https://mail.google.com"}, {"text":"Tuta","link":"https://app.tuta.com/login"}, {"text":"ASB","link":"https://online.asb.co.nz/auth/"}, {"text":"Vodafone","link":"https://one.nz/#sign-in"}, {"text":"Trade Me","link":"https://www.trademe.co.nz/"}, {"text":"Mighty Ape","link":"https://www.mightyape.co.nz/mn/"}, {"text":"Amazon","link":"https://www.amazon.com/"}]'>
+                    Email & Shopping
                 </div>
-
-                <div class="search-section">
-                    <div class="search-engines">
-                        <div class="search-engine active" data-engine="google">Google</div>
-                        <div class="search-engine" data-engine="Nyaa">Nyaa</div>
-                        <div class="search-engine" data-engine="yandex">Yandex</div>
-                        <div class="search-engine" data-engine="Panda" id="pandaSearchEngine">Panda</div>
-                    </div>
-
-                    <div class="search-box">
-                        <div class="search-input-wrapper">
-                            <input type="text" class="search-input" autofocus placeholder="Search..." autocomplete="off" id="searchInput">
-                            <button class="clear-text-button hidden" id="clearSearchButton">×</button>
-                        </div>
-                    </div>
+                <div class="tab" data-dropdown-content='[{"text":"YouTube", "link":"https://www.youtube.com/feed/subscriptions"}, {"text":"Torrent Freak", "link":"https://torrentfreak.com/"}, {"text":"Poast", "link":"https://poa.st/"}, {"text":"Amerikaner", "link":"https://amerikaner.org/"}, {"text":"1News", "link":"https://www.1news.co.nz/"}, {"text":"FMHY", "link":"https://fmhy.pages.dev/videopiracyguide"}]'>
+                    News & Video
+                </div>
+                <div class="tab" data-dropdown-content='[{"text":"4chan Home","link":"https://4chan.org/"}, {"text":"/a/ - Anime & Manga","link":"https://boards.4chan.org/a/"}, {"text":"/v/ - Video Games","link":"https://boards.4chan.org/v/"}, {"text":"/g/ - Technology","link":"https://boards.4chan.org/g/"}, {"text":"/tv/ - Television & Film","link":"https://boards.4chan.org/tv/"}, {"text":"/fit/ - Fitness","link":"https://boards.4chan.org/fit/"}, {"text":"/o/ - Auto","link":"https://boards.4chan.org/o/"} ]'>
+                    Boards
                 </div>
             </div>
 
-            <div class="new-sidebar-widget liquid-glass">
-                <img id="suzuImage" src="" alt="Suzu Image">
+            <div class="search-section">
+                <div class="search-buttons">
+                    <button class="search-btn active" data-engine="google">Google</button>
+                    <button class="search-btn" data-engine="nyaa">Nyaa</button>
+                    <button class="search-btn" data-engine="yandex">Yandex</button>
+                    <button class="search-btn" data-engine="panda">Panda</button>
+                </div>
+
+                <div class="search-bar">
+                    <input type="text" autocomplete="off" class="search-input" placeholder="Search the web..." id="searchInput">
+                </div>
             </div>
         </div>
+    </div>
 
-        <div class="todo-section liquid-glass">
-            <input type="text" class="todo-input" placeholder="Add a note..." id="todoInput">
-            <div class="todo-list" id="todoList"></div>
+    <div class="notes-container">
+        <div class="note-input-wrapper">
+            <input type="text"
+                   class="note-input"
+                   placeholder="Add a note..."
+                   id="noteInput"
+                   autofocus>
+            <button class="clear-input-button hidden" id="clearInputButton">×</button>
+        </div>
+
+        <div class="notes-list" id="notesList">
+            <div class="empty-state" id="emptyState">
+                No notes yet. Add your first note above!
+            </div>
         </div>
     </div>
+
+    <div class="dropdown" id="globalDropdown"></div>
 
     <script src="js/script.js"></script>
 </body>
