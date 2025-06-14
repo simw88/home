@@ -1,395 +1,343 @@
 * {
-    margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Background image set by JS */
+    background-size: cover;          /* Ensure image covers the whole body */
+    background-position: center center; /* Center the image */
+    background-repeat: no-repeat;    /* Do not repeat the image */
+    background-attachment: fixed;    /* Keep image fixed when scrolling */
     min-height: 100vh;
-    overflow-x: hidden; /* Keep this to prevent horizontal scrollbars if content shifts */
-    color: white;
-    transition: background 0.5s ease;
+    position: relative;
+    overflow-x: hidden;
 }
 
-.background-overlay {
+body::before { /* Radial gradients - now z-index -1 */
+    content: '';
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background:
-        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+        radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
     pointer-events: none;
-    z-index: 0;
+    z-index: -1;
+}
+
+/* Time Date Container */
+.time-date-container {
+    position: sticky; /* or fixed if you want it to always stay on screen */
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    padding: .5rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Ensure it stays on top of other content */
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 2rem; /* Add some space below it */
+	border-radius: 26px;
+}
+
+/* New wrapper for side-by-side layout */
+.main-content-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Changed from stretch to flex-start */
+    gap: .5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
 }
 
 .container {
-    position: relative;
-    z-index: 1;
-    max-width: 1000px;
-    margin: 40px auto 20px auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column; /* Stacks primary-content-area and todo-section vertically */
-    align-items: center;
-    gap: 30px; /* Space between primary-content-area and todo-section */
-}
-
-.liquid-glass {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    padding: 25px;
-    text-align: center;
-    transform: translateZ(0);
-    will-change: transform;
-}
-
-.time-display {
-    padding: 15px 30px;
-    font-size: 1.5rem;
-    font-weight: 500;
-    cursor: pointer;
-    user-select: none;
-    transition: all 0.3s ease;
-    margin-bottom: 20px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-}
-
-.time-display:hover {
+    max-width: 650px;
     background: rgba(255, 255, 255, 0.1);
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* New rule for hiding the boards tab */
-body.hide-boards-tab #boardsTabContainer {
-    display: none !important;
-}
-
-/* New rule for hiding the Panda search engine */
-body.hide-panda-search #pandaSearchEngine {
-    display: none !important;
-}
-
-/* New Wrapper for Main Content and Sidebar Widget */
-.primary-content-area {
-    display: flex;
-    flex-direction: row-reverse; /* Changed to row-reverse to move sidebar to the left */
-    gap: 10px; /* Modified: Space between main-content and new-sidebar-widget, reduced by 50% */
-    width: 100%;
-    align-items: stretch; /* Modified: Align items to stretch their height */
-    /* NEW: Shift left to visually center the main-content by compensating for the sidebar */
-    transform: translateX(calc(-1 * (218px + 10px) / 2)); /* Half of widget width + gap */
-    /* NEW: Ensure primary-content-area stacks above todo-section */
-    z-index: 2; /* Set a higher z-index than todo-section */
-}
-
-.main-content {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    width: 100%; /* Will be overridden by flex: 1 */
-    flex: 1; /* Allows main-content to grow and shrink */
-    /* Removed z-index: 10 from here, as it's better to manage parent stacking */
-}
-
-/* New Sidebar Widget */
-.new-sidebar-widget {
-    width: 218px;
-    height: auto; /* Modified: Allow height to stretch */
-    flex-shrink: 0; /* Prevents it from shrinking below 218px */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 0; /* Removed inner padding as requested */
-}
-
-/* Inside new-sidebar-widget, style the image */
-.new-sidebar-widget img {
-    max-width: 100%;
-    width: 100%; /* Added: Ensure image takes full width of its parent */
-    height: 100%; /* Added: Ensure image takes full height of its parent */
-    object-fit: cover; /* Modified: Fill the container, cropping if necessary */
-    border-radius: 10px;
-    display: block; /* Ensures no extra space below the image */
-}
-
-.category-tabs {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    position: relative;
-    z-index: 5;
-}
-
-.tab-container {
-    position: relative;
-    padding: 12px 25px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 25px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1.05rem;
-    font-weight: 600;
-    user-select: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 150px;
-}
-
-.tab-container:hover {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    top: calc(100% + 10px);
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 12px;
-    padding: 10px 0;
-    min-width: 180px;    
-    background: #D1D7E4; /* Changed from none to the specified color */
+    backdrop-filter: blur(20px);
+    border-radius: 26px;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.5);
-    z-index: 9999; /* Increased z-index */
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    position: relative;
+    overflow: visible;
+    z-index: 2;
+}
+
+/* New image container styles */
+.image-container {
+    width: 216px;
+    height: 216px; /* Set a fixed height for desktop */
+    background: rgba(255, 255, 255, 0.1); /* This can stay for the glassmorphism effect */
+    backdrop-filter: blur(20px);
+    border-radius: 26px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    position: relative;
     overflow: hidden;
+    flex-shrink: 0;
+    /* NEW: Properties for displaying the background image */
+    background-size: cover;          /* Ensures the image covers the entire container */
+    background-position: center center; /* Centers the image within the container */
+    background-repeat: no-repeat;    /* Prevents the image from repeating */
 }
 
-.dropdown-menu::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.2);
-    filter: blur(10px);
-    z-index: -1;
-    border-radius: inherit;
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: .7rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+	z-index: 10; /* This z-index is within .container's stacking context */
 }
 
-.dropdown-menu.active-dropdown {
-    display: block;
-    opacity: 1;
-    pointer-events: auto;
-    transform: translate3d(-50%, 0, 0);
-    -webkit-transform: translate3d(-50%, 0, 0);
-    will-change: transform, opacity;	
+.tab {
+    padding: .9rem 3rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 26px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 700;
+    position: relative;
+    overflow: visible;
+	z-index: 1;
+    text-align: center; /* ADDED: This will center the text inside the tab */
+}
+
+.tab:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Global dropdown styles - note: this targets the #globalDropdown element directly */
+#globalDropdown {
+    position: absolute;	
+    background: rgba(255, 255, 255);
+    backdrop-filter: blur(20px);
+    border-radius: 26px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: .2rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
+    z-index: 2000; /* Extremely high z-index to ensure it's on top */
+    min-width: 1px; /* Keep this for desktop */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);    
+    transform: none; /* No default transform, JS will handle positioning */
 }
 
 .dropdown-item {
-    display: block;
-    padding: 10px 20px;
-    color: white;
-    text-decoration: none;
-    text-align: left;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-    position: relative;
-    z-index: 1;
+    color: #65626E;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.25s ease;
+    cursor: pointer;
+    text-decoration: none; /* IMPORTANT: Removes underline */
+    display: block;        /* Makes the entire padding area clickable */
+    padding: 0.7rem;  /* Add horizontal padding for better spacing */
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
 }
 
 .dropdown-item:hover {
-    background-color: rgba(255, 255, 255, 0.5);
-    transform: translateX(1px);
-	color: rgba(61, 61, 61, 61%);
+    color: #2b2b2c;
+    transform: translateX(3.5px);
+    background: rgba(212, 212, 212, 0.44);
+    border-radius: 26px;
 }
 
-/* Search Section */
 .search-section {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    width: 100%;
+    text-align: center;
 }
 
-.search-engines {
+.search-buttons {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 1rem;
+    margin-bottom: .8rem;
     flex-wrap: wrap;
 }
 
-.search-engine {
-    padding: 8px 15px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 20px;
+.search-btn {
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 26px;
+    color: white;
     cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    user-select: none;
-    border: 1px solid transparent;
-}
-
-.search-engine:hover {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.search-engine.active {
-    background: rgba(255, 255, 255, 0.25);
-    font-weight: bold;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.search-box {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.search-input-wrapper {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
     position: relative;
+    overflow: hidden;
+}
+
+.search-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
     width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.search-btn:hover::before {
+    left: 100%;
+}
+
+.search-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.search-btn.active {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.search-bar {
+    position: relative;
     max-width: 500px;
-    display: flex;
-    align-items: center;
+    margin: 0 auto;
 }
 
 .search-input {
     width: 100%;
-    padding: 12px 20px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 25px;
+    padding: 1rem 1.5rem;
     background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 26px;
     color: white;
     font-size: 1rem;
     outline: none;
-    transition: border-color 0.3s ease, background 0.3s ease;
-    padding-right: 40px;
-}
-
-.search-input:focus {
-    border-color: rgba(255, 255, 255, 0.6);
-    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .search-input::placeholder {
     color: rgba(255, 255, 255, 0.7);
 }
 
-.clear-text-button {
-    position: absolute;
-    right: 10px;
-    background: none;
-    border: none;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 1.2rem;
-    font-weight: bold;
-    cursor: pointer;
-    padding: 5px;
-    line-height: 1;
-    opacity: 0.8;
-    transition: opacity 0.2s ease;
+.search-input:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
-.clear-text-button:hover {
-    opacity: 1;
-    color: white;
-}
-
-/* To-Do List */
-.todo-section {
+/* Notes App Styles */
+.notes-container {
+    position: relative;
+    z-index: 1; /* Keep notes container z-index at 1 */
     width: 100%;
     max-width: 500px;
-    margin: 0 auto;
-    padding: 20px;
-    /* NEW: Ensure todo-section stacks below primary-content-area */
-    z-index: 1; /* Set a lower z-index than primary-content-area */
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 26px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    padding: 1rem;
+    margin: 0 auto 2rem auto; /* Added for horizontal centering on desktop */
 }
 
-.todo-input {
+.note-input-wrapper {
+    position: relative;
     width: 100%;
-    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+}
+
+.note-input {
+    width: 100%;
+    padding: 10px 20px;
+    padding-right: 40px;
     border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 25px;
+    border-radius: 26px;
     background: rgba(255, 255, 255, 0.1);
     color: white;
     font-size: 1rem;
     outline: none;
-    margin-bottom: 15px;
     transition: border-color 0.3s ease, background 0.3s ease;
 }
 
-.todo-input:focus {
+.note-input:focus {
     border-color: rgba(255, 255, 255, 0.6);
     background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.4);
 }
 
-.todo-input::placeholder {
+.note-input::placeholder {
     color: rgba(255, 255, 255, 0.6);
 }
 
-.todo-list {
-    max-height: 300px;
+.notes-list {
+    max-height: 400px;
     overflow-y: auto;
     padding-right: 5px;
 }
 
-/* Custom Scrollbar for todo-list */
-.todo-list::-webkit-scrollbar {
+/* Custom Scrollbar */
+.notes-list::-webkit-scrollbar {
     width: 8px;
 }
 
-.todo-list::-webkit-scrollbar-track {
+.notes-list::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
+    border-radius: 26px;
 }
 
-.todo-list::-webkit-scrollbar-thumb {
+.notes-list::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
+    border-radius: 26px;
 }
 
-.todo-list::-webkit-scrollbar-thumb:hover {
+.notes-list::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.5);
 }
 
-
-.todo-item {
+.note-item {
     display: flex;
     align-items: flex-start;
-    padding: 1rem;
+    padding: .5rem;
     margin: 0.5rem 0;
+    color: white;
     background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
+    border-radius: 26px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
     min-width: 0;
 }
 
-.todo-item:hover {
+.note-item:hover {
     background: rgba(255, 255, 255, 0.1);
     transform: translateX(5px);
 }
 
-.todo-text {
+.note-text {
     flex: 1;
     margin-left: 0.75rem;
     margin-right: 0.75rem;
@@ -400,7 +348,7 @@ body.hide-panda-search #pandaSearchEngine {
     white-space: pre-wrap;
 }
 
-.todo-delete {
+.note-delete {
     background: rgba(255, 255, 255, 0.1);
     color: rgba(255, 100, 100, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.18);
@@ -424,7 +372,7 @@ body.hide-panda-search #pandaSearchEngine {
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
-.todo-delete:hover {
+.note-delete:hover {
     background: rgba(255, 100, 100, 0.15);
     color: rgba(255, 80, 80, 1);
     transform: scale(1.1);
@@ -432,70 +380,88 @@ body.hide-panda-search #pandaSearchEngine {
     box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.3);
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .container {
-        margin: 20px auto;
-        padding: 15px;
-        gap: 20px; /* Adjust gap for mobile */
+.clear-input-button {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.clear-input-button:hover {
+    opacity: 1;
+    color: white;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.empty-state {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 40px 20px;
+    font-style: italic;
+}
+/* End Notes App Styles */
+
+
+@media (max-width: 1000px) { /* Adjust breakpoint as necessary */
+    .main-content-wrapper {
+        flex-direction: column; /* Stack them vertically on smaller screens */
+        align-items: center; /* Center them when stacked */
+        gap: 1rem; /* Reduce gap when stacked */
     }
 
-    .time-display {
+	.image-container {
+		width: 100px; /* Reduced by 50% for mobile mode from 100px to 50px */
+		height: 100px; /* Keeping original height or adjust as needed */
+	}
+
+    .tabs {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .search-buttons {
+        gap: 0.5rem;
+    }
+
+    .search-btn {
+        padding: 0.5rem 1rem;
         font-size: 0.9rem;
-        padding: 10px 20px;
     }
 
-    /* Change primary-content-area to column layout on mobile */
-    .primary-content-area {
-        flex-direction: column-reverse; /* Changed to column-reverse to put sidebar on top */
-        align-items: center; /* Center items when stacked */
-        gap: 20px; /* Spacing between main-content and new-sidebar-widget when stacked */
-        transform: none; /* IMPORTANT: Remove the transform for mobile view */
+    /* Notes App Media Queries */
+    .notes-container {
+        padding: 1rem; /* Adjusted padding for consistency */
+        margin: 1rem auto; /* Centered with appropriate margin for mobile */
     }
 
-    /* No need for z-index here specifically now as it's set globally */
-    .main-content {
-        gap: 20px; /* Adjust gap for mobile */
+    /* Dropdown in mobile mode adjustments */
+    #globalDropdown {
+        /* Remove width: 100% and related positioning from here */
+        /* These will be handled by JavaScript for precise alignment to the tab */
+        min-width: unset; /* Ensure min-width doesn't force it wider */
+		
     }
 
-    .new-sidebar-widget {
-        width: 59px; /* Set width for mobile */
-        height: 58px; /* Set height for mobile */
-        padding: 0; /* Ensures no inner padding on mobile */
+    /* Center dropdown text in mobile mode */
+    #globalDropdown .dropdown-item {
+        text-align: center;
     }
+}
 
-    /* Ensure image is contained within its fixed-height container on mobile */
-    .new-sidebar-widget img {
-        max-height: 100%; /* Limit image height to container's height */
-        object-fit: contain; /* Scale down the image to fit fully within the container */
-    }
-
-    .category-tabs {
-        gap: 10px; /* Reduced gap for tabs in mobile */
-        flex-direction: column; /* Stack tabs vertically */
-        align-items: stretch; /* Make tabs fill the width of their container */
-        width: 100%; /* Ensure the container itself takes full width */
-        flex-wrap: nowrap; /* Prevent wrapping (though not strictly necessary with column direction) */
-    }
-
-    .tab-container {
-        /* No need for min-width on mobile when stretching to full width */
-        min-width: unset; /* Remove min-width constraint */
-        width: 100%; /* Make each tab take the full width */
-        margin-bottom: 0; /* Remove any potential bottom margin if it causes issues with gap */
-    }
-
-    .search-engines {
-        flex-wrap: nowrap; /* Prevent wrapping for search engines */
-        justify-content: center; /* Center items to keep them grouped */
-        gap: 5px; /* Further reduce gap to make them fit */
-        padding: 0 5px; /* Add slight horizontal padding if needed */
-    }
-
-    .search-engine {
-        flex-grow: 0; /* Prevent from growing when space is available */
-        flex-shrink: 0; /* Prevent from shrinking below content size */
-        font-size: 0.8rem; /* Slightly smaller font for better fit */
-        padding: 6px 10px; /* Reduced padding */
+@media (max-width: 768px) {
+    .container, .image-container, .notes-container {
+        width: 100%;
+        max-width: unset; /* Allow them to take full width */
     }
 }
