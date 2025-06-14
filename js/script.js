@@ -1,413 +1,361 @@
-// Time Display
-function updateTime() {
-    const now = new Date();
+document.addEventListener('DOMContentLoaded', () => {
+    const clockDisplay = document.getElementById('clockDisplay');
+    const searchInput = document.getElementById('searchInput');
+    const searchButtons = document.querySelectorAll('.search-btn');
+    const notesList = document.getElementById('notesList');
+    const noteInput = document.getElementById('noteInput');
+    const clearInputButton = document.getElementById('clearInputButton');
+    const emptyState = document.getElementById('emptyState');
+    const tabs = document.querySelectorAll('.tab');
+    const globalDropdown = document.getElementById('globalDropdown');
+    const imageContainer = document.querySelector('.image-container');
 
-    // Get day of the week
-    const dayOfWeek = now.toLocaleDateString('en-US', { weekday: 'long' });
+    let activeEngine = 'google';
+    let activeTab = null;
+    let hideDropdownTimeout;
 
-    // Get day of the month and add ordinal suffix
-    const dayOfMonth = now.getDate();
-    let ordinalSuffix;
-    if (dayOfMonth > 3 && dayOfMonth < 21) ordinalSuffix = 'th';
-    else {
-        switch (dayOfMonth % 10) {
-            case 1: ordinalSuffix = 'st'; break;
-            case 2: ordinalSuffix = 'nd'; break;
-            case 3: ordinalSuffix = 'rd'; break;
-            default: ordinalSuffix = 'th';
-        }
-    }
+    let boardsTabHidden = false;
+    let pandaSearchHidden = false;
+    // NEW: State variable for current image directory
+    let currentImageDir = 'imgs/side'; 
 
-    // Get month
-    const month = now.toLocaleDateString('en-US', { month: 'long' });
+    // Helper function to determine if it's mobile mode
+    const isMobileMode = () => window.innerWidth <= 1000;
 
-    // Get time in HH:MM:SS AM/PM format
-    const timeOptions = {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true
-    };
-    const timeString = now.toLocaleTimeString('en-US', timeOptions);
+    // --- Time and Date ---
+    function updateClock() {
+        const now = new Date();
+        const hour = now.getHours();
+        const minute = now.getMinutes();
+        const second = now.getSeconds();
+        const dayOfWeek = now.toLocaleDateString('en-US', { weekday: 'long' });
+        const dayOfMonth = now.getDate();
+        const month = now.toLocaleDateString('en-US', { month: 'long' });
 
-    // Construct the final string
-    document.getElementById('current-time').textContent = `Today is ${dayOfWeek}, the ${dayOfMonth}${ordinalSuffix} of ${month}. It's ${timeString}`;
-}
-
-function toggleTimeDisplay() {
-    // Check if the 'hide-panda-search' class is about to be added
-    const willHidePanda = !document.body.classList.contains('hide-panda-search');
-
-    document.body.classList.toggle('hide-boards-tab');
-    document.body.classList.toggle('hide-panda-search');
-
-    // If Panda is currently selected AND it's about to be hidden
-    if (willHidePanda && currentEngine === 'Panda') {
-        currentEngine = 'google'; // Default to Google
-        // Update active class for search engines
-        document.querySelectorAll('.search-engine').forEach(e => e.classList.remove('active'));
-        document.querySelector('.search-engine[data-engine="google"]').classList.add('active');
-    }
-
-    // UPDATED: Toggle image between rep.png and random imgN.png
-    const suzuImageElement = document.getElementById('suzuImage');
-    if (suzuImageElement) {
-        if (suzuImageElement.src.endsWith('rep.png')) {
-            loadRandomSuzuImage(); // If rep.png is displayed, switch back to random
+        let greeting;
+        if (hour >= 0 && hour < 12) {
+            greeting = "Morning";
+        } else if (hour >= 12 && hour < 17) {
+            greeting = "Afternoon";
         } else {
-            suzuImageElement.src = 'imgs/suzu/rep.png'; // If random is displayed, switch to rep.png
+            greeting = "Evening";
         }
-    }
-}
 
-updateTime();
-setInterval(updateTime, 1000);
-
-// Search Engines
-const searchEngines = {
-    google: 'https://www.google.com/search?q=',
-    Nyaa: 'https://nyaa.si/?q=',
-    Panda: 'https://e-hentai.org/?f_search=',
-    yandex: 'https://yandex.com/search/?text='
-};
-
-let currentEngine = 'google';
-
-document.querySelectorAll('.search-engine').forEach(engine => {
-    engine.addEventListener('click', function() {
-        document.querySelectorAll('.search-engine').forEach(e => e.classList.remove('active'));
-        this.classList.add('active');
-        currentEngine = this.dataset.engine;
-        // Keep focus for desktop when search engine is clicked (user-initiated)
-        if (window.innerWidth > MOBILE_BREAKPOINT) {
-            document.getElementById('searchInput').focus();
+        function getOrdinalSuffix(n) {
+            const s = ["th", "st", "nd", "rd"];
+            const v = n % 100;
+            const exceptions = [11, 12, 13];
+            return n + (exceptions.includes(v) ? "th" : s[(v - 20) % 10] || s[v] || s[0]);
         }
-    });
-});
 
-// Search Input and Clear Button Logic
-const searchInput = document.getElementById('searchInput');
-const clearSearchButton = document.getElementById('clearSearchButton');
+        const formattedTime = `${hour % 12 || 12}:${minute.toString().padStart(2, '0')}:${second.toString().padStart(2, '0')}`;
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const ordinalDayOfMonth = getOrdinalSuffix(dayOfMonth);
 
-searchInput.addEventListener('input', function() {
-    // Show/hide clear button based on input value
-    if (this.value.trim()) {
-        clearSearchButton.classList.remove('hidden');
-    } else {
-        clearSearchButton.classList.add('hidden');
+        clockDisplay.textContent = `Good ${greeting}. Today is ${dayOfWeek}, the ${ordinalDayOfMonth} of ${month}. It's ${formattedTime} ${ampm}`;
     }
-});
 
-clearSearchButton.addEventListener('click', function() {
-    searchInput.value = '';
-    // Keep focus for desktop after clearing (user-initiated)
-    if (window.innerWidth > MOBILE_BREAKPOINT) {
-        searchInput.focus();
-    }
-    this.classList.add('hidden');
-});
+    setInterval(updateClock, 1000);
+    updateClock();
 
+    // --- Toggle Clock click functionality ---
+    clockDisplay.addEventListener('click', () => {
+        const boardsTab = Array.from(tabs).find(tab => tab.textContent.trim() === 'Boards');
+        const pandaSearchBtn = Array.from(searchButtons).find(btn => btn.dataset.engine === 'panda');
 
-searchInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter' && this.value.trim()) {
-        const query = encodeURIComponent(this.value.trim());
-        window.open(searchEngines[currentEngine] + query, '_blank');
-        this.value = ''; // Clear search input after pressing Enter
-        clearSearchButton.classList.add('hidden');
-        // Do not focus after search submission, leave it to user
-    }
-});
-
-// To-Do List with localStorage persistence
-let todos = JSON.parse(localStorage.getItem('todos') || '[]');
-
-function saveTodos() {
-    localStorage.setItem('todos', JSON.stringify(todos));
-}
-
-function renderTodos() {
-    const todoList = document.getElementById('todoList');
-    todoList.innerHTML = '';
-
-    todos.forEach((todo, index) => {
-        const todoItem = document.createElement('div');
-        todoItem.className = 'todo-item';
-        todoItem.innerHTML = `
-            <span class="todo-text">${todo}</span>
-            <button class="todo-delete" onclick="deleteTodo(${index})">×</button>
-        `;
-        todoList.appendChild(todoItem);
-    });
-}
-
-function addTodo() {
-    const input = document.getElementById('todoInput');
-    const text = input.value.trim();
-
-    if (text) {
-        todos.push(text);
-        input.value = '';
-        saveTodos();
-        renderTodos();
-    }
-}
-
-function deleteTodo(index) {
-    todos.splice(index, 1);
-    saveTodos();
-    renderTodos();
-}
-
-document.getElementById('todoInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        addTodo();
-    }
-});
-
-// Scroll to todo input on focus in mobile mode, positioning it at the top
-const todoInput = document.getElementById('todoInput');
-if (todoInput) { // Ensure the element exists before adding event listener
-    todoInput.addEventListener('focus', function() {
-        // Use the same mobile breakpoint defined for dropdowns
-        if (window.innerWidth <= MOBILE_BREAKPOINT) {
-            // Scroll the input into view smoothly, positioning it at the TOP of the viewport
-            this.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    });
-}
-
-// Initialize
-renderTodos();
-
-// Dynamic background movement
-let mouseX = 0;
-let mouseY = 0;
-
-document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX / window.innerWidth;
-    mouseY = e.clientY / window.innerHeight;
-
-    const overlay = document.querySelector('.background-overlay');
-    overlay.style.background = `
-        radial-gradient(circle at ${20 + mouseX * 20}% ${80 - mouseY * 20}%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at ${80 - mouseX * 20}% ${20 + mouseY * 20}%, rgba(255, 255, 255, 0.08) 0%, transparent 50%)
-    `;
-});
-
-// Global variable to store the last checked day of the week
-let lastDayOfWeek = -1;
-
-// Background logic: set background image based on the day of the week
-function setWeekdayBackground() {
-    const now = new Date();
-    const day = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    const todayImage = `imgs/bgs/${dayNames[day]}.jpg`;
-
-    document.body.style.background = `
-        linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
-        url('${todayImage}')
-    `;
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundPosition = 'center';
-    document.body.style.backgroundAttachment = 'fixed';
-
-    lastDayOfWeek = day; // Update the last checked day after setting the background
-}
-
-// NEW FUNCTION: Check if the day has changed and update background
-function checkAndSetDailyBackground() {
-    const currentDay = new Date().getDay();
-    // Only update if the day has actually changed
-    if (currentDay !== lastDayOfWeek) {
-        setWeekdayBackground();
-    }
-}
-
-// Function to load a random Suzu image
-function loadRandomSuzuImage() {
-    const min = 1;
-    const max = 12;
-    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-    const imageUrl = `imgs/suzu/img${randomNumber}.png`;
-    document.getElementById('suzuImage').src = imageUrl;
-}
-
-// Clear search box content on page load, and set daily background
-window.addEventListener('load', function() {
-    searchInput.value = '';
-    clearSearchButton.classList.add('hidden');
-
-    // Initial call to set the background and store the current day
-    setWeekdayBackground();
-    // Set an interval to check for day change every minute (60 seconds * 1000 ms/s)
-    setInterval(checkAndSetDailyBackground, 60 * 1000);
-
-    loadRandomSuzuImage(); // Call this function on page load
-
-    // Add event listener to the image for loading a new one on click, but only if not rep.png
-    const suzuImageElement = document.getElementById('suzuImage');
-    if (suzuImageElement) {
-        suzuImageElement.addEventListener('click', function() {
-            // Only load a new random image if the current image is not rep.png
-            if (!this.src.endsWith('rep.png')) {
-                loadRandomSuzuImage();
+        // Toggle "Boards" tab visibility
+        if (boardsTab) {
+            if (boardsTabHidden) {
+                boardsTab.classList.remove('hidden');
+            } else {
+                boardsTab.classList.add('hidden');
+                if (activeTab === boardsTab) {
+                    hideDropdown(); // Hide dropdown if the tab is hidden
+                }
             }
-            // If it is rep.png, do nothing.
-        });
-    }
+            boardsTabHidden = !boardsTabHidden; // Invert state
+        }
 
-    // Improved focus logic for search input
-    function focusSearchInput() {
-        if (window.innerWidth > MOBILE_BREAKPOINT) {
-            try {
-                // First ensure the input is visible and focusable
-                searchInput.style.visibility = 'visible';
-                searchInput.tabIndex = 0;
-                
-                // Focus the input
-                searchInput.focus();
-                
-                // Additional fallback: set selection to ensure cursor is visible
-                searchInput.setSelectionRange(0, 0);
-            } catch (e) {
-                // Fallback if any of the above fails
-                setTimeout(() => {
-                    searchInput.focus();
-                }, 100);
+        // Toggle "Panda" search option visibility
+        if (pandaSearchBtn) {
+            if (pandaSearchHidden) {
+                pandaSearchBtn.classList.remove('hidden');
+            } else {
+                pandaSearchBtn.classList.add('hidden');
+                // If "Panda" was active, switch to Google when hidden
+                if (activeEngine === 'panda') {
+                    activeEngine = 'google';
+                    searchButtons.forEach(btn => {
+                        if (btn.dataset.engine === 'google') {
+                            btn.classList.add('active');
+                        } else {
+                            btn.classList.remove('active');
+                        }
+                    });
+                }
             }
+            pandaSearchHidden = !pandaSearchHidden; // Invert state
         }
-    }
 
-    // Try multiple approaches to ensure focus works
-    // Immediate attempt
-    focusSearchInput();
-    
-    // Delayed attempts with increasing intervals
-    setTimeout(focusSearchInput, 100);
-    setTimeout(focusSearchInput, 500);
-    setTimeout(focusSearchInput, 1000);
-    
-    // Also try when the document becomes visible (handles tab switching)
-    document.addEventListener('visibilitychange', function() {
-        if (!document.hidden && window.innerWidth > MOBILE_BREAKPOINT) {
-            setTimeout(focusSearchInput, 50);
-        }
+        // NEW: Toggle image source directory and load new image
+        currentImageDir = (currentImageDir === 'imgs/side') ? 'imgs/rep' : 'imgs/side';
+        loadRandomSideImage(); // Call the function to load image from the new directory
     });
-});
 
-// Add this additional event listener to handle cases where the page becomes active
-window.addEventListener('focus', function() {
-    if (window.innerWidth > MOBILE_BREAKPOINT) {
-        setTimeout(() => {
-            if (document.activeElement === document.body || document.activeElement === document.documentElement) {
-                searchInput.focus();
-            }
-        }, 50);
-    }
-});
-
-// Also add a click handler to the body to focus search when clicking empty space
-document.body.addEventListener('click', function(e) {
-    // Only focus if clicking on the body itself or background elements, not on interactive elements
-    if (e.target === document.body || e.target.classList.contains('background-overlay') || e.target.classList.contains('container')) {
-        if (window.innerWidth > MOBILE_BREAKPOINT) {
+    // --- Search Functionality ---
+    searchButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            searchButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            activeEngine = button.dataset.engine;
             searchInput.focus();
-        }
-    }
-});
-
-// --- Dropdown Logic ---
-const MOBILE_BREAKPOINT = 768; // Define a breakpoint for mobile mode
-
-// Named event handler functions
-const handleMobileClick = (e) => {
-    e.stopPropagation();
-    const dropdown = e.currentTarget.querySelector('.dropdown-menu'); // Get dropdown relative to clicked tab
-    dropdown.classList.toggle('active-dropdown');
-    document.querySelectorAll('.dropdown-menu').forEach(menu => {
-        if (menu !== dropdown && menu.classList.contains('active-dropdown')) {
-            menu.classList.remove('active-dropdown');
-        }
-    });
-};
-
-const handleDesktopMouseEnter = (e) => {
-    const tabContainer = e.currentTarget;
-    const dropdown = tabContainer.querySelector('.dropdown-menu');
-    // Clear any pending hide timeout associated with this tabContainer,
-    // for simplicity here we rely on the `hideDropdownTimeout` closure.
-    clearTimeout(tabContainer.__hideDropdownTimeout);
-
-    document.querySelectorAll('.dropdown-menu.active-dropdown').forEach(otherDropdown => {
-        if (otherDropdown !== dropdown) {
-            otherDropdown.classList.remove('active-dropdown');
-        }
-    });
-    dropdown.classList.add('active-dropdown');
-};
-
-const handleDesktopMouseLeave = (e) => {
-    const tabContainer = e.currentTarget;
-    const dropdown = tabContainer.querySelector('.dropdown-menu');
-    tabContainer.__hideDropdownTimeout = setTimeout(() => {
-        dropdown.classList.remove('active-dropdown');
-    }, 150);
-};
-
-const handleDropdownMouseEnter = (e) => {
-    const dropdown = e.currentTarget;
-    const tabContainer = dropdown.closest('.tab-container'); // Find parent tabContainer
-    clearTimeout(tabContainer.__hideDropdownTimeout);
-};
-
-const handleDropdownMouseLeave = (e) => {
-    const dropdown = e.currentTarget;
-    const tabContainer = dropdown.closest('.tab-container'); // Find parent tabContainer
-    tabContainer.__hideDropdownTimeout = setTimeout(() => {
-        dropdown.classList.remove('active-dropdown');
-    }, 150);
-};
-
-// Function to attach/detach listeners based on mode
-function setupDropdownListeners() {
-    document.querySelectorAll('.tab-container').forEach(tabContainer => {
-        const dropdown = tabContainer.querySelector('.dropdown-menu');
-
-        // Clean up all existing listeners before attaching new ones
-        tabContainer.removeEventListener('click', handleMobileClick);
-        tabContainer.removeEventListener('mouseenter', handleDesktopMouseEnter);
-        tabContainer.removeEventListener('mouseleave', handleDesktopMouseLeave);
-        if (dropdown) { // Ensure dropdown exists before trying to remove its listeners
-            dropdown.removeEventListener('mouseenter', handleDropdownMouseEnter);
-            dropdown.removeEventListener('mouseleave', handleDropdownMouseLeave);
-        }
-
-        // Apply listeners based on current window width
-        if (window.innerWidth <= MOBILE_BREAKPOINT) {
-            tabContainer.addEventListener('click', handleMobileClick);
-        } else {
-            tabContainer.addEventListener('mouseenter', handleDesktopMouseEnter);
-            tabContainer.addEventListener('mouseleave', handleDesktopMouseLeave);
-            if (dropdown) { // Only add if dropdown exists
-                dropdown.addEventListener('mouseenter', handleDropdownMouseEnter);
-                dropdown.removeEventListener('mouseleave', handleDropdownMouseLeave);
-            }
-        }
-    });
-}
-
-// Initial setup on page load
-setupDropdownListeners();
-
-// Re-setup listeners on window resize
-window.addEventListener('resize', setupDropdownListeners);
-
-// Universal click outside listener to close dropdowns
-document.addEventListener('click', (e) => {
-    if (!e.target.closest('.tab-container')) {
-        document.querySelectorAll('.dropdown-menu').forEach(dropdown => {
-            dropdown.classList.remove('active-dropdown');
         });
+    });
+
+    searchInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            performSearch();
+        }
+    });
+
+    function performSearch() {
+        const query = searchInput.value.trim();
+        if (query) {
+            let searchUrl;
+            switch (activeEngine) {
+                case 'google':
+                    searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+                    break;
+                case 'nyaa':
+                    searchUrl = `https://nyaa.si/?q=${encodeURIComponent(query)}`;
+                    break;
+                case 'yandex':
+                    searchUrl = `https://yandex.com/search/?text=${encodeURIComponent(query)}`;
+                    break;
+                case 'panda':
+                    searchUrl = `https://e-hentai.org/?f_search=${encodeURIComponent(query)}`;
+                    break;
+                default:
+                    searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+            }
+            window.open(searchUrl, '_blank');
+            searchInput.value = '';
+        }
     }
+
+    // --- Notes App ---
+    let notes = JSON.parse(localStorage.getItem('notes')) || [];
+
+    function renderNotes() {
+        notesList.innerHTML = '';
+        if (notes.length === 0) {
+            emptyState.classList.remove('hidden');
+        } else {
+            emptyState.classList.add('hidden');
+            notes.forEach((note, index) => {
+                const noteItem = document.createElement('div');
+                noteItem.classList.add('note-item');
+                noteItem.innerHTML = `
+                    <span class="note-text">${note}</span>
+                    <button class="note-delete" data-index="${index}">×</button>
+                `;
+                notesList.appendChild(noteItem);
+            });
+        }
+    }
+
+    function addNote() {
+        const noteText = noteInput.value.trim();
+        if (noteText) {
+            notes.push(noteText);
+            localStorage.setItem('notes', JSON.stringify(notes));
+            noteInput.value = '';
+            renderNotes();
+            updateClearButtonVisibility();
+        }
+    }
+
+    function deleteNote(index) {
+        notes.splice(index, 1);
+        localStorage.setItem('notes', JSON.stringify(notes));
+        renderNotes();
+        updateClearButtonVisibility();
+    }
+
+    noteInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            addNote();
+        }
+    });
+
+    notesList.addEventListener('click', (event) => {
+        if (event.target.classList.contains('note-delete')) {
+            const index = parseInt(event.target.dataset.index);
+            deleteNote(index);
+        }
+    });
+
+    noteInput.addEventListener('input', updateClearButtonVisibility);
+
+    clearInputButton.addEventListener('click', () => {
+        noteInput.value = '';
+        updateClearButtonVisibility();
+        noteInput.focus();
+    });
+
+    function updateClearButtonVisibility() {
+        if (noteInput.value.length > 0) {
+            clearInputButton.classList.remove('hidden');
+        } else {
+            clearInputButton.classList.add('hidden');
+        }
+    }
+
+    renderNotes();
+    updateClearButtonVisibility();
+
+    // --- Dropdown Functionality ---
+    function showDropdown(tabElement) {
+        clearTimeout(hideDropdownTimeout);
+        if (activeTab && activeTab !== tabElement) {
+            hideDropdown();
+        }
+        activeTab = tabElement;
+        const dropdownContent = JSON.parse(activeTab.dataset.dropdownContent);
+        globalDropdown.innerHTML = '';
+
+        dropdownContent.forEach(item => {
+            const dropdownItem = document.createElement('a');
+            dropdownItem.href = item.link;
+            dropdownItem.textContent = item.text;
+            dropdownItem.classList.add('dropdown-item');
+            dropdownItem.target = '_blank';
+            globalDropdown.appendChild(dropdownItem);
+        });
+
+        globalDropdown.style.opacity = '1';
+        globalDropdown.style.visibility = 'visible';
+        positionDropdown();
+    }
+
+    function hideDropdown() {
+        globalDropdown.style.opacity = '0';
+        globalDropdown.style.visibility = 'hidden';
+        activeTab = null;
+    }
+
+    function positionDropdown() {
+        if (activeTab) {
+            const tabRect = activeTab.getBoundingClientRect();
+            let dropdownRect;
+
+            if (isMobileMode()) {
+                globalDropdown.style.width = tabRect.width + 'px';
+                globalDropdown.style.left = '17px';
+                globalDropdown.style.transform = 'none';
+                dropdownRect = globalDropdown.getBoundingClientRect();
+            } else {
+                globalDropdown.style.width = tabRect.width + 'px';
+                globalDropdown.style.transform = 'none';
+                dropdownRect = globalDropdown.getBoundingClientRect();
+
+                let desktopDropdownLeft = tabRect.left + (tabRect.width / 2) - (dropdownRect.width / 2);
+
+                const viewportWidth = window.innerWidth;
+                const desktopHorizontalPadding = 10;
+                if (desktopDropdownLeft < desktopHorizontalPadding) {
+                    globalDropdown.style.left = `${desktopHorizontalPadding}px`;
+                } else if (desktopDropdownLeft + dropdownRect.width > viewportWidth - desktopHorizontalPadding) {
+                    globalDropdown.style.left = `${viewportWidth - dropdownRect.width - desktopHorizontalPadding}px`;
+                } else {
+                    globalDropdown.style.left = `${desktopDropdownLeft}px`;
+                }
+            }
+
+            let dropdownTop = tabRect.bottom + 2;
+
+            const viewportHeight = window.innerHeight;
+            const verticalPadding = 10;
+            if (dropdownTop + dropdownRect.height > viewportHeight - verticalPadding) {
+                dropdownTop = tabRect.top - dropdownRect.height - 10;
+                if (dropdownTop < verticalPadding) {
+                    dropdownTop = verticalPadding;
+                }
+            }
+            globalDropdown.style.top = `${dropdownTop}px`;
+        }
+    }
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', (event) => {
+            event.stopPropagation();
+            if (activeTab === tab) {
+                hideDropdown();
+            } else {
+                showDropdown(tab);
+            }
+        });
+    });
+
+    document.addEventListener('mouseover', (event) => {
+        if (isMobileMode()) return;
+
+        const hoveredTab = event.target.closest('.tab');
+        if (hoveredTab && hoveredTab !== activeTab) {
+            showDropdown(hoveredTab);
+        }
+    });
+
+    document.addEventListener('mouseout', (event) => {
+        if (isMobileMode()) return;
+
+        clearTimeout(hideDropdownTimeout);
+
+        if (!globalDropdown.contains(event.relatedTarget) && (!activeTab || !activeTab.contains(event.relatedTarget))) {
+            hideDropdownTimeout = setTimeout(hideDropdown, 100);
+        }
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('.tab') && !globalDropdown.contains(event.target)) {
+            hideDropdown();
+        }
+    });
+
+    // --- Dynamic Daily Background Image (for body) ---
+    function setDailyBackgroundImage() {
+        const d = new Date();
+        const day = d.getDay();
+        const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        const imageName = days[day] + '.jpg';
+        const imageUrl = `imgs/bgs/${imageName}`;
+
+        document.body.style.backgroundImage = `url('${imageUrl}')`;
+    }
+
+    setDailyBackgroundImage();
+
+    // --- Dynamic Side Image Loader (for .image-container) ---
+    const sideImages = [];
+    for (let i = 1; i <= 12; i++) {
+        sideImages.push(`img(${i}).png`);
+    }
+
+    function loadRandomSideImage() {
+        if (sideImages.length === 0) {
+            console.warn("No images defined in sideImages array for .image-container.");
+            return;
+        }
+        const randomIndex = Math.floor(Math.random() * sideImages.length);
+        const randomImageName = sideImages[randomIndex];
+        // MODIFIED: Use currentImageDir for the path
+        const imageUrl = `${currentImageDir}/${randomImageName}`;
+
+        imageContainer.style.backgroundImage = `url('${imageUrl}')`;
+    }
+
+    loadRandomSideImage(); // Initial load
+
+    // Add click listener to the imageContainer to load a new random image
+    imageContainer.addEventListener('click', loadRandomSideImage);
 });
