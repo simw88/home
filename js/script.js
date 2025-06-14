@@ -1,3 +1,13 @@
+// Immediate focus attempt
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.focus();
+        }
+    }, 50);
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     const clockDisplay = document.getElementById('clockDisplay');
     const searchInput = document.getElementById('searchInput');
