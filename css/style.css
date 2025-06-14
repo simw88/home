@@ -46,7 +46,7 @@ body::before { /* Radial gradients - now z-index -1 */
     color: white;
     font-size: 1.2rem;
     font-weight: 600;
-    margin-bottom: 3.5rem; /* Add some space below it */
+    margin-bottom: 2rem; /* Add some space below it */
 	border-radius: 26px;
 }
 
@@ -60,6 +60,7 @@ body::before { /* Radial gradients - now z-index -1 */
     margin: 0 auto;
     flex-wrap: wrap;
     margin-bottom: 1rem;
+    position: relative;
 }
 
 .container {
@@ -254,7 +255,7 @@ body::before { /* Radial gradients - now z-index -1 */
     position: relative;
     z-index: 1; /* Keep notes container z-index at 1 */
     width: 100%;
-    max-width: 500px;
+    max-width: 500px; /* Default max-width for smaller screens */
     background: rgba(255, 255, 255, 0.05);
     border-radius: 26px;
     border: 1px solid rgba(255, 255, 255, 0.18);
@@ -262,7 +263,7 @@ body::before { /* Radial gradients - now z-index -1 */
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     padding: 1rem;
-    margin: -6px auto 2rem auto; /* Added for horizontal centering on desktop */
+    margin: -6px auto 2rem auto; /* Default margin for smaller screens */
 }
 
 .note-input-wrapper {
@@ -447,8 +448,6 @@ body::before { /* Radial gradients - now z-index -1 */
 
     /* Dropdown in mobile mode adjustments */
     #globalDropdown {
-        /* Remove width: 100% and related positioning from here */
-        /* These will be handled by JavaScript for precise alignment to the tab */
         min-width: unset; /* Ensure min-width doesn't force it wider */
 		
     }
@@ -456,6 +455,31 @@ body::before { /* Radial gradients - now z-index -1 */
     /* Center dropdown text in mobile mode */
     #globalDropdown .dropdown-item {
         text-align: center;
+    }
+}
+
+/* Desktop mode adjustments */
+@media (min-width: 1001px) {
+    .main-content-wrapper {
+        flex-wrap: nowrap; /* Prevent wrapping on desktop */
+        margin-bottom: 0; /* Remove bottom margin here, as notes will follow */
+    }
+
+    .container {
+        margin-bottom: 1rem; /* Add margin to separate from notes below */
+    }
+
+    .notes-container {
+        max-width: 707px; /* Same width as .container */
+        /* Calculate margin-left to align with the .container */
+        /* (Viewport width - main-content-wrapper max-width) / 2
+           + image-container width
+           + gap between image-container and .container
+        */
+        margin-left: calc((100vw - 1182px) / 2 + 216px + 0.5rem);
+        margin-right: auto; /* Push to the right to maintain alignment */
+        
+        margin-bottom: 2rem; /* Space below the notes container */
     }
 }
 
