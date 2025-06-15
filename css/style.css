@@ -913,6 +913,10 @@ body::before { /* Radial gradients - now z-index -1 */
 		height: 100px; /* Keeping original height or adjust as needed */
 	}
 
+	.time-date-container {
+	margin-bottom: 1rem;
+    }
+
     .tabs {
         flex-direction: column;
         gap: 1rem;
