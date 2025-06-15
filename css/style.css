@@ -954,6 +954,10 @@ body::before { /* Radial gradients - now z-index -1 */
         margin-bottom: 1rem; /* Add margin to separate from notes below */
     }
 
+    .time-date-container {
+	margin-bottom: 1rem;
+    }
+
     .notes-container {
         max-width: 707px; /* Same width as .container */
         /* Calculate margin-left to align with the .container */
