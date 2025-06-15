@@ -4,8 +4,7 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    /* Background image set by JS */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
     background-size: cover;          /* Ensure image covers the whole body */
     background-position: center center; /* Center the image */
     background-repeat: no-repeat;    /* Do not repeat the image */
@@ -36,7 +35,6 @@ body::before { /* Radial gradients - now z-index -1 */
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    /* Background image set by JS */
     background-size: cover;          /* Ensure image covers the whole body */
     background-position: center center; /* Center the image */
     background-repeat: no-repeat;    /* Do not repeat the image */
@@ -46,7 +44,7 @@ body {
     overflow-x: hidden;
 }
 
-body::before { /* Radial gradients - now z-index -1 */
+body::before { 
     content: '';
     position: fixed;
     top: 0;
@@ -61,7 +59,6 @@ body::before { /* Radial gradients - now z-index -1 */
     z-index: -1;
 }
 
-/* Time Date Container */
 .time-date-container {
     position: sticky; /* or fixed if you want it to always stay on screen */
     top: 0;
@@ -81,7 +78,6 @@ body::before { /* Radial gradients - now z-index -1 */
 	border-radius: 26px;
 }
 
-/* New wrapper for side-by-side layout */
 .main-content-wrapper {
     display: flex;
     justify-content: center;
@@ -109,7 +105,6 @@ body::before { /* Radial gradients - now z-index -1 */
     z-index: 2;
 }
 
-/* New image container styles */
 .image-container {
     width: 216px;
     height: 216px; /* Set a fixed height for desktop */
@@ -123,7 +118,6 @@ body::before { /* Radial gradients - now z-index -1 */
     position: relative;
     overflow: hidden;
     flex-shrink: 0;
-    /* NEW: Properties for displaying the background image */
     background-size: cover;          /* Ensures the image covers the entire container */
     background-position: center center; /* Centers the image within the container */
     background-repeat: no-repeat;    /* Prevents the image from repeating */
@@ -136,7 +130,7 @@ body::before { /* Radial gradients - now z-index -1 */
     gap: .7rem;
     margin-bottom: 1.5rem;
     position: relative;
-	z-index: 10; /* This z-index is within .container's stacking context */
+    z-index: 10; 
 }
 
 .tab {
@@ -151,8 +145,8 @@ body::before { /* Radial gradients - now z-index -1 */
     font-weight: 700;
     position: relative;
     overflow: visible;
-	z-index: 1;
-    text-align: center; /* ADDED: This will center the text inside the tab */
+    z-index: 1;
+    text-align: center; 
 }
 
 .tab:hover {
@@ -161,7 +155,6 @@ body::before { /* Radial gradients - now z-index -1 */
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Global dropdown styles - note: this targets the #globalDropdown element directly */
 #globalDropdown {
     position: absolute;	
     background: rgba(255, 255, 255);
@@ -281,7 +274,6 @@ body::before { /* Radial gradients - now z-index -1 */
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
-/* Notes App Styles */
 .notes-container {
     position: relative;
     z-index: 1; /* Keep notes container z-index at 1 */
@@ -332,7 +324,6 @@ body::before { /* Radial gradients - now z-index -1 */
     padding-right: 5px;
 }
 
-/* Custom Scrollbar */
 .notes-list::-webkit-scrollbar {
     width: 8px;
 }
@@ -442,8 +433,6 @@ body::before { /* Radial gradients - now z-index -1 */
     padding: 40px 20px;
     font-style: italic;
 }
-/* End Notes App Styles */
-
 
 @media (max-width: 1000px) { /* Adjust breakpoint as necessary */
     .main-content-wrapper {
@@ -483,13 +472,11 @@ body::before { /* Radial gradients - now z-index -1 */
 		
     }
 
-    /* Center dropdown text in mobile mode */
     #globalDropdown .dropdown-item {
         text-align: center;
     }
 }
 
-/* Desktop mode adjustments */
 @media (min-width: 1001px) {
     .main-content-wrapper {
         flex-wrap: nowrap; /* Prevent wrapping on desktop */
@@ -501,21 +488,13 @@ body::before { /* Radial gradients - now z-index -1 */
     }
 
     .notes-container {
-        max-width: 707px; /* Same width as .container */
-        /* Calculate margin-left to align with the .container */
-        /* (Viewport width - main-content-wrapper max-width) / 2
-           + image-container width
-           + gap between image-container and .container
-        */
+        max-width: 707px; 
         margin-left: calc((100vw - 1182px) / 2 + 216px + 0.5rem);
-        margin-right: auto; /* Push to the right to maintain alignment */
-        
-        margin-bottom: 2rem; /* Space below the notes container */
+        margin-right: auto;
+        margin-bottom: 2rem; 
     }
 }
 
-
-/* Time Date Container */
 .time-date-container {
     position: sticky; /* or fixed if you want it to always stay on screen */
     top: 0;
@@ -532,10 +511,9 @@ body::before { /* Radial gradients - now z-index -1 */
     font-size: 1.2rem;
     font-weight: 600;
     margin-bottom: 9rem; /* Add some space below it */
-	border-radius: 26px;
+    border-radius: 26px;
 }
 
-/* New wrapper for side-by-side layout */
 .main-content-wrapper {
     display: flex;
     justify-content: center;
@@ -563,7 +541,6 @@ body::before { /* Radial gradients - now z-index -1 */
     z-index: 2;
 }
 
-/* New image container styles */
 .image-container {
     width: 216px;
     height: 216px; /* Set a fixed height for desktop */
@@ -572,12 +549,11 @@ body::before { /* Radial gradients - now z-index -1 */
     border-radius: 26px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
     position: relative;
     overflow: hidden;
     flex-shrink: 0;
-    /* NEW: Properties for displaying the background image */
     background-size: cover;          /* Ensures the image covers the entire container */
     background-position: center center; /* Centers the image within the container */
     background-repeat: no-repeat;    /* Prevents the image from repeating */
@@ -590,7 +566,7 @@ body::before { /* Radial gradients - now z-index -1 */
     gap: .7rem;
     margin-bottom: 1.5rem;
     position: relative;
-	z-index: 10; /* This z-index is within .container's stacking context */
+    z-index: 10; /* This z-index is within .container's stacking context */
 }
 
 .tab {
@@ -605,7 +581,7 @@ body::before { /* Radial gradients - now z-index -1 */
     font-weight: 700;
     position: relative;
     overflow: visible;
-	z-index: 1;
+    z-index: 1;
     text-align: center; /* ADDED: This will center the text inside the tab */
 }
 
@@ -617,7 +593,6 @@ body::before { /* Radial gradients - now z-index -1 */
     transition: all 0.5s ease;
 }
 
-/* Global dropdown styles - note: this targets the #globalDropdown element directly */
 #globalDropdown {
     position: absolute;	
     background: rgba(255, 255, 255);
@@ -737,7 +712,6 @@ body::before { /* Radial gradients - now z-index -1 */
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
-/* Notes App Styles */
 .notes-container {
     position: relative;
     z-index: 1; /* Keep notes container z-index at 1 */
@@ -788,7 +762,6 @@ body::before { /* Radial gradients - now z-index -1 */
     padding-right: 5px;
 }
 
-/* Custom Scrollbar */
 .notes-list::-webkit-scrollbar {
     width: 8px;
 }
@@ -898,8 +871,6 @@ body::before { /* Radial gradients - now z-index -1 */
     padding: 40px 20px;
     font-style: italic;
 }
-/* End Notes App Styles */
-
 
 @media (max-width: 1000px) { /* Adjust breakpoint as necessary */
     .main-content-wrapper {
@@ -931,25 +902,20 @@ body::before { /* Radial gradients - now z-index -1 */
         font-size: 0.9rem;
     }
 
-    /* Notes App Media Queries */
     .notes-container {
         padding: 1rem; /* Adjusted padding for consistency */
         margin: 1rem auto; /* Centered with appropriate margin for mobile */
     }
 
-    /* Dropdown in mobile mode adjustments */
     #globalDropdown {
-        min-width: unset; /* Ensure min-width doesn't force it wider */
-		
+        min-width: unset; 
     }
 
-    /* Center dropdown text in mobile mode */
     #globalDropdown .dropdown-item {
         text-align: center;
     }
 }
 
-/* Desktop mode adjustments */
 @media (min-width: 1001px) {
     .main-content-wrapper {
         flex-wrap: nowrap; /* Prevent wrapping on desktop */
@@ -961,12 +927,7 @@ body::before { /* Radial gradients - now z-index -1 */
     }
 	
     .notes-container {
-        max-width: 707px; /* Same width as .container */
-        /* Calculate margin-left to align with the .container */
-        /* (Viewport width - main-content-wrapper max-width) / 2
-           + image-container width
-           + gap between image-container and .container
-        */
+        max-width: 707px; 
         margin-left: calc((100vw - 1182px) / 2 + 216px + 0.5rem);
         margin-right: auto; /* Push to the right to maintain alignment */
         
