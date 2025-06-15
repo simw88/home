@@ -611,9 +611,10 @@ body::before { /* Radial gradients - now z-index -1 */
 
 .tab:hover {
     color: #65626E;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255);
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transition: all 0.5s ease;
 }
 
 /* Global dropdown styles - note: this targets the #globalDropdown element directly */
