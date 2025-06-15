@@ -610,7 +610,8 @@ body::before { /* Radial gradients - now z-index -1 */
 }
 
 .tab:hover {
-    background: rgba(255, 255, 255, 0.2);
+    color: #65626E;
+    background: rgba(255, 255, 255, 0.5);
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
