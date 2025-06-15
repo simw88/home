@@ -10,7 +10,6 @@ body {
     background-repeat: no-repeat;    /* Do not repeat the image */
     background-attachment: fixed;    /* Keep image fixed when scrolling */
     min-height: 100vh;
-    position: relative;
     overflow-x: hidden;
 }
 
