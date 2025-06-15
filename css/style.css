@@ -971,7 +971,7 @@ body::before { /* Radial gradients - now z-index -1 */
 }
 
 @media (max-width: 768px) {
-    .container, .image-container, .notes-container {
+    .container, .notes-container {
         width: 100%;
         max-width: unset; /* Allow them to take full width */
     }
