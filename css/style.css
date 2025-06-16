@@ -875,7 +875,11 @@ body::before {
 }
 
 @media (max-width: 1000px) { /* Adjust breakpoint as necessary */
-    .main-content-wrapper {
+   body {
+        background-attachment: scroll;
+    }
+	
+	.main-content-wrapper {
         flex-direction: column; /* Stack them vertically on smaller screens */
         align-items: center; /* Center them when stacked */
         gap: 1rem; /* Reduce gap when stacked */
