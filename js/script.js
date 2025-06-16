@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let boardsTabHidden = false;
     let pandaSearchHidden = false;
     // NEW: State variable for current image directory
-    let currentImageDir = 'imgs/side'; 
+    let currentImageDir = 'imgs/side';
 
     // Helper function to determine if it's mobile mode
     const isMobileMode = () => window.innerWidth <= 1000;
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 boardsTab.classList.add('hidden');
                 if (activeTab === boardsTab) {
-                    hideDropdown(); // Hide dropdown if the tab is hidden
+                    hideDropdownImmediate(); // Hide dropdown if the tab is hidden
                 }
             }
             boardsTabHidden = !boardsTabHidden; // Invert state
@@ -226,11 +226,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Dropdown Functionality ---
     function showDropdown(tabElement) {
+        // Clear any existing timeout to prevent accidental hiding
         clearTimeout(hideDropdownTimeout);
+
+        // If a different tab is already active, hide its dropdown first
         if (activeTab && activeTab !== tabElement) {
-            hideDropdown();
+            hideDropdownImmediate(); // Use an immediate hide for other dropdowns
         }
-        activeTab = tabElement;
+        activeTab = tabElement; // Store the newly active tab
+
         const dropdownContent = JSON.parse(activeTab.dataset.dropdownContent);
         globalDropdown.innerHTML = '';
 
@@ -243,57 +247,108 @@ document.addEventListener('DOMContentLoaded', () => {
             globalDropdown.appendChild(dropdownItem);
         });
 
+        // Ensure display is block for measurement, but keep other visual properties for smooth transition
+        globalDropdown.style.display = 'block';
+        globalDropdown.style.visibility = 'visible'; // Keep visible from now on if we are showing it
+        globalDropdown.style.pointerEvents = 'auto'; // Enable interactions
+
+        positionDropdown(); // Call positionDropdown after content is loaded and element is visible
+
+        // Now apply final opacity and transform for animation
         globalDropdown.style.opacity = '1';
-        globalDropdown.style.visibility = 'visible';
-        positionDropdown();
+        globalDropdown.style.transform = 'translateY(0px)';
+		globalDropdown.style.transform = 'translatex(-8px)';
     }
 
-    function hideDropdown() {
+    // New helper function for immediate hiding (for other dropdowns)
+    function hideDropdownImmediate() {
+        clearTimeout(hideDropdownTimeout); // Clear any pending hide
         globalDropdown.style.opacity = '0';
+        globalDropdown.style.pointerEvents = 'none';
+        globalDropdown.style.transform = 'translateY(-10px)';
         globalDropdown.style.visibility = 'hidden';
+        globalDropdown.style.display = 'none';
         activeTab = null;
     }
 
+    function hideDropdown() {
+        // Use a timeout to allow for quick re-display without flickering
+        clearTimeout(hideDropdownTimeout); // Clear any pending hide
+        hideDropdownTimeout = setTimeout(() => {
+            globalDropdown.style.opacity = '0';
+            globalDropdown.style.pointerEvents = 'none';
+            globalDropdown.style.transform = 'translateY(-13px)';			// Animate slightly upwards
+			globalDropdown.style.transform = 'translatex(-8px)';
+            globalDropdown.style.visibility = 'hidden';
+            // After animation, hide it fully
+            setTimeout(() => {
+                globalDropdown.style.display = 'none';
+            }, 200); // Match CSS transition duration
+            activeTab = null; // Clear active tab
+        }, 100); // Short delay to allow quick re-entry or click on dropdown items
+    }
+
     function positionDropdown() {
-        if (activeTab) {
-            const tabRect = activeTab.getBoundingClientRect();
-            let dropdownRect;
+        if (!activeTab || !globalDropdown) return;
 
-            if (isMobileMode()) {
-                globalDropdown.style.width = tabRect.width + 'px';
-                globalDropdown.style.left = '17px';
-                globalDropdown.style.transform = 'none';
-                dropdownRect = globalDropdown.getBoundingClientRect();
-            } else {
-                globalDropdown.style.width = tabRect.width + 'px';
-                globalDropdown.style.transform = 'none';
-                dropdownRect = globalDropdown.getBoundingClientRect();
+        const tabRect = activeTab.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
 
-                let desktopDropdownLeft = tabRect.left + (tabRect.width / 2) - (dropdownRect.width / 2);
+        // Reset any previous inline styles that might interfere with measurement
+        globalDropdown.style.width = '';
+        globalDropdown.style.left = '';
+        globalDropdown.style.top = '';
+        globalDropdown.style.transform = 'none'; // Ensure no conflicting transforms
 
-                const viewportWidth = window.innerWidth;
-                const desktopHorizontalPadding = 10;
-                if (desktopDropdownLeft < desktopHorizontalPadding) {
-                    globalDropdown.style.left = `${desktopHorizontalPadding}px`;
-                } else if (desktopDropdownLeft + dropdownRect.width > viewportWidth - desktopHorizontalPadding) {
-                    globalDropdown.style.left = `${viewportWidth - dropdownRect.width - desktopHorizontalPadding}px`;
-                } else {
-                    globalDropdown.style.left = `${desktopDropdownLeft}px`;
-                }
-            }
+        let targetLeft;
+        let targetTop;
 
-            let dropdownTop = tabRect.bottom + 2;
+        // Calculate top position first: always directly below the tab, plus a small gap
+        targetTop = tabRect.bottom + window.scrollY + 5; // 5px gap below the tab
 
-            const viewportHeight = window.innerHeight;
-            const verticalPadding = 10;
-            if (dropdownTop + dropdownRect.height > viewportHeight - verticalPadding) {
-                dropdownTop = tabRect.top - dropdownRect.height - 10;
-                if (dropdownTop < verticalPadding) {
-                    dropdownTop = verticalPadding;
-                }
-            }
-            globalDropdown.style.top = `${dropdownTop}px`;
+        // First, set the dropdown's width to match the tab for both modes
+        // This ensures dropdownRect.width is accurate for centering calculations
+        globalDropdown.style.width = `${tabRect.width}px`;
+
+        // Now, get dropdown dimensions *after* setting its width
+        let dropdownRect = globalDropdown.getBoundingClientRect();
+
+        // Calculate targetLeft to center the dropdown with the tab
+        // tabRect.left + tabRect.width / 2 gives the horizontal center of the tab
+        // Then subtract half of the dropdown's width to get its new left position
+        targetLeft = tabRect.left + (tabRect.width / 2) - (dropdownRect.width / 2);
+
+        // --- PREVIOUSLY ADDED COMPENSATION HAS BEEN REMOVED ---
+        // If it was still 8px off to the left, this version will put it back to that state.
+        // We need to re-diagnose based on this 'clean' state.
+
+        // Add boundary checks
+        const leftEdgeBuffer = 10;
+        const rightEdgeBuffer = 10;
+
+        // Ensure it doesn't go off the screen on the left
+        if (targetLeft < leftEdgeBuffer) {
+            targetLeft = leftEdgeBuffer;
         }
+
+        // Ensure it doesn't go off the screen on the right
+        if (targetLeft + dropdownRect.width > viewportWidth - rightEdgeBuffer) {
+            targetLeft = viewportWidth - dropdownRect.width - rightEdgeBuffer;
+            // If even after shifting right, it still overlaps left, shrink it
+            if (targetLeft < leftEdgeBuffer) {
+                targetLeft = leftEdgeBuffer;
+                globalDropdown.style.width = `${viewportWidth - (leftEdgeBuffer + rightEdgeBuffer)}px`;
+                // IMPORTANT: Re-measure dropdownRect after potential width change
+                dropdownRect = globalDropdown.getBoundingClientRect();
+            }
+        }
+
+        // Apply calculated positions
+        globalDropdown.style.left = `${targetLeft}px`;
+        globalDropdown.style.top = `${targetTop}px`;
+
+        // At this point, it's already visible, it will be made fully visible by showDropdown.
     }
 
     tabs.forEach(tab => {
@@ -311,18 +366,39 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isMobileMode()) return;
 
         const hoveredTab = event.target.closest('.tab');
-        if (hoveredTab && hoveredTab !== activeTab) {
+        const hoveredDropdown = event.target.closest('#globalDropdown');
+
+        // Only show if hovering over a tab and it's not the currently active one
+        // and if the mouse is not already over the dropdown itself
+        if (hoveredTab && hoveredTab !== activeTab && !hoveredDropdown) {
             showDropdown(hoveredTab);
+        } else if (hoveredTab && hoveredTab === activeTab) {
+            // If re-hovering the active tab, clear any pending hide
+            clearTimeout(hideDropdownTimeout);
+        } else if (hoveredDropdown) {
+            // If hovering over the dropdown itself, clear any pending hide
+            clearTimeout(hideDropdownTimeout);
         }
     });
 
     document.addEventListener('mouseout', (event) => {
         if (isMobileMode()) return;
 
-        clearTimeout(hideDropdownTimeout);
+        clearTimeout(hideDropdownTimeout); // Clear any pending hide just in case
 
-        if (!globalDropdown.contains(event.relatedTarget) && (!activeTab || !activeTab.contains(event.relatedTarget))) {
-            hideDropdownTimeout = setTimeout(hideDropdown, 100);
+        // Check if the mouse is moving FROM a tab or the dropdown TO somewhere else
+        const fromTab = event.target.closest('.tab');
+        const fromDropdown = event.target.closest('#globalDropdown');
+        const toTab = event.relatedTarget ? event.relatedTarget.closest('.tab') : null;
+        const toDropdown = event.relatedTarget ? event.relatedTarget.closest('#globalDropdown') : null;
+
+        // If leaving a tab AND not entering another tab or the dropdown
+        if (fromTab && !toTab && !toDropdown) {
+            hideDropdown();
+        }
+        // If leaving the dropdown AND not entering a tab
+        else if (fromDropdown && !toTab) {
+            hideDropdown();
         }
     });
 
@@ -331,6 +407,20 @@ document.addEventListener('DOMContentLoaded', () => {
             hideDropdown();
         }
     });
+
+    // --- IMPORTANT: Add an event listener for window resize/orientation change ---
+    // This will ensure the dropdown repositions if it's open during a screen rotation
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            if (globalDropdown.style.display === 'block' && activeTab) {
+                // Only reposition if the dropdown is currently visible and a tab is active
+                showDropdown(activeTab); // Re-show and re-position the dropdown
+            }
+        }, 200); // Debounce the resize event to prevent excessive calls
+    });
+
 
     // --- Dynamic Daily Background Image (for body) ---
     function setDailyBackgroundImage() {
