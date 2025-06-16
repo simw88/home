@@ -4,47 +4,17 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
-    background-size: cover;          /* Ensure image covers the whole body */
-    background-position: center center; /* Center the image */
-    background-repeat: no-repeat;    /* Do not repeat the image */
-    background-attachment: fixed;    /* Keep image fixed when scrolling */
-    min-height: 100vh;
-    position: relative;
-    overflow-x: hidden;
-}
-
-body::before { /* Radial gradients - now z-index -1 */
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background:
-        radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 40% 80%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
-    pointer-events: none;
-    z-index: -1;
-}
-* {
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-size: cover;          /* Ensure image covers the whole body */
     background-position: center center; /* Center the image */
     background-repeat: no-repeat;    /* Do not repeat the image */
-    background-attachment: fixed;    /* Keep image fixed when scrolling */
+    background-attachment: fixed;    /* Keep image fixed when scrolling on desktop */
     min-height: 100vh;
-    position: relative;
+    position: relative; /* This was consolidated from the duplicated body rule */
     overflow-x: hidden;
 }
 
-body::before { 
+body::before { /* Radial gradients - now z-index -1 */
     content: '';
     position: fixed;
     top: 0;
@@ -130,7 +100,7 @@ body::before {
     gap: .7rem;
     margin-bottom: 1.5rem;
     position: relative;
-    z-index: 10; 
+    z-index: 10;
 }
 
 .tab {
@@ -146,7 +116,7 @@ body::before {
     position: relative;
     overflow: visible;
     z-index: 1;
-    text-align: center; 
+    text-align: center;
 }
 
 .tab:hover {
@@ -156,7 +126,7 @@ body::before {
 }
 
 #globalDropdown {
-    position: absolute;	
+    position: absolute;
     background: rgba(255, 255, 255);
     backdrop-filter: blur(20px);
     border-radius: 26px;
@@ -167,7 +137,7 @@ body::before {
     transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
     z-index: 2000; /* Extremely high z-index to ensure it's on top */
     min-width: 1px; /* Keep this for desktop */
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);    
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     transform: none; /* No default transform, JS will handle positioning */
 }
 
@@ -194,7 +164,6 @@ body::before {
     background: rgba(212, 212, 212, 0.44);
     border-radius: 26px;
 }
-}
 
 .search-section {
     text-align: center;
@@ -438,449 +407,11 @@ body::before {
 }
 
 @media (max-width: 1000px) { /* Adjust breakpoint as necessary */
+    body {
+        background-attachment: scroll; /* Change to scroll for mobile to prevent white box issues */
+    }
+
     .main-content-wrapper {
-        flex-direction: column; /* Stack them vertically on smaller screens */
-        align-items: center; /* Center them when stacked */
-        gap: 1rem; /* Reduce gap when stacked */
-    }
-
-	.image-container {
-		width: 100px; /* Reduced by 50% for mobile mode from 100px to 50px */
-		height: 100px; /* Keeping original height or adjust as needed */
-	}
-
-    .tabs {
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .search-buttons {
-        gap: 0.5rem;
-    }
-
-    .search-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-    }
-
-    /* Notes App Media Queries */
-    .notes-container {
-        padding: 1rem; /* Adjusted padding for consistency */
-        margin: 1rem auto; /* Centered with appropriate margin for mobile */
-    }
-
-    /* Dropdown in mobile mode adjustments */
-    #globalDropdown {
-        min-width: unset; /* Ensure min-width doesn't force it wider */
-		
-    }
-
-    #globalDropdown .dropdown-item {
-        text-align: center;
-    }
-}
-
-@media (min-width: 1001px) {
-    .main-content-wrapper {
-        flex-wrap: nowrap; /* Prevent wrapping on desktop */
-        margin-bottom: 0; /* Remove bottom margin here, as notes will follow */
-    }
-
-    .container {
-        margin-bottom: 1rem; /* Add margin to separate from notes below */
-    }
-
-    .notes-container {
-        max-width: 707px; 
-        margin-left: calc((100vw - 1182px) / 2 + 216px + 0.5rem);
-        margin-right: auto;
-        margin-bottom: 2rem; 
-    }
-}
-
-.time-date-container {
-    position: sticky; /* or fixed if you want it to always stay on screen */
-    top: 0;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    padding: .5rem;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000; /* Ensure it stays on top of other content */
-    color: white;
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 9rem; /* Add some space below it */
-    border-radius: 26px;
-}
-
-.main-content-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Changed from stretch to flex-start */
-    gap: .5rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-    position: relative;
-}
-
-.container {
-    max-width: 650px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    border-radius: 26px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    padding: 1rem;
-    position: relative;
-    overflow: visible;
-    z-index: 2;
-}
-
-.image-container {
-    width: 216px;
-    height: 216px; /* Set a fixed height for desktop */
-    background: rgba(255, 255, 255, 0.1); /* This can stay for the glassmorphism effect */
-    backdrop-filter: blur(20px);
-    border-radius: 26px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-    background-size: cover;          /* Ensures the image covers the entire container */
-    background-position: center center; /* Centers the image within the container */
-    background-repeat: no-repeat;    /* Prevents the image from repeating */
-}
-
-
-.tabs {
-    display: flex;
-    justify-content: center;
-    gap: .7rem;
-    margin-bottom: 1.5rem;
-    position: relative;
-    z-index: 10; /* This z-index is within .container's stacking context */
-}
-
-.tab {
-    padding: .9rem 3rem;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 26px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: 700;
-    position: relative;
-    overflow: visible;
-    z-index: 1;
-    text-align: center; /* ADDED: This will center the text inside the tab */
-}
-
-.tab:hover {
-    color: #65626E;
-    background: rgba(255, 255, 255);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    transition: all 0.5s ease;
-}
-
-#globalDropdown {
-    position: absolute;	
-    background: rgba(255, 255, 255);
-    backdrop-filter: blur(20px);
-    border-radius: 26px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: .2rem;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
-    z-index: 2000; /* Extremely high z-index to ensure it's on top */
-    min-width: 1px; /* Keep this for desktop */
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);    
-    transform: none; /* No default transform, JS will handle positioning */
-}
-
-.dropdown-item {
-    color: #65626E;
-    padding: 0.7rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.25s ease;
-    cursor: pointer;
-    text-decoration: none; /* IMPORTANT: Removes underline */
-    display: block;        /* Makes the entire padding area clickable */
-    padding: 0.7rem;  /* Add horizontal padding for better spacing */
-}
-
-.dropdown-item:last-child {
-    border-bottom: none;
-}
-
-.dropdown-item:hover {
-    color: #2b2b2c;
-    transform: translateX(3.5px);
-    background: rgba(212, 212, 212, 0.44);
-    border-radius: 26px;
-}
-
-.search-section {
-    text-align: center;
-}
-
-.search-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: .8rem;
-    flex-wrap: wrap;
-}
-
-.search-btn {
-    padding: 0.75rem 1.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 26px;
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: 500;
-    position: relative;
-    overflow: hidden;
-}
-
-.search-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-}
-
-.search-btn:hover::before {
-    left: 100%;
-}
-
-.search-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.search-btn.active {
-    background: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.search-bar {
-    position: relative;
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-.search-input {
-    width: 100%;
-    padding: 1rem 1.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 26px;
-    color: white;
-    font-size: 1rem;
-    outline: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.search-input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.search-input:focus {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-}
-
-.notes-container {
-    position: relative;
-    z-index: 1; /* Keep notes container z-index at 1 */
-    width: 100%;
-    max-width: 500px; /* Default max-width for smaller screens */
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 26px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    padding: 1rem;
-    margin: -6px auto 2rem auto; /* Default margin for smaller screens */
-}
-
-.note-input-wrapper {
-    position: relative;
-    width: 100%;
-    display: flex;
-    align-items: center;
-}
-
-.note-input {
-    width: 100%;
-    padding: 10px 20px;
-    padding-right: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 26px;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    font-size: 1rem;
-    outline: none;
-    transition: border-color 0.3s ease, background 0.3s ease;
-}
-
-.note-input:focus {
-    border-color: rgba(255, 255, 255, 0.6);
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.note-input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.notes-list {
-    max-height: 400px;
-    overflow-y: auto;
-    padding-right: 5px;
-}
-
-.notes-list::-webkit-scrollbar {
-    width: 8px;
-}
-
-.notes-list::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 26px;
-}
-
-.notes-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 26px;
-}
-
-.notes-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
-
-.note-item {
-    display: flex;
-    align-items: flex-start;
-    padding: .5rem;
-    margin: 0.5rem 0;
-    color: white;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 26px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-    min-width: 0;
-}
-
-.note-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateX(5px);
-}
-
-.note-text {
-    flex: 1;
-    margin-left: 0.75rem;
-    margin-right: 0.75rem;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-word;
-    min-width: 0;
-    white-space: pre-wrap;
-}
-
-.note-delete {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 100, 100, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    flex-shrink: 0;
-    position: sticky;
-    top: 0.5rem;
-    align-self: flex-start;
-    margin-top: 0.25rem;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
-}
-
-.note-delete:hover {
-    background: rgba(255, 100, 100, 0.15);
-    color: rgba(255, 80, 80, 1);
-    transform: scale(1.1);
-    border-color: rgba(255, 100, 100, 0.3);
-    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.3);
-}
-
-.clear-input-button {
-    position: absolute;
-    right: 10px;
-    background: none;
-    border: none;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 1.2rem;
-    font-weight: bold;
-    cursor: pointer;
-    padding: 5px;
-    line-height: 1;
-    opacity: 0.8;
-    transition: opacity 0.2s ease;
-}
-
-.clear-input-button:hover {
-    opacity: 1;
-    color: white;
-}
-
-.hidden {
-    display: none !important;
-}
-
-.empty-state {
-    text-align: center;
-    color: rgba(255, 255, 255, 0.6);
-    padding: 40px 20px;
-    font-style: italic;
-}
-
-@media (max-width: 1000px) { /* Adjust breakpoint as necessary */
-   body {
-        background-attachment: scroll;
-    }
-	
-	.main-content-wrapper {
         flex-direction: column; /* Stack them vertically on smaller screens */
         align-items: center; /* Center them when stacked */
         gap: 1rem; /* Reduce gap when stacked */
@@ -909,13 +440,16 @@ body::before {
         font-size: 0.9rem;
     }
 
+    /* Notes App Media Queries */
     .notes-container {
         padding: 1rem; /* Adjusted padding for consistency */
         margin: 1rem auto; /* Centered with appropriate margin for mobile */
     }
 
+    /* Dropdown in mobile mode adjustments */
     #globalDropdown {
-        min-width: unset; 
+        min-width: unset;
+        max-width: 90%; /* Added max-width to prevent excessive width on mobile */
     }
 
     #globalDropdown .dropdown-item {
@@ -932,12 +466,12 @@ body::before {
     .container {
         margin-bottom: 1rem; /* Add margin to separate from notes below */
     }
-	
+
     .notes-container {
-        max-width: 707px; 
+        max-width: 707px;
         margin-left: calc((100vw - 1182px) / 2 + 216px + 0.5rem);
         margin-right: auto; /* Push to the right to maintain alignment */
-        
+
         margin-bottom: 2rem; /* Space below the notes container */
     }
 }
@@ -947,7 +481,7 @@ body::before {
         width: 100%;
         max-width: unset; /* Allow them to take full width */
     }
-	
+
     .time-date-container {
 	margin-bottom: 1rem;
     }
