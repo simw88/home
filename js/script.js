@@ -235,6 +235,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         activeTab = tabElement; // Store the newly active tab
 
+        // NEW: Add 'tab-active' class to the currently active tab
+        activeTab.classList.add('tab-active');
+
         const dropdownContent = JSON.parse(activeTab.dataset.dropdownContent);
         globalDropdown.innerHTML = '';
 
@@ -268,6 +271,11 @@ document.addEventListener('DOMContentLoaded', () => {
         globalDropdown.style.transform = 'translateY(-10px)';
         globalDropdown.style.visibility = 'hidden';
         globalDropdown.style.display = 'none';
+        
+        // NEW: Remove 'tab-active' class from the tab that was active
+        if (activeTab) {
+            activeTab.classList.remove('tab-active');
+        }
         activeTab = null;
     }
 
@@ -284,7 +292,12 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 globalDropdown.style.display = 'none';
             }, 200); // Match CSS transition duration
-            activeTab = null; // Clear active tab
+            
+            // NEW: Remove 'tab-active' class from the tab that was active
+            if (activeTab) {
+                activeTab.classList.remove('tab-active');
+            }
+            activeTab = null;
         }, 100); // Short delay to allow quick re-entry or click on dropdown items
     }
 
@@ -421,6 +434,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 200); // Debounce the resize event to prevent excessive calls
     });
 
+    // --- WebKit-compatible background image setter ---
+    function setBackgroundImageWebKitSafe(element, imageUrl) {
+        // Create absolute URL to avoid WebKit relative path issues
+        const absoluteUrl = new URL(imageUrl, window.location.href).href;
+        
+        // Set background image with proper quotes (WebKit can be picky about this)
+        element.style.backgroundImage = `url('${absoluteUrl}')`;
+        
+        // Force a style recalculation in WebKit
+        element.offsetHeight;
+        
+        // Alternative approach: try without quotes as well
+        if (!element.style.backgroundImage || element.style.backgroundImage === 'none') {
+            element.style.backgroundImage = `url(${absoluteUrl})`;
+        }
+        
+        // Ensure other background properties are set
+        if (!element.style.backgroundSize) element.style.backgroundSize = 'cover';
+        if (!element.style.backgroundPosition) element.style.backgroundPosition = 'center';
+        if (!element.style.backgroundRepeat) element.style.backgroundRepeat = 'no-repeat';
+        
+        // Try to force a repaint
+        element.style.transform = 'translateZ(0)';
+    }
 
     // --- Dynamic Daily Background Image (for body) ---
     function setDailyBackgroundImage() {
@@ -430,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const imageName = days[day] + '.jpg';
         const imageUrl = `imgs/bgs/${imageName}`;
 
-        document.body.style.backgroundImage = `url('${imageUrl}')`;
+        setBackgroundImageWebKitSafe(document.body, imageUrl);
     }
 
     setDailyBackgroundImage();
@@ -448,10 +485,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const randomIndex = Math.floor(Math.random() * sideImages.length);
         const randomImageName = sideImages[randomIndex];
-        // MODIFIED: Use currentImageDir for the path
+        // Use currentImageDir for the path
         const imageUrl = `${currentImageDir}/${randomImageName}`;
 
-        imageContainer.style.backgroundImage = `url('${imageUrl}')`;
+        setBackgroundImageWebKitSafe(imageContainer, imageUrl);
     }
 
     loadRandomSideImage(); // Initial load
