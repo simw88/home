@@ -14,21 +14,6 @@ body {
     overflow-x: hidden;
 }
 
-body::before { /* Radial gradients - now z-index -1 */
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background:
-        radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 40% 80%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
-    pointer-events: none;
-    z-index: -1;
-}
-
 .time-date-container {
     position: sticky; /* or fixed if you want it to always stay on screen */
     top: 0;
@@ -36,14 +21,14 @@ body::before { /* Radial gradients - now z-index -1 */
     width: 100%;
     text-align: center;
     padding: .5rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     z-index: 1000; /* Ensure it stays on top of other content */
-    color: white;
-    font-size: 1.2rem;
-    font-weight: 600;
+    color: #2b2b2c;
+    font-size: 1.4rem;
+    font-weight: 700;
     margin-bottom: 9rem; /* Add some space below it */
 	border-radius: 26px;
 }
@@ -62,13 +47,11 @@ body::before { /* Radial gradients - now z-index -1 */
 
 .container {
     max-width: 650px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(20px);
     border-radius: 26px;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     padding: 1rem;
     position: relative;
     overflow: visible;
@@ -76,15 +59,13 @@ body::before { /* Radial gradients - now z-index -1 */
 }
 
 .image-container {
-    width: 216px;
-    height: 216px; /* Set a fixed height for desktop */
-    background: rgba(255, 255, 255, 0.1); /* This can stay for the glassmorphism effect */
+    width: 222px;
+    height: 222px; /* Set a fixed height for desktop */
+    background: rgba(255, 255, 255, 0.3); /* This can stay for the glassmorphism effect */
     backdrop-filter: blur(20px);
     border-radius: 26px;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     position: relative;
     overflow: hidden;
     flex-shrink: 0;
@@ -105,11 +86,11 @@ body::before { /* Radial gradients - now z-index -1 */
 
 .tab {
     padding: .9rem 3rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(10px);
     border-radius: 26px;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
+    color: #65626E;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-weight: 700;
@@ -120,9 +101,17 @@ body::before { /* Radial gradients - now z-index -1 */
 }
 
 .tab:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+	color: #65626E;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);}
+
+/* NEW: Style for the active tab when its dropdown is visible*/
+.tab.tab-active {
+    background: rgba(255, 255, 255);
+    transform: translateY(-2px);
+	color: #65626E;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 #globalDropdown {
@@ -137,7 +126,7 @@ body::before { /* Radial gradients - now z-index -1 */
     transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
     z-index: 2000; /* Extremely high z-index to ensure it's on top */
     min-width: 1px; /* Keep this for desktop */
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     transform: none; /* No default transform, JS will handle positioning */
 }
 
@@ -160,8 +149,9 @@ body::before { /* Radial gradients - now z-index -1 */
     color: #2b2b2c;
     font-size: 1.02rem;
     font-weight: bold;
-    transform: translateX(3.5px);
-    background: rgba(212, 212, 212, 0.44);
+    transform: translateX(4px);
+    background: rgba(212, 212, 212, .6);
+	width: auto;
     border-radius: 26px;
 }
 
@@ -173,17 +163,17 @@ body::before { /* Radial gradients - now z-index -1 */
     display: flex;
     justify-content: center;
     gap: 1rem;
-    margin-bottom: .8rem;
+    margin-bottom: 1rem;
     flex-wrap: wrap;
 }
 
 .search-btn {
     padding: 0.75rem 1.5rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 26px;
-    color: white;
+    color: #65626E;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-weight: 500;
@@ -207,14 +197,19 @@ body::before { /* Radial gradients - now z-index -1 */
 }
 
 .search-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.6);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+	font-weight: bold;
+	font-size: .95rem;
 }
 
 .search-btn.active {
-    background: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255);	
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+	color: #2b2b2c;
+    font-size: .95rem;
+    font-weight: bold;
 }
 
 .search-bar {
@@ -226,24 +221,25 @@ body::before { /* Radial gradients - now z-index -1 */
 .search-input {
     width: 100%;
     padding: 1rem 1.5rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.4);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 26px;
-    color: white;
+    color: #65626E;
     font-size: 1rem;
     outline: none;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
+    color: #65626E;
 }
 
 .search-input:focus {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.6);
     border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+	transform: translateY(2px);
 }
 
 .notes-container {
@@ -251,12 +247,12 @@ body::before { /* Radial gradients - now z-index -1 */
     z-index: 1; /* Keep notes container z-index at 1 */
     width: 100%;
     max-width: 500px; /* Default max-width for smaller screens */
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.3);
     border-radius: 26px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     padding: 1rem;
     margin: -6px auto 2rem auto; /* Default margin for smaller screens */
 }
@@ -274,8 +270,8 @@ body::before { /* Radial gradients - now z-index -1 */
     padding-right: 40px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 26px;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    background: rgba(255, 255, 255, 0.5);
+    color: #65626E;
     font-size: 1rem;
     outline: none;
     transition: border-color 0.3s ease, background 0.3s ease;
@@ -283,11 +279,17 @@ body::before { /* Radial gradients - now z-index -1 */
 
 .note-input:focus {
     border-color: rgba(255, 255, 255, 0.6);
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.6);
+	transform: translateY(2px);
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	font-weight: bold;
+	font-size: .95rem;
+	color: #2b2b2c;
 }
 
 .note-input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: #65626E;
 }
 
 .notes-list {
@@ -318,18 +320,20 @@ body::before { /* Radial gradients - now z-index -1 */
     display: flex;
     align-items: flex-start;
     padding: .5rem;
-    margin: 0.5rem 0;
-    color: white;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 26px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 0.6rem .5rem;
+    color: #65626E;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 26px;    
     transition: all 0.3s ease;
     min-width: 0;
 }
 
 .note-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateX(5px);
+    background: rgba(255, 255, 255, 0.6);	
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+	font-weight: bold;
+	font-size: .95rem;
+	color: #2b2b2c
 }
 
 .note-text {
@@ -345,7 +349,7 @@ body::before { /* Radial gradients - now z-index -1 */
 
 .note-delete {
     background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 100, 100, 0.9);
+    color: #65626E;
     border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 50%;
     width: 25px;
@@ -380,7 +384,7 @@ body::before { /* Radial gradients - now z-index -1 */
     right: 10px;
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.7);
+    color: #65626E;
     font-size: 1.2rem;
     font-weight: bold;
     cursor: pointer;
@@ -392,7 +396,7 @@ body::before { /* Radial gradients - now z-index -1 */
 
 .clear-input-button:hover {
     opacity: 1;
-    color: white;
+    color: rgba(255, 100, 100);
 }
 
 .hidden {
