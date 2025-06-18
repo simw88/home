@@ -110,7 +110,8 @@ body {
 .tab.tab-active {
     background: rgba(255, 255, 255);
     transform: translateY(-2px);
-	color: #65626E;
+	color: #2b2b2c;    
+    font-weight: bold;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
