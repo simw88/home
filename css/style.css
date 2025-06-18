@@ -233,7 +233,7 @@ body {
 }
 
 .search-input::placeholder {
-    color: #65626E;
+    color: #2b2b2c;
 }
 
 .search-input:focus {
@@ -241,6 +241,8 @@ body {
     border-color: rgba(255, 255, 255, 0.4);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 	transform: translateY(2px);
+	color: #2b2b2c;
+	font-weight: bold;
 }
 
 .notes-container {
