@@ -326,7 +326,35 @@ body {
     border-radius: 26px;    
     transition: all 0.3s ease;
     min-width: 0;
+    cursor: grab; /* Indicates that the item is draggable */
 }
+
+/* Drag and Drop Styles */
+.note-item.dragging {
+    opacity: 0.5;
+    border: 2px dashed #007bff; /* Visual cue for the item being dragged */
+    background-color: #f0f0f0;
+}
+
+.note-item.drag-over-top {
+    border-top: 2px solid #007bff; /* Visual cue for dropping above */
+}
+
+.note-item.drag-over-bottom {
+    border-bottom: 2px solid #007bff; /* Visual cue for dropping below */
+}
+
+/* Optional: Style for dropping into an empty list */
+.notes-list.drag-over-empty {
+    border: 2px dashed #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+/* Ensure empty state is still hidden when dragging over */
+.notes-list.drag-over-empty .empty-state {
+    display: none;
+}
+
 
 .note-item:hover {
     background: rgba(255, 255, 255, 0.6);	
