@@ -332,22 +332,22 @@ body {
 /* Drag and Drop Styles */
 .note-item.dragging {
     opacity: 0.5;
-    border: 2px dashed #007bff; /* Visual cue for the item being dragged */
+    border: 3px dashed #000000; /* Changed to black and thicker */
     background-color: #f0f0f0;
 }
 
 .note-item.drag-over-top {
-    border-top: 2px solid #007bff; /* Visual cue for dropping above */
+    border-top: 3px solid #000000; /* Changed to black and thicker */
 }
 
 .note-item.drag-over-bottom {
-    border-bottom: 2px solid #007bff; /* Visual cue for dropping below */
+    border-bottom: 3px solid #000000; /* Changed to black and thicker */
 }
 
 /* Optional: Style for dropping into an empty list */
 .notes-list.drag-over-empty {
-    border: 2px dashed #007bff;
-    background-color: rgba(0, 123, 255, 0.1);
+    border: 3px dashed #000000; /* Changed to black and thicker */
+    background-color: rgba(0, 0, 0, 0.1); /* Adjusted transparency for black */
 }
 
 /* Ensure empty state is still hidden when dragging over */
