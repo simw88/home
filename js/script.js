@@ -29,6 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // NEW: State variable for current image directory
     let currentImageDir = 'imgs/side';
 
+    // NEW: Variables for drag and drop
+    let draggedNoteIndex = null;
+    let dragOverNoteIndex = null;
+
     // Helper function to determine if it's mobile mode
     const isMobileMode = () => window.innerWidth <= 1000;
 
@@ -165,6 +169,9 @@ document.addEventListener('DOMContentLoaded', () => {
             notes.forEach((note, index) => {
                 const noteItem = document.createElement('div');
                 noteItem.classList.add('note-item');
+                // Make each note item draggable and assign a data-index
+                noteItem.setAttribute('draggable', 'true');
+                noteItem.dataset.index = index; // Store the original index for drag/drop
                 noteItem.innerHTML = `
                     <span class="note-text">${note}</span>
                     <button class="note-delete" data-index="${index}">×</button>
@@ -177,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function addNote() {
         const noteText = noteInput.value.trim();
         if (noteText) {
-            notes.push(noteText);
+            notes.unshift(noteText); // Changed from push to unshift to add to the top
             localStorage.setItem('notes', JSON.stringify(notes));
             noteInput.value = '';
             renderNotes();
@@ -223,6 +230,103 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderNotes();
     updateClearButtonVisibility();
+
+    // --- Drag and Drop functionality for Notes ---
+
+    notesList.addEventListener('dragstart', (e) => {
+        const targetItem = e.target.closest('.note-item');
+        if (targetItem) {
+            draggedNoteIndex = parseInt(targetItem.dataset.index);
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', draggedNoteIndex); // Set data (useful for external drops, but also for internal tracking)
+            targetItem.classList.add('dragging'); // Add a class for styling the dragged item
+        }
+    });
+
+    notesList.addEventListener('dragover', (e) => {
+        e.preventDefault(); // Crucial: Allows a drop
+        e.dataTransfer.dropEffect = 'move';
+
+        const targetItem = e.target.closest('.note-item');
+        if (targetItem && draggedNoteIndex !== null) {
+            const currentOverIndex = parseInt(targetItem.dataset.index);
+
+            if (currentOverIndex === draggedNoteIndex) {
+                // Dragging over itself, no visual change
+                notesList.querySelectorAll('.note-item').forEach(item => item.classList.remove('drag-over-top', 'drag-over-bottom'));
+                return;
+            }
+
+            // Determine if dragging above or below the current item
+            const rect = targetItem.getBoundingClientRect();
+            const midpoint = rect.y + rect.height / 2;
+
+            notesList.querySelectorAll('.note-item').forEach(item => item.classList.remove('drag-over-top', 'drag-over-bottom'));
+
+            if (e.clientY < midpoint) {
+                // Dragging to insert above
+                targetItem.classList.add('drag-over-top');
+                dragOverNoteIndex = currentOverIndex;
+            } else {
+                // Dragging to insert below
+                targetItem.classList.add('drag-over-bottom');
+                dragOverNoteIndex = currentOverIndex + 1; // Insert after this item
+            }
+        } else if (!targetItem && notes.length === 0 && draggedNoteIndex !== null) {
+            // Special case: dragging over an empty list
+            notesList.classList.add('drag-over-empty');
+            dragOverNoteIndex = 0; // Insert at the beginning of the empty list
+        }
+    });
+
+    notesList.addEventListener('dragleave', (e) => {
+        // Clear all drag-over classes when leaving the list or an item
+        notesList.querySelectorAll('.note-item').forEach(item => item.classList.remove('drag-over-top', 'drag-over-bottom'));
+        notesList.classList.remove('drag-over-empty');
+    });
+
+
+    notesList.addEventListener('drop', (e) => {
+        e.preventDefault(); // Prevent default browser drop behavior (e.g., opening dropped text)
+
+        // Clear all drag-over classes
+        notesList.querySelectorAll('.note-item').forEach(item => item.classList.remove('drag-over-top', 'drag-over-bottom'));
+        notesList.classList.remove('drag-over-empty');
+
+        if (draggedNoteIndex !== null && dragOverNoteIndex !== null) {
+            if (draggedNoteIndex === dragOverNoteIndex || (draggedNoteIndex + 1 === dragOverNoteIndex && draggedNoteIndex < dragOverNoteIndex)) {
+                // Dropped at the same position or just below itself, no change needed
+                draggedNoteIndex = null;
+                dragOverNoteIndex = null;
+                renderNotes(); // Re-render to clear any potential lingering styles
+                return;
+            }
+
+            const [movedNote] = notes.splice(draggedNoteIndex, 1); // Remove the dragged note
+
+            // Adjust dragOverNoteIndex if we removed an item *before* the target drop position
+            if (draggedNoteIndex < dragOverNoteIndex) {
+                dragOverNoteIndex--;
+            }
+
+            notes.splice(dragOverNoteIndex, 0, movedNote); // Insert the note at the new position
+
+            localStorage.setItem('notes', JSON.stringify(notes));
+            renderNotes(); // Re-render the notes to reflect the new order
+        }
+        draggedNoteIndex = null; // Reset
+        dragOverNoteIndex = null; // Reset
+    });
+
+    notesList.addEventListener('dragend', (e) => {
+        // This event fires after the drag operation has finished (drop or cancel)
+        notesList.querySelectorAll('.note-item').forEach(item => {
+            item.classList.remove('dragging', 'drag-over-top', 'drag-over-bottom');
+        });
+        notesList.classList.remove('drag-over-empty');
+        draggedNoteIndex = null;
+        dragOverNoteIndex = null;
+    });
 
     // --- Dropdown Functionality ---
     function showDropdown(tabElement) {
