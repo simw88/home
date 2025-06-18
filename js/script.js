@@ -24,10 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeTab = null;
     let hideDropdownTimeout;
 
-    let boardsTabHidden = false;
-    let pandaSearchHidden = false;
-    // State variable for current image directory
-    let currentImageDir = 'imgs/side';
+    // Load hidden states from localStorage on page load
+    let boardsTabHidden = JSON.parse(localStorage.getItem('boardsTabHidden')) || false;
+    let pandaSearchHidden = JSON.parse(localStorage.getItem('pandaSearchHidden')) || false;
+    // State variable for current image directory - also load from localStorage
+    let currentImageDir = localStorage.getItem('currentImageDir') || 'imgs/side';
 
     // Variables for drag and drop
     let draggedNoteIndex = null;
@@ -40,6 +41,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Helper function to determine if it's mobile mode
     const isMobileMode = () => window.innerWidth <= 1000;
+
+    // Function to apply initial hidden states on page load
+    function applyInitialHiddenStates() {
+        const boardsTab = Array.from(tabs).find(tab => tab.textContent.trim() === 'Boards');
+        const pandaSearchBtn = Array.from(searchButtons).find(btn => btn.dataset.engine === 'panda');
+
+        // Apply saved "Boards" tab visibility state
+        if (boardsTab && boardsTabHidden) {
+            boardsTab.classList.add('hidden');
+        }
+
+        // Apply saved "Panda" search option visibility state
+        if (pandaSearchBtn && pandaSearchHidden) {
+            pandaSearchBtn.classList.add('hidden');
+            // If "Panda" was active but is now hidden, switch to Google
+            if (activeEngine === 'panda') {
+                activeEngine = 'google';
+                searchButtons.forEach(btn => {
+                    if (btn.dataset.engine === 'google') {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+        }
+    }
+
+    // Function to save hidden states to localStorage
+    function saveHiddenStates() {
+        localStorage.setItem('boardsTabHidden', JSON.stringify(boardsTabHidden));
+        localStorage.setItem('pandaSearchHidden', JSON.stringify(pandaSearchHidden));
+        localStorage.setItem('currentImageDir', currentImageDir);
+    }
 
     // --- Time and Date ---
     function updateClock() {
@@ -119,6 +154,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Toggle image source directory and load new image
         currentImageDir = (currentImageDir === 'imgs/side') ? 'imgs/rep' : 'imgs/side';
         loadRandomSideImage(); // Call the function to load image from the new directory
+
+        // Save the updated states to localStorage
+        saveHiddenStates();
     });
 
     // --- Search Functionality ---
@@ -651,4 +689,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Add click listener to the imageContainer to load a new random image
     imageContainer.addEventListener('click', loadRandomSideImage);
+
+    // Apply the initial hidden states when the page loads
+    applyInitialHiddenStates();
 });
