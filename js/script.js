@@ -26,12 +26,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let boardsTabHidden = false;
     let pandaSearchHidden = false;
-    // NEW: State variable for current image directory
+    // State variable for current image directory
     let currentImageDir = 'imgs/side';
 
-    // NEW: Variables for drag and drop
+    // Variables for drag and drop
     let draggedNoteIndex = null;
     let dragOverNoteIndex = null;
+
+    // Variables for tap detection
+    let lastClickTime = 0;
+    let clickCount = 0;
+    const TAP_TIMEOUT = 300; // milliseconds to differentiate taps
 
     // Helper function to determine if it's mobile mode
     const isMobileMode = () => window.innerWidth <= 1000;
@@ -111,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
             pandaSearchHidden = !pandaSearchHidden; // Invert state
         }
 
-        // NEW: Toggle image source directory and load new image
+        // Toggle image source directory and load new image
         currentImageDir = (currentImageDir === 'imgs/side') ? 'imgs/rep' : 'imgs/side';
         loadRandomSideImage(); // Call the function to load image from the new directory
     });
@@ -199,6 +204,26 @@ document.addEventListener('DOMContentLoaded', () => {
         updateClearButtonVisibility();
     }
 
+    // Function to move note up
+    function moveNoteUp(index) {
+        if (index > 0) {
+            const [noteToMove] = notes.splice(index, 1);
+            notes.splice(index - 1, 0, noteToMove);
+            localStorage.setItem('notes', JSON.stringify(notes));
+            renderNotes();
+        }
+    }
+
+    // Function to move note down
+    function moveNoteDown(index) {
+        if (index < notes.length - 1) {
+            const [noteToMove] = notes.splice(index, 1);
+            notes.splice(index + 1, 0, noteToMove);
+            localStorage.setItem('notes', JSON.stringify(notes));
+            renderNotes();
+        }
+    }
+
     noteInput.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
             addNote();
@@ -206,9 +231,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     notesList.addEventListener('click', (event) => {
+        // Handle delete button click first
         if (event.target.classList.contains('note-delete')) {
             const index = parseInt(event.target.dataset.index);
             deleteNote(index);
+        } else {
+            // Handle tap events for moving notes
+            const targetNoteItem = event.target.closest('.note-item');
+            if (targetNoteItem) {
+                const currentTime = new Date().getTime();
+                
+                if (currentTime - lastClickTime < TAP_TIMEOUT) {
+                    clickCount++;
+                } else {
+                    clickCount = 1;
+                }
+                lastClickTime = currentTime;
+
+                // Use a timeout to determine if it's a single or double tap
+                // This setTimeout is crucial because we need to wait a bit to see if
+                // another click happens within the TAP_TIMEOUT window.
+                setTimeout(() => {
+                    // Only process if clickCount is still valid for this tap sequence
+                    if (clickCount > 0) { // Ensure it's not reset by a later dragend or click outside
+                        if (clickCount === 1) { // Single tap
+                            const index = parseInt(targetNoteItem.dataset.index);
+                            moveNoteUp(index);
+                        } else if (clickCount === 2) { // Double tap
+                            const index = parseInt(targetNoteItem.dataset.index);
+                            moveNoteDown(index);
+                        }
+                    }
+                    clickCount = 0; // Reset click count after processing
+                }, TAP_TIMEOUT);
+            }
         }
     });
 
@@ -339,7 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         activeTab = tabElement; // Store the newly active tab
 
-        // NEW: Add 'tab-active' class to the currently active tab
+        // Add 'tab-active' class to the currently active tab
         activeTab.classList.add('tab-active');
 
         const dropdownContent = JSON.parse(activeTab.dataset.dropdownContent);
@@ -376,7 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
         globalDropdown.style.visibility = 'hidden';
         globalDropdown.style.display = 'none';
         
-        // NEW: Remove 'tab-active' class from the tab that was active
+        // Remove 'tab-active' class from the tab that was active
         if (activeTab) {
             activeTab.classList.remove('tab-active');
         }
@@ -397,7 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 globalDropdown.style.display = 'none';
             }, 200); // Match CSS transition duration
             
-            // NEW: Remove 'tab-active' class from the tab that was active
+            // Remove 'tab-active' class from the tab that was active
             if (activeTab) {
                 activeTab.classList.remove('tab-active');
             }
@@ -435,10 +491,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // tabRect.left + tabRect.width / 2 gives the horizontal center of the tab
         // Then subtract half of the dropdown's width to get its new left position
         targetLeft = tabRect.left + (tabRect.width / 2) - (dropdownRect.width / 2);
-
-        // --- PREVIOUSLY ADDED COMPENSATION HAS BEEN REMOVED ---
-        // If it was still 8px off to the left, this version will put it back to that state.
-        // We need to re-diagnose based on this 'clean' state.
 
         // Add boundary checks
         const leftEdgeBuffer = 10;
