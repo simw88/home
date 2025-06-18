@@ -236,7 +236,7 @@ body {
 }
 
 .search-input:focus {
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255);
     border-color: rgba(255, 255, 255, 0.4);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 	transform: translateY(2px);
@@ -279,7 +279,7 @@ body {
 
 .note-input:focus {
     border-color: rgba(255, 255, 255, 0.6);
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255);
 	transform: translateY(2px);
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -331,17 +331,17 @@ body {
 
 /* Drag and Drop Styles */
 .note-item.dragging {
-    opacity: 0.5;
+    opacity: 0.9;
     border: 3px dashed #000000; /* Changed to black and thicker */
     background-color: #f0f0f0;
 }
 
 .note-item.drag-over-top {
-    border-top: 3px solid #000000; /* Changed to black and thicker */
+    border-top: 9px solid #000000; /* Changed to black and thicker */
 }
 
 .note-item.drag-over-bottom {
-    border-bottom: 3px solid #000000; /* Changed to black and thicker */
+    border-bottom: 9px solid #000000; /* Changed to black and thicker */
 }
 
 /* Optional: Style for dropping into an empty list */
@@ -357,7 +357,7 @@ body {
 
 
 .note-item:hover {
-    background: rgba(255, 255, 255, 0.6);	
+    background: rgba(255, 255, 255);	
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 	font-weight: bold;
 	font-size: .95rem;
