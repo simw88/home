@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load hidden states from localStorage on page load
     let boardsTabHidden = JSON.parse(localStorage.getItem('boardsTabHidden')) || false;
     let pandaSearchHidden = JSON.parse(localStorage.getItem('pandaSearchHidden')) || false;
+    let nyaaSearchHidden = JSON.parse(localStorage.getItem('nyaaSearchHidden')) || false; // Added for Nyaa
     // State variable for current image directory - also load from localStorage
     let currentImageDir = localStorage.getItem('currentImageDir') || 'imgs/side';
 
@@ -46,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function applyInitialHiddenStates() {
         const boardsTab = Array.from(tabs).find(tab => tab.textContent.trim() === 'Boards');
         const pandaSearchBtn = Array.from(searchButtons).find(btn => btn.dataset.engine === 'panda');
+        const nyaaSearchBtn = Array.from(searchButtons).find(btn => btn.dataset.engine === 'nyaa'); // Get Nyaa button
 
         // Apply saved "Boards" tab visibility state
         if (boardsTab && boardsTabHidden) {
@@ -67,12 +69,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         }
+
+        // Apply saved "Nyaa" search option visibility state
+        if (nyaaSearchBtn && nyaaSearchHidden) {
+            nyaaSearchBtn.classList.add('hidden');
+            // If "Nyaa" was active but is now hidden, switch to Google
+            if (activeEngine === 'nyaa') {
+                activeEngine = 'google';
+                searchButtons.forEach(btn => {
+                    if (btn.dataset.engine === 'google') {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+        }
     }
 
     // Function to save hidden states to localStorage
     function saveHiddenStates() {
         localStorage.setItem('boardsTabHidden', JSON.stringify(boardsTabHidden));
         localStorage.setItem('pandaSearchHidden', JSON.stringify(pandaSearchHidden));
+        localStorage.setItem('nyaaSearchHidden', JSON.stringify(nyaaSearchHidden)); // Save Nyaa state
         localStorage.setItem('currentImageDir', currentImageDir);
     }
 
@@ -116,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
     clockDisplay.addEventListener('click', () => {
         const boardsTab = Array.from(tabs).find(tab => tab.textContent.trim() === 'Boards');
         const pandaSearchBtn = Array.from(searchButtons).find(btn => btn.dataset.engine === 'panda');
+        const nyaaSearchBtn = Array.from(searchButtons).find(btn => btn.dataset.engine === 'nyaa'); // Get Nyaa button
 
         // Toggle "Boards" tab visibility
         if (boardsTab) {
@@ -149,6 +169,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             pandaSearchHidden = !pandaSearchHidden; // Invert state
+        }
+
+        // Toggle "Nyaa" search option visibility
+        if (nyaaSearchBtn) {
+            if (nyaaSearchHidden) {
+                nyaaSearchBtn.classList.remove('hidden');
+            } else {
+                nyaaSearchBtn.classList.add('hidden');
+                // If "Nyaa" was active, switch to Google when hidden
+                if (activeEngine === 'nyaa') {
+                    activeEngine = 'google';
+                    searchButtons.forEach(btn => {
+                        if (btn.dataset.engine === 'google') {
+                            btn.classList.add('active');
+                        } else {
+                            btn.classList.remove('active');
+                        }
+                    });
+                }
+            }
+            nyaaSearchHidden = !nyaaSearchHidden; // Invert state
         }
 
         // Toggle image source directory and load new image
