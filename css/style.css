@@ -7,6 +7,16 @@
     --glass-border: rgba(255, 255, 255, 0.18);
     --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     --glass-inset: inset 0 0 20px rgba(255, 255, 255, 0.1);
+    --success-color: #4caf50;
+    --warning-color: #ff9800;
+    --error-color: #f44336;
+}
+
+[data-theme="dark"] {
+    --text-color: #f0f0f0;
+    --glass-bg: rgba(0, 0, 0, 0.3);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --dropdown-text: #f0f0f0;
 }
 
 * {
@@ -20,15 +30,16 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    /* Background image will be set by JavaScript */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    /* Fallback gradient in case image doesn't load */
     background-image: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 25%, var(--accent-color) 50%, #f5576c 75%, #4facfe 100%);
     overflow-x: hidden;
     position: relative;
+    transition: background-color 0.3s ease;
+    /* For smooth touch scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Full-width time display header */
@@ -47,7 +58,6 @@ body {
     align-items: center;
     justify-content: center;
     gap: 5px;
-
     margin-bottom: 100px;
 }
 
@@ -81,6 +91,54 @@ body {
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
+.theme-switcher {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    /* Ensure it's a valid tap target */
+    min-width: 44px;
+    min-height: 44px;
+}
+
+.theme-switcher:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Pull to refresh indicator */
+.pull-to-refresh {
+    position: fixed;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    z-index: 1000;
+    transition: top 0.3s ease;
+}
+.pull-to-refresh.show {
+    top: 20px;
+}
+.pull-to-refresh i {
+    font-size: 2rem;
+    color: var(--text-color);
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+
 /* Main content wrapper */
 .content-wrapper {
     flex: 1;
@@ -94,8 +152,8 @@ body {
 .content-wrapper-main {
     display: flex;
     flex-direction: row;
-    align-items: stretch; /* Changed to stretch to make containers same height */
-    gap: 0; /* No gap between containers */
+    align-items: stretch;
+    gap: 0;
 }
 
 /* Image container */
@@ -103,21 +161,31 @@ body {
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-radius: 20px 0 0 20px; /* Only left border radius */
+    border-radius: 20px 0 0 20px;
     padding: 20px;
     box-shadow: var(--glass-shadow), var(--glass-inset);
     border: 1px solid var(--glass-border);
-    border-right: none; /* Remove right border */
+    border-right: none;
     position: relative;
     z-index: 15;
-    width: 250px; /* Width for the image container */
+    width: 250px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     animation: slideIn 0.5s ease-out;
     overflow: hidden;
-    flex: 1; /* Allow flex to control height */
+    flex: 1;
+    touch-action: pan-y; /* Allow vertical scrolling but disable horizontal pan/swipe on the container itself */
+}
+
+.image-hint {
+    position: absolute;
+    bottom: 5px;
+    font-size: 0.7rem;
+    color: var(--text-color);
+    opacity: 0.6;
+    pointer-events: none;
 }
 
 .image-placeholder {
@@ -142,22 +210,56 @@ body {
     max-width: 80%;
 }
 
+.image-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    z-index: 2;
+    /* Ensure it's a valid tap target */
+    min-width: 44px;
+    min-height: 44px;
+}
+
+.image-nav:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.image-nav.prev {
+    left: 10px;
+}
+
+.image-nav.next {
+    right: 10px;
+}
+
 /* Main glass container */
 .glass-container {
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-radius: 0 20px 20px 0; /* Only right border radius */
+    border-radius: 0 20px 20px 0;
     padding: 20px;
     box-shadow: var(--glass-shadow), var(--glass-inset);
     border: 1px solid var(--glass-border);
-    border-left: none; /* Remove left border */
+    border-left: none;
     position: relative;
     z-index: 15;
     max-width: 90%;
     width: 600px;
     animation: slideIn 0.5s ease-out;
-    flex: 1; /* Allow flex to control height */
+    flex: 1;
 }
 
 @keyframes slideIn {
@@ -230,6 +332,11 @@ body {
     opacity: 1;
 }
 
+.nav-link:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
 /* Dropdown menu */
 .dropdown {
     position: absolute;
@@ -240,7 +347,7 @@ body {
     min-width: 170px;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     z-index: 1000;
 }
 
@@ -260,6 +367,10 @@ body {
     overflow: hidden;
 }
 
+[data-theme="dark"] .dropdown-content {
+    background: rgba(30, 30, 30, 0.95);
+}
+
 .dropdown-item {
     display: flex;
     align-items: center;
@@ -272,6 +383,10 @@ body {
     position: relative;
     overflow: hidden;
     font-size: 0.95rem;
+}
+
+[data-theme="dark"] .dropdown-item {
+    color: var(--dropdown-text);
 }
 
 .dropdown-item::before {
@@ -295,8 +410,6 @@ body {
     left: 100%;
 }
 
-/* --- ROBUST SOLUTION --- */
-/* Keeps the nav-link active and glowing when the dropdown is open or focused */
 .nav-item:hover .nav-link,
 .nav-item:focus-within .nav-link {
     background: rgba(255, 255, 255, 0.25);
@@ -328,18 +441,8 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-}
-
-.search-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    /* Ensure it's a valid tap target */
+    min-height: 44px;
 }
 
 .search-btn:hover {
@@ -347,17 +450,14 @@ body {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.search-btn:hover::before {
-    opacity: 1;
-}
-
 .search-btn.active {
     background: rgba(255, 255, 255, 0.25);
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
 }
 
-.search-btn.active::before {
-    opacity: 1;
+/* Remove any pseudo-elements that might create the blue half circle */
+#google-btn::after {
+display: none;
 }
 
 /* Search input */
@@ -388,6 +488,41 @@ body {
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
 }
 
+.search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 15px;
+    margin-top: 5px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+}
+
+[data-theme="dark"] .search-suggestions {
+    background: rgba(30, 30, 30, 0.95);
+}
+
+.suggestion-item {
+    padding: 10px 20px;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+[data-theme="dark"] .suggestion-item {
+    color: var(--dropdown-text);
+}
+
+.suggestion-item:hover {
+    background: rgba(147, 51, 234, 0.1);
+}
+
 /* Notes container */
 .notes-container {
     background: var(--glass-bg);
@@ -400,17 +535,21 @@ body {
     position: relative;
     z-index: 5;
     max-width: 90%;
-    width: 850px; /* Adjusted width to align with combined containers */
+    width: 850px;
 }
 
 .note-input-container {
     display: flex;
     margin-top: 5px;
     margin-bottom: 5px;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
 }
 
 .note-input {
     flex: 1;
+    min-width: 200px; /* Prevent it from becoming too small */
     padding: 12px 20px;
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
@@ -431,17 +570,38 @@ body {
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
 }
 
+/* New simplified category selectors */
+.category-toggles {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.category-toggle {
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    color: var(--text-color);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.category-toggle.active {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
 .notes-list {
     display: flex;
-    flex-direction: column; /* Add this to stack notes vertically */
-    gap: 15px; /* Add vertical gap between notes */
+    flex-direction: column;
+    gap: 15px;
     min-height: 50px;
     padding: 10px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 15px;
     border: 1px dashed rgba(255, 255, 255, 0.2);
-    overflow-y: auto; /* Change from overflow-x to overflow-y */
-    max-height: 300px; /* Add a max height to prevent the list from getting too long */
+    overflow-y: auto;
+    max-height: 300px;
 }
 
 .note-card {
@@ -455,9 +615,11 @@ body {
     cursor: move;
     transition: all 0.3s ease;
     position: relative;
-    width: 100%; /* Make note cards take full width */
+    width: 100%;
     word-wrap: break-word;
     flex-shrink: 0;
+    /* For swipe-to-delete */
+    transform: translateX(0);
 }
 
 .note-card:hover {
@@ -476,13 +638,39 @@ body {
     border-color: rgba(255, 255, 255, 0.4);
 }
 
-.delete-note {
+.note-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.note-category {
+    background: rgba(147, 51, 234, 0.2);
+    color: var(--text-color);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.note-timestamp {
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
+
+.note-actions {
     position: absolute;
     top: 5px;
     right: 5px;
+    display: flex;
+    gap: 5px;
+}
+
+.note-action-btn {
     width: 20px;
     height: 20px;
-    background: rgba(255, 67, 54, 0.8);
+    background: rgba(255, 255, 255, 0.2);
     border: none;
     border-radius: 50%;
     color: var(--text-color);
@@ -492,24 +680,97 @@ body {
     justify-content: center;
     font-size: 12px;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
+    /* Ensure it's a valid tap target */
+    min-width: 30px;
+    min-height: 30px;
 }
 
-.note-card:hover .delete-note {
+.note-card:hover .note-action-btn {
     opacity: 1;
+}
+
+.note-action-btn:hover {
+    transform: scale(1.1);
+}
+
+.delete-note {
+    background: rgba(255, 67, 54, 0.8);
 }
 
 .delete-note:hover {
     background: rgba(255, 67, 54, 1);
-    transform: scale(1.1);
 }
 
-.empty-notes {
+/* Floating Action Button (FAB) */
+.fab {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 56px;
+    height: 56px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    z-index: 100;
+    display: none; /* Hidden by default, shown when notes section is visible */
+}
+.fab:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+}
+.fab:focus {
+    outline: 2px solid white;
+    outline-offset: 2px;
+}
+
+/* Back to Top Button */
+.back-to-top {
+    position: fixed;
+    bottom: 90px; /* Position above FAB */
+    right: 25px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
     color: var(--text-color);
-    text-align: center;
-    padding: 40px;
-    font-style: italic;
-    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 99;
+}
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+.back-to-top:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Loading Spinner */
+.spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid var(--text-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: none; /* Hidden by default */
 }
 
 /* Responsive design */
@@ -536,39 +797,50 @@ body {
     }
 }
 
+@media (max-width: 900px) and (orientation: landscape) {
+    .time-display {
+        margin-bottom: 20px;
+        padding: 10px;
+    }
+    .time-greeting, .time-date, .current-time {
+        font-size: 1rem;
+    }
+    .content-wrapper {
+        padding: 10px;
+    }
+}
+
 @media (max-width: 768px) {
     .content-wrapper-main {
-        flex-direction: column; /* Stack vertically on mobile */
+        flex-direction: column;
         align-items: center;
     }
 
-    /* Significantly shrink the image container on mobile */
     .image-container {
-        width: 120px; /* Reduced from 100% */
-        height: 120px; /* Fixed height added */
-        padding: 10px; /* Reduced padding */
-        border-radius: 15px; /* Smaller border radius */
-        border: 1px solid var(--glass-border); /* Full border on mobile */
-        margin-bottom: 15px; /* Add some space below */
+        width: 120px;
+        height: 120px;
+        padding: 10px;
+        border-radius: 15px;
+        border: 1px solid var(--glass-border);
+        margin-bottom: 15px;
     }
 
-    /* Also shrink the image placeholder */
     .image-placeholder {
         width: 100%;
         height: 100%;
     }
 
     .image-placeholder i {
-        font-size: 1.5rem; /* Reduced from 3rem */
+        font-size: 1.5rem;
     }
 
     .image-placeholder p {
-        font-size: 0.7rem; /* Reduced from 0.9rem */
+        font-size: 0.7rem;
     }
 
     .glass-container {
-        border-radius: 20px; /* Full border radius on mobile */
-        border: 1px solid var(--glass-border); /* Full border on mobile */
+        border-radius: 20px;
+        border: 1px solid var(--glass-border);
         width: 95%;
     }
 
@@ -576,6 +848,9 @@ body {
         gap: 8px;
         padding: 15px 20px;
         margin-bottom: 0px; /* Reduced margin */
+        /* Sticky header for mobile */
+        position: sticky;
+        top: 0;
     }
 
     .time-greeting {
@@ -596,6 +871,11 @@ body {
         align-items: center;
     }
 
+    .theme-switcher {
+        width: 44px;
+        height: 44px;
+    }
+
     .nav-menu {
         gap: 20px;
         flex-wrap: wrap;
@@ -614,6 +894,12 @@ body {
         gap: 10px;
     }
 
+    .search-btn {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+        min-height: 44px;
+    }
+
     .notes-container {
         padding: 20px;
         width: 95%;
@@ -623,24 +909,32 @@ body {
         min-width: 150px;
         max-width: 250px;
     }
+
+    .fab {
+        display: none; /* Keep FAB hidden on mobile */
+    }
 }
 
 @media (max-width: 480px) {
-    /* Even smaller image container for small phones */
     .image-container {
-        width: 130px; /* Further reduced */
-        height: 130px; /* Further reduced */
-        padding: 5px; /* Further reduced padding */
-        border-radius: 10px; /* Even smaller border radius */
+        width: 130px;
+        height: 130px;
+        padding: 5px;
+        border-radius: 10px;
     }
 
     .image-placeholder i {
-        font-size: 1rem; /* Further reduced */
+        font-size: 1rem;
     }
 
     .image-placeholder p {
-        font-size: 0.6rem; /* Further reduced */
-        display: none; /* Hide text on very small screens */
+        font-size: 0.6rem;
+        display: none;
+    }
+
+    .image-nav {
+        width: 40px;
+        height: 40px;
     }
 
     .time-greeting {
@@ -673,10 +967,21 @@ body {
         font-size: 0.9rem;
     }
 
+    .note-input {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+
     .note-card {
         min-width: 120px;
         max-width: 200px;
         padding: 10px;
         font-size: 0.85rem;
+    }
+}
+
+/* Hide swipe hint on desktop browsers */
+@media (min-width: 769px) {
+    .image-hint {
+        display: none;
     }
 }
