@@ -137,6 +137,8 @@ setInterval(updateTimeDisplay, 1000);
 const googleBtn = document.getElementById('google-btn');
 const nyaaBtn = document.getElementById('nyaa-btn');
 const searchInput = document.getElementById('search-input');
+// Get the new form element
+const searchForm = document.getElementById('search-form');
 
 let selectedEngine = 'google';
 
@@ -190,10 +192,11 @@ function performSearch() {
     window.open(searchUrl, '_blank');
 }
 
-searchInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-        performSearch();
-    }
+// Listen for the form's submit event
+searchForm.addEventListener('submit', function(e) {
+    // Prevent the default form submission (which reloads the page)
+    e.preventDefault();
+    performSearch();
 });
 
 // Notes functionality with error handling
