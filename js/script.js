@@ -137,8 +137,6 @@ setInterval(updateTimeDisplay, 1000);
 const googleBtn = document.getElementById('google-btn');
 const nyaaBtn = document.getElementById('nyaa-btn');
 const searchInput = document.getElementById('search-input');
-// Get the new form element
-const searchForm = document.getElementById('search-form');
 
 let selectedEngine = 'google';
 
@@ -167,6 +165,9 @@ function setActiveSearchEngine(engine, button) {
             placeholder = 'Search...';
     }
     searchInput.placeholder = placeholder;
+
+    // --- NEW LINE: Focus the search input ---
+    searchInput.focus();
 }
 
 googleBtn.addEventListener('click', () => setActiveSearchEngine('google', googleBtn));
@@ -192,11 +193,12 @@ function performSearch() {
     window.open(searchUrl, '_blank');
 }
 
-// Listen for the form's submit event
-searchForm.addEventListener('submit', function(e) {
-    // Prevent the default form submission (which reloads the page)
-    e.preventDefault();
-    performSearch();
+// Listen for the 'Enter' key on the search input
+searchInput.addEventListener('keydown', function(e) {
+    // The 'key' property is the modern standard. 'keyCode' is for older browsers.
+    if (e.key === 'Enter') {
+        performSearch();
+    }
 });
 
 // Notes functionality with error handling
