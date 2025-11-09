@@ -295,6 +295,15 @@ body {
     left: 100%;
 }
 
+/* --- ROBUST SOLUTION --- */
+/* Keeps the nav-link active and glowing when the dropdown is open or focused */
+.nav-item:hover .nav-link,
+.nav-item:focus-within .nav-link {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
 /* Search engine buttons */
 .search-engines {
     display: flex;
@@ -566,7 +575,7 @@ body {
     .time-display {
         gap: 8px;
         padding: 15px 20px;
-        margin-bottom: 30px; /* Reduced margin */
+        margin-bottom: 0px; /* Reduced margin */
     }
 
     .time-greeting {
@@ -619,8 +628,8 @@ body {
 @media (max-width: 480px) {
     /* Even smaller image container for small phones */
     .image-container {
-        width: 180px; /* Further reduced */
-        height: 180px; /* Further reduced */
+        width: 130px; /* Further reduced */
+        height: 130px; /* Further reduced */
         padding: 5px; /* Further reduced padding */
         border-radius: 10px; /* Even smaller border radius */
     }
