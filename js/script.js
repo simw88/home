@@ -579,166 +579,244 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// --- IMPROVED DROPDOWN FUNCTIONALITY ---
+// --- ROBUST DROPDOWN FUNCTIONALITY ---
 
-// Add a visibility change listener to reset dropdown states when the page becomes visible again
-document.addEventListener('visibilitychange', function() {
-    if (!document.hidden) {
-        // Reset all dropdown states when the page becomes visible again
-        document.querySelectorAll('.nav-item').forEach(navItem => {
-            navItem.classList.remove('active');
-        });
-    }
-});
+// Track dropdown states and last activity
+let dropdownStates = new Map();
+let lastActivityTime = Date.now();
+let heartbeatInterval;
 
-// Add a focus/blur listener to reset dropdown states when the user interacts with the page again
-window.addEventListener('focus', function() {
-    // Reset all dropdown states when the window gains focus
-    document.querySelectorAll('.nav-item').forEach(navItem => {
-        navItem.classList.remove('active');
-    });
-});
-
-// Function to close dropdowns using class-based approach
-function closeDropdown(navItem) {
-    navItem.classList.remove('active');
-    
-    // Ensure the dropdown is properly hidden after the transition completes
-    setTimeout(() => {
+// Function to force refresh all dropdown elements
+function refreshDropdowns() {
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(navItem => {
         const dropdown = navItem.querySelector('.dropdown');
-        if (dropdown && !navItem.classList.contains('active')) {
+        if (dropdown) {
+            // Force reflow by temporarily changing display
+            const originalDisplay = dropdown.style.display;
+            dropdown.style.display = 'none';
+            void dropdown.offsetWidth; // Trigger reflow
+            dropdown.style.display = originalDisplay || 'block';
+            
+            // Reset to hidden state
             dropdown.style.opacity = '0';
             dropdown.style.visibility = 'hidden';
-        }
-    }, 500); // Slightly longer than the transition duration
-}
-
-// Improved dropdown system using class-based approach
-document.querySelectorAll('.nav-item').forEach(navItem => {
-    const navLink = navItem.querySelector('.nav-link');
-
-    // Add mouseenter event for desktop
-    navItem.addEventListener('mouseenter', function() {
-        if (window.innerWidth > 768) {
-            navItem.classList.add('active');
-        }
-    });
-
-    // Add mouseleave event for desktop
-    navItem.addEventListener('mouseleave', function() {
-        if (window.innerWidth > 768) {
             navItem.classList.remove('active');
         }
     });
+}
 
-    // Toggle dropdown on click for mobile
-    navLink.addEventListener('click', function(e) {
-        if (window.innerWidth <= 768) {
-            e.preventDefault();
-            const isOpen = navItem.classList.contains('active');
-
-            // Close all other dropdowns first
-            document.querySelectorAll('.nav-item').forEach(item => {
-                if (item !== navItem) {
-                    item.classList.remove('active');
-                }
-            });
-
-            if (!isOpen) {
-                navItem.classList.add('active');
-                hapticFeedback();
-            } else {
-                navItem.classList.remove('active');
+// Function to show dropdown with multiple fallback methods
+function showDropdown(navItem) {
+    if (!navItem) return;
+    
+    const dropdown = navItem.querySelector('.dropdown');
+    if (!dropdown) return;
+    
+    // Close all other dropdowns first
+    document.querySelectorAll('.nav-item').forEach(item => {
+        if (item !== navItem) {
+            item.classList.remove('active');
+            const otherDropdown = item.querySelector('.dropdown');
+            if (otherDropdown) {
+                otherDropdown.style.opacity = '0';
+                otherDropdown.style.visibility = 'hidden';
             }
         }
     });
+    
+    // Method 1: Class-based approach
+    navItem.classList.add('active');
+    
+    // Method 2: Direct style manipulation (fallback)
+    dropdown.style.opacity = '1';
+    dropdown.style.visibility = 'visible';
+    
+    // Method 3: Force reflow to ensure visibility
+    dropdown.getBoundingClientRect();
+    
+    // Update activity timestamp
+    lastActivityTime = Date.now();
+    dropdownStates.set(navItem, { active: true, timestamp: lastActivityTime });
+    
+    // Provide haptic feedback on mobile
+    if (window.innerWidth <= 768) {
+        hapticFeedback();
+    }
+}
+
+// Function to hide dropdown with multiple fallback methods
+function hideDropdown(navItem) {
+    if (!navItem) return;
+    
+    const dropdown = navItem.querySelector('.dropdown');
+    if (!dropdown) return;
+    
+    // Method 1: Class-based approach
+    navItem.classList.remove('active');
+    
+    // Method 2: Direct style manipulation (fallback)
+    dropdown.style.opacity = '0';
+    dropdown.style.visibility = 'hidden';
+    
+    // Update state tracking
+    dropdownStates.set(navItem, { active: false, timestamp: Date.now() });
+}
+
+// Heartbeat function to keep dropdowns responsive
+function heartbeat() {
+    const now = Date.now();
+    
+    // If it's been more than 30 seconds since last activity, refresh dropdowns
+    if (now - lastActivityTime > 30000) {
+        refreshDropdowns();
+    }
+    
+    // Check for stuck dropdowns and fix them
+    dropdownStates.forEach((state, navItem) => {
+        if (state.active && (now - state.timestamp > 5000)) {
+            // If a dropdown has been active for more than 5 seconds without activity, close it
+            hideDropdown(navItem);
+        }
+    });
+}
+
+// Initialize heartbeat
+function startHeartbeat() {
+    // Clear any existing interval
+    if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+    }
+    
+    // Start new heartbeat interval
+    heartbeatInterval = setInterval(heartbeat, 10000); // Check every 10 seconds
+}
+
+// Handle page visibility changes
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+        // Page became visible again
+        refreshDropdowns();
+        startHeartbeat();
+        lastActivityTime = Date.now();
+    } else {
+        // Page became hidden, clear heartbeat to save resources
+        if (heartbeatInterval) {
+            clearInterval(heartbeatInterval);
+        }
+    }
 });
 
-// Close dropdowns when clicking outside
+// Handle window focus/blur
+window.addEventListener('focus', function() {
+    refreshDropdowns();
+    startHeartbeat();
+    lastActivityTime = Date.now();
+});
+
+window.addEventListener('blur', function() {
+    // Close all dropdowns when window loses focus
+    document.querySelectorAll('.nav-item').forEach(navItem => {
+        hideDropdown(navItem);
+    });
+});
+
+// Use event delegation for dropdown interactions
+document.addEventListener('mouseover', function(e) {
+    if (window.innerWidth > 768) {
+        const navItem = e.target.closest('.nav-item');
+        if (navItem && !navItem.classList.contains('active')) {
+            showDropdown(navItem);
+        }
+    }
+});
+
+document.addEventListener('mouseout', function(e) {
+    if (window.innerWidth > 768) {
+        const navItem = e.target.closest('.nav-item');
+        if (navItem && navItem.classList.contains('active')) {
+            // Check if mouse really left the nav item
+            const relatedTarget = e.relatedTarget;
+            if (!navItem.contains(relatedTarget)) {
+                hideDropdown(navItem);
+            }
+        }
+    }
+});
+
+// Handle click events for mobile and desktop
 document.addEventListener('click', function(e) {
-    if (!e.target.closest('.nav-item')) {
+    const navItem = e.target.closest('.nav-item');
+    
+    if (navItem) {
+        const navLink = navItem.querySelector('.nav-link');
+        const dropdownItem = e.target.closest('.dropdown-item');
+        
+        if (dropdownItem) {
+            // Click on dropdown item
+            hideDropdown(navItem);
+            
+            // Create ripple effect
+            const ripple = document.createElement('span');
+            ripple.style.position = 'absolute';
+            ripple.style.width = '20px';
+            ripple.style.height = '20px';
+            ripple.style.background = 'rgba(147, 51, 234, 0.5)';
+            ripple.style.borderRadius = '50%';
+            ripple.style.transform = 'translate(-50%, -50%)';
+            ripple.style.pointerEvents = 'none';
+            ripple.style.animation = 'ripple 0.6s ease-out';
+            const rect = dropdownItem.getBoundingClientRect();
+            ripple.style.left = (e.clientX - rect.left) + 'px';
+            ripple.style.top = (e.clientY - rect.top) + 'px';
+            dropdownItem.style.position = 'relative';
+            dropdownItem.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        } else if (navLink && window.innerWidth <= 768) {
+            // Click on nav link in mobile mode
+            e.preventDefault();
+            const isActive = navItem.classList.contains('active');
+            
+            if (isActive) {
+                hideDropdown(navItem);
+            } else {
+                showDropdown(navItem);
+            }
+        }
+    } else {
+        // Click outside dropdowns, close all
         document.querySelectorAll('.nav-item').forEach(navItem => {
-            navItem.classList.remove('active');
+            hideDropdown(navItem);
         });
     }
 });
 
-// Keyboard navigation for dropdown menus
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            const navItem = this.parentElement;
-            if (navItem) {
-                navItem.classList.add('active');
-                const firstItem = navItem.querySelector('.dropdown-item');
-                if (firstItem) firstItem.focus();
-            }
-        }
-    });
-});
-
-// Close dropdowns with Escape key
+// Keyboard navigation
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         document.querySelectorAll('.nav-item').forEach(navItem => {
-            navItem.classList.remove('active');
+            hideDropdown(navItem);
         });
     }
 });
 
-// Add keyboard navigation for dropdown items
-document.querySelectorAll('.dropdown-item').forEach((item, index, items) => {
-    item.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            const nextItem = items[index + 1];
-            if (nextItem) nextItem.focus();
-        } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            const prevItem = items[index - 1];
-            if (prevItem) prevItem.focus();
-        } else if (e.key === 'Escape') {
-            e.preventDefault();
-            const navItem = this.closest('.nav-item');
-            if (navItem) {
-                navItem.classList.remove('active');
-                const navLink = navItem.querySelector('.nav-link');
-                if (navLink) navLink.focus();
-            }
-        }
+// Initialize dropdown system
+function initializeDropdowns() {
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(navItem => {
+        dropdownStates.set(navItem, { active: false, timestamp: Date.now() });
     });
-});
+    
+    // Start heartbeat
+    startHeartbeat();
+    
+    // Initial refresh
+    refreshDropdowns();
+}
 
-// Add interactive click feedback for dropdown items
-document.querySelectorAll('.dropdown-item').forEach(item => {
-    item.addEventListener('click', function(e) {
-        // Close the dropdown when clicking an item
-        const navItem = this.closest('.nav-item');
-        if (navItem) {
-            closeDropdown(navItem);
-        }
-
-        // Provide haptic feedback on mobile
-        if (window.innerWidth <= 768) {
-            hapticFeedback();
-        }
-
-        // Create ripple effect
-        const ripple = document.createElement('span');
-        ripple.style.position = 'absolute';
-        ripple.style.width = '20px';
-        ripple.style.height = '20px';
-        ripple.style.background = 'rgba(147, 51, 234, 0.5)';
-        ripple.style.borderRadius = '50%';
-        ripple.style.transform = 'translate(-50%, -50%)';
-        ripple.style.pointerEvents = 'none';
-        ripple.style.animation = 'ripple 0.6s ease-out';
-        const rect = this.getBoundingClientRect();
-        ripple.style.left = (e.clientX - rect.left) + 'px';
-        ripple.style.top = (e.clientY - rect.top) + 'px';
-        this.style.position = 'relative';
-        this.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 600);
-    });
-});
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeDropdowns);
+} else {
+    initializeDropdowns();
+}
