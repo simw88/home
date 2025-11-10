@@ -579,24 +579,144 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Function to close dropdowns
-function closeDropdown(dropdown) {
-    dropdown.style.opacity = '0';
-    dropdown.style.visibility = 'hidden';
-    if (window.innerWidth <= 768) {
-        dropdown.style.transform = 'translateY(0)';
-    } else {
-        dropdown.style.transform = 'translateX(-50%)';
+// --- IMPROVED DROPDOWN FUNCTIONALITY ---
+
+// Add a visibility change listener to reset dropdown states when the page becomes visible again
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+        // Reset all dropdown states when the page becomes visible again
+        document.querySelectorAll('.nav-item').forEach(navItem => {
+            navItem.classList.remove('active');
+        });
     }
+});
+
+// Add a focus/blur listener to reset dropdown states when the user interacts with the page again
+window.addEventListener('focus', function() {
+    // Reset all dropdown states when the window gains focus
+    document.querySelectorAll('.nav-item').forEach(navItem => {
+        navItem.classList.remove('active');
+    });
+});
+
+// Function to close dropdowns using class-based approach
+function closeDropdown(navItem) {
+    navItem.classList.remove('active');
+    
+    // Ensure the dropdown is properly hidden after the transition completes
+    setTimeout(() => {
+        const dropdown = navItem.querySelector('.dropdown');
+        if (dropdown && !navItem.classList.contains('active')) {
+            dropdown.style.opacity = '0';
+            dropdown.style.visibility = 'hidden';
+        }
+    }, 500); // Slightly longer than the transition duration
 }
 
-// Add interactive click feedback and close dropdown on mobile
+// Improved dropdown system using class-based approach
+document.querySelectorAll('.nav-item').forEach(navItem => {
+    const navLink = navItem.querySelector('.nav-link');
+
+    // Add mouseenter event for desktop
+    navItem.addEventListener('mouseenter', function() {
+        if (window.innerWidth > 768) {
+            navItem.classList.add('active');
+        }
+    });
+
+    // Add mouseleave event for desktop
+    navItem.addEventListener('mouseleave', function() {
+        if (window.innerWidth > 768) {
+            navItem.classList.remove('active');
+        }
+    });
+
+    // Toggle dropdown on click for mobile
+    navLink.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+            e.preventDefault();
+            const isOpen = navItem.classList.contains('active');
+
+            // Close all other dropdowns first
+            document.querySelectorAll('.nav-item').forEach(item => {
+                if (item !== navItem) {
+                    item.classList.remove('active');
+                }
+            });
+
+            if (!isOpen) {
+                navItem.classList.add('active');
+                hapticFeedback();
+            } else {
+                navItem.classList.remove('active');
+            }
+        }
+    });
+});
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.nav-item')) {
+        document.querySelectorAll('.nav-item').forEach(navItem => {
+            navItem.classList.remove('active');
+        });
+    }
+});
+
+// Keyboard navigation for dropdown menus
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            const navItem = this.parentElement;
+            if (navItem) {
+                navItem.classList.add('active');
+                const firstItem = navItem.querySelector('.dropdown-item');
+                if (firstItem) firstItem.focus();
+            }
+        }
+    });
+});
+
+// Close dropdowns with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.nav-item').forEach(navItem => {
+            navItem.classList.remove('active');
+        });
+    }
+});
+
+// Add keyboard navigation for dropdown items
+document.querySelectorAll('.dropdown-item').forEach((item, index, items) => {
+    item.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            const nextItem = items[index + 1];
+            if (nextItem) nextItem.focus();
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            const prevItem = items[index - 1];
+            if (prevItem) prevItem.focus();
+        } else if (e.key === 'Escape') {
+            e.preventDefault();
+            const navItem = this.closest('.nav-item');
+            if (navItem) {
+                navItem.classList.remove('active');
+                const navLink = navItem.querySelector('.nav-link');
+                if (navLink) navLink.focus();
+            }
+        }
+    });
+});
+
+// Add interactive click feedback for dropdown items
 document.querySelectorAll('.dropdown-item').forEach(item => {
     item.addEventListener('click', function(e) {
         // Close the dropdown when clicking an item
-        const dropdown = this.closest('.dropdown');
-        if (dropdown) {
-            closeDropdown(dropdown);
+        const navItem = this.closest('.nav-item');
+        if (navItem) {
+            closeDropdown(navItem);
         }
 
         // Provide haptic feedback on mobile
@@ -621,98 +741,4 @@ document.querySelectorAll('.dropdown-item').forEach(item => {
         this.appendChild(ripple);
         setTimeout(() => ripple.remove(), 600);
     });
-});
-
-// Keyboard navigation for dropdown menus
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            const dropdown = this.nextElementSibling;
-            if (dropdown) {
-                dropdown.style.opacity = '1';
-                dropdown.style.visibility = 'visible';
-                if (window.innerWidth <= 768) {
-                    dropdown.style.transform = 'translateY(5px)';
-                } else {
-                    dropdown.style.transform = 'translateX(-50%) translateY(5px)';
-                }
-                const firstItem = dropdown.querySelector('.dropdown-item');
-                if (firstItem) firstItem.focus();
-            }
-        }
-    });
-});
-
-// Close dropdowns with Escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        document.querySelectorAll('.dropdown').forEach(dropdown => {
-            closeDropdown(dropdown);
-        });
-    }
-});
-
-// Add keyboard navigation for dropdown items
-document.querySelectorAll('.dropdown-item').forEach((item, index, items) => {
-    item.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            const nextItem = items[index + 1];
-            if (nextItem) nextItem.focus();
-        } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            const prevItem = items[index - 1];
-            if (prevItem) prevItem.focus();
-        } else if (e.key === 'Escape') {
-            e.preventDefault();
-            const dropdown = this.closest('.dropdown');
-            if (dropdown) {
-                closeDropdown(dropdown);
-                const navLink = dropdown.previousElementSibling;
-                if (navLink) navLink.focus();
-            }
-        }
-    });
-});
-
-// Handle dropdown visibility on mobile
-document.querySelectorAll('.nav-item').forEach(navItem => {
-    const navLink = navItem.querySelector('.nav-link');
-    const dropdown = navItem.querySelector('.dropdown');
-
-    // Toggle dropdown on click for mobile
-    navLink.addEventListener('click', function(e) {
-        if (window.innerWidth <= 768) {
-            e.preventDefault();
-            const isOpen = dropdown.style.opacity === '1';
-
-            // Close all other dropdowns first
-            document.querySelectorAll('.dropdown').forEach(d => {
-                if (d !== dropdown) {
-                    closeDropdown(d);
-                }
-            });
-
-            if (!isOpen) {
-                dropdown.style.opacity = '1';
-                dropdown.style.visibility = 'visible';
-                dropdown.style.transform = 'translateY(5px)';
-                hapticFeedback();
-            } else {
-                closeDropdown(dropdown);
-            }
-        }
-    });
-});
-
-// Close dropdowns when clicking outside on mobile
-document.addEventListener('click', function(e) {
-    if (window.innerWidth <= 768) {
-        if (!e.target.closest('.nav-item')) {
-            document.querySelectorAll('.dropdown').forEach(dropdown => {
-                closeDropdown(dropdown);
-            });
-        }
-    }
 });
