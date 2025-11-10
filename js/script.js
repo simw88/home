@@ -352,6 +352,7 @@ const categoryToggles = document.querySelectorAll('.category-toggle');
 
 let notes = [];
 let draggedElement = null;
+let draggedIndex = null;
 let selectedCategory = 'personal';
 
 try {
@@ -380,6 +381,136 @@ function getCategoryColor(category) {
         'todo': 'rgba(255, 152, 0, 0.2)'
     };
     return colors[category] || 'rgba(158, 158, 158, 0.2)';
+}
+
+// Simplified drag and drop handlers
+function handleDragStart(e) {
+    draggedElement = this;
+    draggedIndex = parseInt(this.dataset.index);
+    this.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.innerHTML);
+
+    // Create a custom drag image with proper width constraints
+    const dragImage = this.cloneNode(true);
+    const rect = this.getBoundingClientRect();
+    dragImage.style.position = 'absolute';
+    dragImage.style.top = '-1000px';
+    dragImage.style.left = '-1000px';
+    dragImage.style.width = rect.width + 'px'; // Set the width to match the original
+    dragImage.style.maxWidth = rect.width + 'px'; // Ensure it doesn't exceed this width
+    dragImage.style.opacity = '0.8';
+    dragImage.style.transform = 'rotate(2deg)'; // Add slight rotation for visual feedback
+    dragImage.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.3)'; // Add shadow for depth
+    document.body.appendChild(dragImage);
+    e.dataTransfer.setDragImage(dragImage, rect.width / 2, 20); // Center the drag image horizontally
+    setTimeout(() => document.body.removeChild(dragImage), 0);
+
+    console.log('Drag started from index:', draggedIndex);
+}
+
+function handleDragEnd(e) {
+    this.classList.remove('dragging');
+
+    // Remove all drop zone indicators
+    const allNotes = document.querySelectorAll('.note-card');
+    allNotes.forEach(note => {
+        note.classList.remove('drag-over', 'drop-above', 'drop-below');
+    });
+
+    draggedElement = null;
+    draggedIndex = null;
+}
+
+function handleDragOver(e) {
+    if (e.preventDefault) {
+        e.preventDefault();
+    }
+
+    e.dataTransfer.dropEffect = 'move';
+
+    // Don't show drop indicators on the dragged element itself
+    if (this === draggedElement) return false;
+
+    // Determine if we should insert above or below
+    const rect = this.getBoundingClientRect();
+    const midpoint = rect.top + rect.height / 2;
+
+    if (e.clientY < midpoint) {
+        // Insert above
+        this.classList.remove('drop-below');
+        this.classList.add('drop-above');
+    } else {
+        // Insert below
+        this.classList.remove('drop-above');
+        this.classList.add('drop-below');
+    }
+
+    return false;
+}
+
+function handleDragEnter(e) {
+    if (this !== draggedElement) {
+        this.classList.add('drag-over');
+    }
+}
+
+function handleDragLeave(e) {
+    // Check if the mouse has actually left the element
+    const rect = this.getBoundingClientRect();
+    const x = e.clientX;
+    const y = e.clientY;
+
+    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+        this.classList.remove('drag-over', 'drop-above', 'drop-below');
+    }
+}
+
+function handleDrop(e) {
+    if (e.stopPropagation) {
+        e.stopPropagation();
+    }
+
+    if (draggedElement !== this) {
+        const targetIndex = parseInt(this.dataset.index);
+
+        // Determine if we should insert above or below
+        const rect = this.getBoundingClientRect();
+        const midpoint = rect.top + rect.height / 2;
+        const insertAbove = e.clientY < midpoint;
+
+        console.log('Drop event:', {
+            draggedIndex: draggedIndex,
+            targetIndex: targetIndex,
+            insertAbove: insertAbove
+        });
+
+        // Get the dragged note
+        const draggedNote = notes[draggedIndex];
+
+        // Remove the dragged note from its original position
+        notes.splice(draggedIndex, 1);
+
+        // Calculate the new position
+        let newIndex;
+        if (draggedIndex < targetIndex) {
+            // If dragging down, the target index shifts up by 1 after removal
+            newIndex = insertAbove ? targetIndex - 1 : targetIndex;
+        } else {
+            // If dragging up, the target index stays the same
+            newIndex = insertAbove ? targetIndex : targetIndex + 1;
+        }
+
+        // Insert the note at the new position
+        notes.splice(newIndex, 0, draggedNote);
+
+        console.log('New notes order:', notes.map(n => n.text));
+
+        saveNotes();
+        renderNotes();
+    }
+
+    return false;
 }
 
 function createNoteCard(note, index) {
@@ -455,18 +586,13 @@ function renderNotes() {
     }
 
     if (notes.length > 0) {
-        // Sort notes by timestamp
-        const sortedNotes = [...notes].sort((a, b) => {
-            return new Date(b.timestamp) - new Date(a.timestamp);
-        });
-
+        // Don't sort by timestamp - preserve the current order
         const notesList = document.createElement('div');
         notesList.className = 'notes-list';
         notesList.id = 'notes-list';
 
-        sortedNotes.forEach((note, index) => {
-            const originalIndex = notes.findIndex(n => n === note);
-            notesList.appendChild(createNoteCard(note, originalIndex));
+        notes.forEach((note, index) => {
+            notesList.appendChild(createNoteCard(note, index));
         });
 
         notesContainer.appendChild(notesList);
@@ -494,56 +620,6 @@ function deleteNote(index) {
     saveNotes();
     renderNotes();
     hapticFeedback();
-}
-
-// Drag and drop handlers
-function handleDragStart(e) {
-    draggedElement = this;
-    this.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/html', this.innerHTML);
-}
-
-function handleDragEnd(e) {
-    this.classList.remove('dragging');
-    const allNotes = document.querySelectorAll('.note-card');
-    allNotes.forEach(note => {
-        note.classList.remove('drag-over');
-    });
-}
-
-function handleDragOver(e) {
-    if (e.preventDefault) {
-        e.preventDefault();
-    }
-    e.dataTransfer.dropEffect = 'move';
-    return false;
-}
-
-function handleDragEnter(e) {
-    if (this !== draggedElement) {
-        this.classList.add('drag-over');
-    }
-}
-
-function handleDragLeave(e) {
-    this.classList.remove('drag-over');
-}
-
-function handleDrop(e) {
-    if (e.stopPropagation) {
-        e.stopPropagation();
-    }
-    if (draggedElement !== this) {
-        const draggedIndex = parseInt(draggedElement.dataset.index);
-        const targetIndex = parseInt(this.dataset.index);
-        const draggedNote = notes[draggedIndex];
-        notes.splice(draggedIndex, 1);
-        notes.splice(targetIndex, 0, draggedNote);
-        saveNotes();
-        renderNotes();
-    }
-    return false;
 }
 
 // Event listeners for notes
@@ -696,10 +772,8 @@ function startHeartbeat() {
 document.addEventListener('visibilitychange', function() {
     if (!document.hidden) {
         // Page became visible again, re-initialize the entire dropdown system
-        // --- FIX START ---
         console.log("Page is now visible, re-initializing dropdowns.");
         initializeDropdowns();
-        // --- FIX END ---
         lastActivityTime = Date.now();
     } else {
         // Page became hidden, clear heartbeat to save resources
@@ -711,10 +785,8 @@ document.addEventListener('visibilitychange', function() {
 
 // Handle window focus/blur
 window.addEventListener('focus', function() {
-    // --- FIX START ---
     console.log("Window gained focus, re-initializing dropdowns.");
     initializeDropdowns();
-    // --- FIX END ---
     lastActivityTime = Date.now();
 });
 
