@@ -604,6 +604,7 @@ display: none;
     border: 1px dashed rgba(255, 255, 255, 0.2);
     overflow-y: auto;
     max-height: 300px;
+    position: relative;
 }
 
 .note-card {
@@ -628,16 +629,53 @@ display: none;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     background: rgba(255, 255, 255, 0.2);
+    cursor: grab;
 }
 
 .note-card.dragging {
-    opacity: 0.5;
-    transform: rotate(5deg);
+    opacity: 0.7;
+    transform: rotate(2deg) scale(1.02);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    cursor: grabbing;
 }
 
 .note-card.drag-over {
     background: rgba(255, 255, 255, 0.25);
     border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Drop zone indicators */
+.note-card::before,
+.note-card::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--primary-color);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.note-card::before {
+    top: 0;
+    border-radius: 3px 3px 0 0;
+}
+
+.note-card::after {
+    bottom: 0;
+    border-radius: 0 0 3px 3px;
+}
+
+.note-card.drop-above::before {
+    opacity: 0.8;
+}
+
+.note-card.drop-below::after {
+    opacity: 0.8;
 }
 
 .note-header {
@@ -702,6 +740,22 @@ display: none;
 
 .delete-note:hover {
     background: rgba(255, 67, 54, 1);
+}
+
+/* Add a placeholder for the dragged note */
+.drag-placeholder {
+    height: 60px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px dashed var(--primary-color);
+    border-radius: 12px;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color);
+    opacity: 0.7;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
 }
 
 /* Floating Action Button (FAB) */
