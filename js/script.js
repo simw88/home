@@ -334,7 +334,8 @@ function performSearch() {
     let searchUrl = selectedEngine === 'google'
     ? `https://www.google.com/search?q=${encodeURIComponent(query)}`
     : `https://nyaa.si/?q=${encodeURIComponent(query)}`;
-    window.open(searchUrl, '_blank');
+    // Changed from window.open(searchUrl, '_blank') to open in the same tab
+    window.location.href = searchUrl;
     searchSuggestions.style.display = 'none';
 }
 
@@ -607,7 +608,8 @@ function addNote() {
             category: selectedCategory,
             timestamp: new Date().toISOString()
         };
-        notes.push(note);
+        // Changed from notes.push(note) to notes.unshift(note) to add to the top
+        notes.unshift(note);
         saveNotes();
         renderNotes();
         noteInput.value = '';
