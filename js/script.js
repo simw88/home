@@ -209,8 +209,12 @@ const backgroundModule = {
             document.body.style.backgroundImage = `url('${imagePath}')`;
         };
 
+        // FIX (Logic): More robust fallback handling
         img.onerror = () => {
-            console.log(`Background image for ${dayName} not found, using gradient fallback`);
+            console.warn(`Background image for ${dayName} not found, using gradient fallback.`);
+            // Ensure gradient is explicitly set if image fails, though CSS handles this initially.
+            // This ensures if a previous JS set an image, we revert cleanly if needed dynamically.
+            document.body.style.backgroundImage = ''; 
         };
 
         img.src = imagePath;
@@ -420,9 +424,14 @@ const searchModule = {
             .slice(0, 5);
 
             if (filteredHistory.length > 0) {
-                this.searchSuggestions.innerHTML = filteredHistory
-                .map(item => `<div class="suggestion-item">${item}</div>`)
-                .join('');
+                // FIX (Security): Prevent XSS by using textContent instead of innerHTML
+                this.searchSuggestions.innerHTML = '';
+                filteredHistory.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    div.textContent = item; // Safe text injection
+                    this.searchSuggestions.appendChild(div);
+                });
                 this.searchSuggestions.style.display = 'block';
             } else {
                 this.searchSuggestions.style.display = 'none';
@@ -614,17 +623,27 @@ const notesModule = {
                 const midpoint = rect.top + rect.height / 2;
                 const insertAbove = e.clientY < midpoint;
 
+                // FIX (Logic): Correctly calculate new index accounting for array shift
                 const draggedNote = this.notes[this.draggedIndex];
+                
+                // Remove the item first
                 this.notes.splice(this.draggedIndex, 1);
 
-                let newIndex;
+                // Calculate insertion point
+                // If we dragged from above the target, the target's index has shifted down by 1
+                let insertionIndex = targetIndex;
                 if (this.draggedIndex < targetIndex) {
-                    newIndex = insertAbove ? targetIndex - 1 : targetIndex;
-                } else {
-                    newIndex = insertAbove ? targetIndex : targetIndex + 1;
+                    insertionIndex = targetIndex - 1;
                 }
 
-                this.notes.splice(newIndex, 0, draggedNote);
+                // If dropping below, increment index
+                if (!insertAbove) {
+                    insertionIndex += 1;
+                }
+
+                // Insert at new position
+                this.notes.splice(insertionIndex, 0, draggedNote);
+                
                 this.saveNotes();
                 this.renderNotes();
             }
