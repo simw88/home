@@ -48,6 +48,8 @@ body {
     position: relative;
     transition: background-color 0.3s ease;
     -webkit-overflow-scrolling: touch;
+    /* FIX (Logic): Prevents native browser refresh from conflicting with custom JS pull-to-refresh */
+    overscroll-behavior-y: contain;
 }
 
 /* Full-width time display header */
@@ -67,6 +69,8 @@ body {
     justify-content: center;
     gap: 5px;
     margin-bottom: 100px;
+    /* FIX (Performance): Promotes element to GPU layer */
+    will-change: transform;
 }
 
 .time-greeting {
@@ -187,6 +191,8 @@ body {
     overflow: hidden;
     flex: 1;
     touch-action: pan-y;
+    /* FIX (Performance): Promotes element to GPU layer */
+    will-change: transform;
 }
 
 .image-hint {
@@ -269,6 +275,8 @@ body {
     width: 600px;
     animation: slideIn 0.5s ease-out;
     flex: 1;
+    /* FIX (Performance): Promotes element to GPU layer */
+    will-change: transform;
 }
 
 @keyframes slideIn {
@@ -541,6 +549,8 @@ body {
     z-index: var(--z-notes-container);
     max-width: 90%;
     width: 850px;
+    /* FIX (Performance): Promotes element to GPU layer */
+    will-change: transform;
 }
 
 .note-input-container {
