@@ -4,17 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Homepage</title>
+
+    <script>
+        (function() {
+            const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+            const today = days[new Date().getDay()];
+            const link = document.createElement('link');
+            link.rel = 'preload';
+            link.as = 'image';
+            link.href = `imgs/bgs/${today}.jpg`;
+            document.head.appendChild(link);
+        })();
+    </script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="imgs/home.png" type="image/png">
 </head>
 <body>
-    <!-- Pull to refresh indicator -->
     <div class="pull-to-refresh" id="pull-to-refresh">
         <i class="fas fa-sync-alt"></i>
     </div>
 
-    <!-- Full-width time display header -->
     <header class="time-display" id="time-display">
         <button class="theme-switcher" id="theme-switcher" aria-label="Toggle theme">
             <i class="fas fa-adjust"></i>
@@ -29,11 +40,8 @@
         </div>
     </header>
 
-    <!-- Main content wrapper -->
     <main class="content-wrapper">
-        <!-- Main content wrapper for horizontal layout -->
         <div class="content-wrapper-main">
-            <!-- Image container -->
             <aside class="image-container" id="image-container" aria-label="Image carousel">
                 <div class="image-placeholder">
                     <i class="fas fa-image"></i>
@@ -44,10 +52,8 @@
                 <span class="image-hint" id="image-hint">Swipe to change</span>
             </aside>
 
-            <!-- Main glass container -->
             <section class="glass-container">
                 <nav class="nav-menu" role="navigation" aria-label="Main navigation">
-                    <!-- Email dropdown -->
                     <div class="nav-item">
                         <a href="#" class="nav-link" role="button" aria-haspopup="true" aria-expanded="false" tabindex="0">
                             <i class="fas fa-envelope"></i>
@@ -55,35 +61,34 @@
                         </a>
                         <div class="dropdown">
                             <div class="dropdown-content">
-                                <a href="https://mail.google.com" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://mail.google.com" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-inbox"></i> Inbox
                                 </a>
-                                <a href="https://app.tuta.com/" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://app.tuta.com/" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-shield-alt"></i> Tuta
                                 </a>
-                                <a href="https://online.asb.co.nz" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://online.asb.co.nz" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-university"></i> ASB
                                 </a>
-                                <a href="https://one.nz/#sign-in" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://one.nz/#sign-in" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-mobile-alt"></i> Vodafone
                                 </a>
-                                <a href="https://www.trademe.co.nz/a/" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://www.trademe.co.nz/a/" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-shopping-cart"></i> Trademe
                                 </a>
-                                <a href="https://www.amazon.com/" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://www.amazon.com/" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fa-brands fa-amazon"></i> Amazon
                                 </a>
-                                <a href="https://www.aliexpress.com/p/ug-login-page/login.html" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://www.aliexpress.com/p/ug-login-page/login.html" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-shopping-bag"></i> Aliexpress
                                 </a>
-                                <a href="https://portal.manawanui.org.nz/" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://portal.manawanui.org.nz/" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-user-circle"></i> Manawanui
                                 </a>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Entertainment dropdown -->
                     <div class="nav-item">
                         <a href="#" class="nav-link" role="button" aria-haspopup="true" aria-expanded="false" tabindex="0">
                             <i class="fas fa-play-circle"></i>
@@ -91,35 +96,34 @@
                         </a>
                         <div class="dropdown">
                             <div class="dropdown-content">
-                                <a href="https://www.youtube.com/feed/subscriptions" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://www.youtube.com/feed/subscriptions" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fa-brands fa-youtube"></i> Youtube
                                 </a>
-                                <a href="https://torrentfreak.com/" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://torrentfreak.com/" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-download"></i> Torrent Freak
                                 </a>
-                                <a href="https://poa.st/timeline/local" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://poa.st/timeline/local" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-comments"></i> Poast
                                 </a>
-                                <a href="https://character.ai/chat/OZhCdhj-WrxbFB1aFGYaoEbImAz1XE-QLw9VwU6lh50" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://character.ai/chat/OZhCdhj-WrxbFB1aFGYaoEbImAz1XE-QLw9VwU6lh50" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-robot"></i> Character.ai
                                 </a>
-                                <a href="https://amerikaner.org/" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://amerikaner.org/" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-flag-usa"></i> Amerikaner
                                 </a>
-                                <a href="https://odysee.com/" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://odysee.com/" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-video"></i> Odysee
                                 </a>
-                                <a href="https://onenews.co.nz/" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://onenews.co.nz/" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-newspaper"></i> One News
                                 </a>
-                                <a href="https://fmhy.pages.dev/video" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://fmhy.pages.dev/video" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-list"></i> FMHY
                                 </a>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Boards dropdown -->
                     <div class="nav-item">
                         <a href="#" class="nav-link" role="button" aria-haspopup="true" aria-expanded="false" tabindex="0">
                             <i class="fas fa-th-large"></i>
@@ -127,33 +131,32 @@
                         </a>
                         <div class="dropdown">
                             <div class="dropdown-content">
-                                <a href="https://4chan.org/" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://4chan.org/" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-home"></i>Home
                                 </a>
-                                <a href="https://boards.4chan.org/a/" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://boards.4chan.org/a/" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-torii-gate"></i>Anime
                                 </a>
-                                <a href="https://boards.4chan.org/v/" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://boards.4chan.org/v/" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-gamepad"></i>Video Games
                                 </a>
-                                <a href="https://boards.4chan.org/g/" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://boards.4chan.org/g/" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-microchip"></i>Technology
                                 </a>
-                                <a href="https://boards.4chan.org/tv/" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://boards.4chan.org/tv/" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-tv"></i>Television
                                 </a>
-                                <a href="https://boards.4chan.org/fit/" class="dropdown-item" role="menuitem" target="_blank">
+                                <a href="https://boards.4chan.org/fit/" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                                     <i class="fas fa-dumbbell"></i>Fitness
                                 </a>
-                                <a href="https://boards.4chan.org/o/" class="dropdown-item" role="menuitem" target="_blank">
-                                    <i class="fas fa-car"></i>Auto
+                                <a href="https://boards.4chan.org/o/" class="dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
+                                    <i class="fas fa-car"></i>Cars
                                 </a>
                             </div>
                         </div>
                     </div>
                 </nav>
 
-                <!-- Search engine buttons -->
                 <div class="search-engines">
                     <button class="search-btn active" id="google-btn" data-engine="google">
                         <i class="fab fa-google"></i> Google
@@ -163,7 +166,6 @@
                     </button>
                 </div>
 
-                <!-- Search input -->
                 <div class="search-container">
                     <input type="text" class="search-input" id="search-input" autocomplete="off" placeholder="Search Google..." tabindex="1">
                     <div class="search-suggestions" id="search-suggestions"></div>
@@ -171,11 +173,9 @@
             </section>
         </div>
 
-        <!-- Notes container -->
         <section class="notes-container" id="notes-container">
             <div class="note-input-container">
                 <input type="text" class="note-input" id="note-input" autocomplete="off" placeholder="Type a note and press Enter..." inputmode="text" enterkeyhint="done">
-                <!-- Simplified category toggles -->
                 <div class="category-toggles">
                     <div class="category-toggle active" data-category="personal">Personal</div>
                     <div class="category-toggle" data-category="work">Work</div>
@@ -186,12 +186,10 @@
         </section>
     </main>
 
-    <!-- Floating Action Button for adding notes -->
     <button class="fab" id="add-note-fab" aria-label="Add Note">
         <i class="fas fa-plus"></i>
     </button>
 
-    <!-- Back to Top Button -->
     <button class="back-to-top" id="back-to-top" aria-label="Back to top">
         <i class="fas fa-chevron-up"></i>
     </button>
