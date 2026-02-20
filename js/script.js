@@ -107,10 +107,33 @@ const themeModule = {
         this.themeSwitcher = document.getElementById('theme-switcher');
         this.htmlElement = document.documentElement;
 
-        const savedTheme = safeLocalStorageGet('theme', 'light');
-        this.setTheme(savedTheme);
+        // 1. Check if user has a saved manual preference
+        const savedTheme = safeLocalStorageGet('theme', null);
+
+        if (savedTheme) {
+            // If user has manually clicked the toggle before, respect that choice
+            this.setTheme(savedTheme);
+        } else {
+            // Otherwise, calculate theme based on current time
+            this.setThemeBasedOnTime();
+        }
 
         this.themeSwitcher.addEventListener('click', () => this.toggleTheme());
+    },
+
+    setThemeBasedOnTime() {
+        const hours = new Date().getHours();
+        let theme;
+
+        // Logic: Light Mode from 6 AM (6) to 5:59 PM (17)
+        // Dark Mode from 6 PM (18) to 5:59 AM (5)
+        if (hours >= 6 && hours < 18) {
+            theme = 'light';
+        } else {
+            theme = 'dark';
+        }
+
+        this.setTheme(theme);
     },
 
     setTheme(theme) {
@@ -124,6 +147,10 @@ const themeModule = {
         const newTheme = currentTheme === 'light' ? 'dark' : 'light';
 
         this.setTheme(newTheme);
+
+        // Save the choice to LocalStorage.
+        // This acts as an "Override". Once the user clicks, the automatic
+        // time-checking stops until they clear their browser data.
         safeLocalStorageSet('theme', newTheme);
     },
 
@@ -209,12 +236,9 @@ const backgroundModule = {
             document.body.style.backgroundImage = `url('${imagePath}')`;
         };
 
-        // FIX (Logic): More robust fallback handling
         img.onerror = () => {
             console.warn(`Background image for ${dayName} not found, using gradient fallback.`);
-            // Ensure gradient is explicitly set if image fails, though CSS handles this initially.
-            // This ensures if a previous JS set an image, we revert cleanly if needed dynamically.
-            document.body.style.backgroundImage = ''; 
+            document.body.style.backgroundImage = '';
         };
 
         img.src = imagePath;
@@ -324,7 +348,12 @@ const imageModule = {
 
             this.container.appendChild(sideImage);
             this.addNavigationButtons();
-            this.container.appendChild(this.imageHint.cloneNode(true));
+
+            // FIX: Clone hint to avoid duplicate ID issues if hint has an ID
+            const hintClone = this.imageHint.cloneNode(true);
+            hintClone.removeAttribute('id');
+            this.container.appendChild(hintClone);
+
         } catch (error) {
             this.imageSpinner.style.display = 'none';
             console.error('Error displaying image:', error);
@@ -424,12 +453,12 @@ const searchModule = {
             .slice(0, 5);
 
             if (filteredHistory.length > 0) {
-                // FIX (Security): Prevent XSS by using textContent instead of innerHTML
+                // FIX (Security): Prevent XSS by using textContent
                 this.searchSuggestions.innerHTML = '';
                 filteredHistory.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'suggestion-item';
-                    div.textContent = item; // Safe text injection
+                    div.textContent = item;
                     this.searchSuggestions.appendChild(div);
                 });
                 this.searchSuggestions.style.display = 'block';
@@ -625,12 +654,11 @@ const notesModule = {
 
                 // FIX (Logic): Correctly calculate new index accounting for array shift
                 const draggedNote = this.notes[this.draggedIndex];
-                
+
                 // Remove the item first
                 this.notes.splice(this.draggedIndex, 1);
 
                 // Calculate insertion point
-                // If we dragged from above the target, the target's index has shifted down by 1
                 let insertionIndex = targetIndex;
                 if (this.draggedIndex < targetIndex) {
                     insertionIndex = targetIndex - 1;
@@ -643,7 +671,7 @@ const notesModule = {
 
                 // Insert at new position
                 this.notes.splice(insertionIndex, 0, draggedNote);
-                
+
                 this.saveNotes();
                 this.renderNotes();
             }
